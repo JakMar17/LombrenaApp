@@ -5,6 +5,7 @@ import '../style/custom_icons.dart';
 import '../data/dummyData.dart';
 import 'dart:math';
 import '../data/menu_data.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,23 +19,27 @@ class _HomeState extends State<Home> {
   static RestApi restApi = RestApi();
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
 
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  void onRefresh() async {
+    await restApi.fetchPostajeData();
+    _refreshController.refreshCompleted();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       decoration: BoxDecoration(
-            gradient: LinearGradient(
+          gradient: LinearGradient(
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
-              end: Alignment.topLeft
-            )
-      ),
+              end: Alignment.topLeft)),
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -60,140 +65,144 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-
-          body: CustomScrollView(
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: Container(
-                    color: Colors.transparent,
-                    child: Padding(
-                        padding: EdgeInsets.only(top: 30),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 15, bottom: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Priljubljeno',
-                                    style: TextStyle(
-                                        fontSize: 36,
-                                        letterSpacing: 1,
-                                        color: Colors.white,
-                                        fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w500),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 15),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        CustomIcons.option,
-                                        color: Colors.white,
-                                        size: 12,
-                                      ),
+          body: SmartRefresher(
+            enablePullDown: true,
+            controller: _refreshController,
+            onRefresh: onRefresh,
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: Container(
+                      color: Colors.transparent,
+                      child: Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 10, right: 15, bottom: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Priljubljeno',
+                                      style: TextStyle(
+                                          fontSize: 36,
+                                          letterSpacing: 1,
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w500),
                                     ),
-                                  )
-                                ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 15),
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          CustomIcons.option,
+                                          color: Colors.white,
+                                          size: 12,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 300,
-                              child: ListView.builder(
-                                physics: ClampingScrollPhysics(),
-                                shrinkWrap: false,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: postaje.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                        FavCard(postaja: postaje[index],),
+                              SizedBox(
+                                height: 300,
+                                child: ListView.builder(
+                                  physics: ClampingScrollPhysics(),
+                                  shrinkWrap: false,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: postaje.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          FavCard(
+                                    postaja: postaje[index],
+                                  ),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                          ],
-                        ))),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.transparent,
-                  child: /* 
-                    Kategorije
-                  */
-                      Padding(
-                    padding:
-                        const EdgeInsets.only(left: 10, right: 15, bottom: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Kategorije",
-                          style: TextStyle(
-                              fontSize: 36,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w500
-                            ),
-                        ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                            ],
+                          ))),
+                ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    color: Colors.transparent,
+                    child:
+                        /* 
+                      Kategorije
+                    */
                         Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              CustomIcons.option,
-                              color: Colors.white,
-                              size: 12,
-                            ),
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 15, bottom: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            "Kategorije",
+                            style: TextStyle(
+                                fontSize: 36,
+                                color: Colors.white,
+                                letterSpacing: 1,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w500),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                CustomIcons.option,
+                                color: Colors.white,
+                                size: 12,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                      child: FlatButton(
-                        onPressed: () {},
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              color: Colors.transparent,
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  categoryMenu[index].menuName,
-                                  style:
-                                      TextStyle(
-                                        color: Colors.white, 
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+                        child: FlatButton(
+                          onPressed: () {},
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                color: Colors.transparent,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    categoryMenu[index].menuName,
+                                    style: TextStyle(
+                                        color: Colors.white,
                                         fontSize: 20,
                                         letterSpacing: 0.6,
                                         fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.w400
-                                      ),
+                                        fontWeight: FontWeight.w400),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  childCount: categoryMenu.length,
-                ),
-              )
-            ],
+                      );
+                    },
+                    childCount: categoryMenu.length,
+                  ),
+                )
+              ],
+            ),
           )),
     );
   }
@@ -210,19 +219,17 @@ class FavCard extends StatelessWidget {
       color: Colors.transparent,
       child: SizedBox(
         width: 250,
-
         child: GestureDetector(
-          onTap: (){
-            Navigator.pushNamed(context, "/postaja", arguments: {'postaja': postaja});
+          onTap: () {
+            Navigator.pushNamed(context, "/postaja",
+                arguments: {'postaja': postaja});
           },
-                  child: Container(
-                    decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft
-            )
-      ),
+          child: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
+                    begin: Alignment.bottomRight,
+                    end: Alignment.topLeft)),
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Column(
@@ -238,8 +245,9 @@ class FavCard extends StatelessWidget {
                           Text(
                             postaja.temperature.toString(),
                             style: TextStyle(
-                              color: Colors.white, fontSize: 84,
-                              fontFamily: "Montserrat",
+                                color: Colors.white,
+                                fontSize: 84,
+                                fontFamily: "Montserrat",
                                 fontWeight: FontWeight.w300),
                           ),
                           Padding(
@@ -247,9 +255,10 @@ class FavCard extends StatelessWidget {
                             child: Text(
                               "°C",
                               style: TextStyle(
-                                color: Colors.white, fontSize: 28,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w300),
+                                  color: Colors.white,
+                                  fontSize: 28,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w300),
                             ),
                           ),
                         ],
@@ -266,8 +275,11 @@ class FavCard extends StatelessWidget {
                             width: 10,
                           ),
                           Text(
-                            postaja.averageWind != null ? "${postaja.averageWind} km/h":
-                              postaja.windSpeed != null ? "${postaja.windSpeed} km/h" : "0 km/h",
+                            postaja.averageWind != null
+                                ? "${postaja.averageWind} km/h"
+                                : postaja.windSpeed != null
+                                    ? "${postaja.windSpeed} km/h"
+                                    : "0 km/h",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -289,7 +301,9 @@ class FavCard extends StatelessWidget {
                             width: 10,
                           ),
                           Text(
-                            postaja.averageHum != null ? "${postaja.averageHum} %" : "${postaja.humidity} %",
+                            postaja.averageHum != null
+                                ? "${postaja.averageHum} %"
+                                : "${postaja.humidity} %",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -303,9 +317,11 @@ class FavCard extends StatelessWidget {
                   ),
                   Text(
                     postaja.titleLong,
-                    style: TextStyle(color: Colors.white, fontSize: 28,
-                    fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w400),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.w400),
                   )
                 ],
               ),
