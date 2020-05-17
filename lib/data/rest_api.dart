@@ -49,11 +49,15 @@ class RestApi {
         windDir: element.findElements("dd_shortText").first.text,
         windSpeed: parseDouble(element.findElements("ff_val_kmh").first.text),
         averageWind: parseDouble(element.findElements("ffavg_val_kmh").first.text),
+        maxWind: parseDouble(element.findElements("ffmax_val_kmh").first.text),
         /*  */
         preassure: parseDouble(element.findElements("p").first.text),
         /*  */
         snow: parseDouble(element.findElements("snow").first.text),
         rain: parseDouble(element.findElements("tp_12h_acc").first.text),
+        /*  */
+        obsevanje: parseDouble(element.findElements("gSunRad").first.text),
+        vidnost: parseDouble(element.findElements("vis_val").first.text)
       );
       
       postaje.add(p);

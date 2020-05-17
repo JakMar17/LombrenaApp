@@ -3,6 +3,7 @@ import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class PostajaDetail extends StatefulWidget {
   PostajaDetail({Key key}) : super(key: key);
@@ -14,7 +15,16 @@ class PostajaDetail extends StatefulWidget {
 class _PostajaDetailState extends State<PostajaDetail> {
   Postaja postaja;
 
+  static RestApi restApi = RestApi();
   List<DetailCard> cards;
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  void onRefresh() async {
+    await restApi.fetchPostajeData();
+    _refreshController.refreshCompleted();
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -23,27 +33,58 @@ class _PostajaDetailState extends State<PostajaDetail> {
 
   void initCards() {
     cards = [
-      new DetailCard(title: "Zračni tlak", mainMeasure: postaja.preassure, unit: "hPa"),
-      new DetailCard(title: "Vlažnost zraka", 
-        mainMeasure: postaja.averageHum != null ? postaja.averageHum : postaja.humidity, unit: "%",
+      new DetailCard(
+          title: "Veter",
+          mainMeasure: postaja.averageWind == null ? 0 : postaja.averageWind,
+          unit: "km/h",
+          secondData: postaja.windAngle != null ? "${postaja.windAngle}° ${postaja.windDir}" : null,
+          thirdData: postaja.maxWind != null ? "max ${postaja.maxWind} km/h" : null
+        ),
+      new DetailCard(
+          title: "Padavine",
+          mainMeasure: postaja.rain == null ? 0 : postaja.rain,
+          unit: "mm",
+          secondData: postaja.snow != null ? "${postaja.snow} cm" : null),
+      new DetailCard(
+          title: "Zračni tlak", mainMeasure: postaja.preassure, unit: "hPa"),
+      new DetailCard(
+        title: "Vlažnost zraka",
+        mainMeasure:
+            postaja.averageHum != null ? postaja.averageHum : postaja.humidity,
+        unit: "%",
       ),
-      new DetailCard(title: "Veter", mainMeasure: postaja.averageWind == null ? 0 : postaja.averageWind, unit: "km/h", 
-        secondData: "${postaja.windAngle}° ${postaja.windDir}"
+      new DetailCard(
+        title: "Dolžina dneva",
+        mainMeasure: postaja.dayLength,
+        unit: "",
+        secondData: "${postaja.sunrise}",
+        thirdData: "${postaja.sunset}"
       ),
-      new DetailCard(title: "Padavine", mainMeasure: postaja.rain == null ? 0 : postaja.rain, unit: "mm",
-        secondData: postaja.snow != null ? "${postaja.snow} cm" : null
+      new DetailCard(
+          title: "Temperatura rosišča",
+          mainMeasure: postaja.dewpoint != null ? postaja.dewpoint : null,
+          unit: "°C"),
+      new DetailCard(
+        title: "Sončno obsevanje",
+        mainMeasure: postaja.obsevanje == null ? null : "${postaja.obsevanje}",
+        unit: "W/m2"
       ),
-      new DetailCard(title: "Temperatura rosišča", mainMeasure: postaja.dewpoint != null ? postaja.dewpoint : null, unit: "°C")
+      new DetailCard(
+        title: "Vidljivost",
+        mainMeasure: postaja.vidnost == null ? null : "${postaja.vidnost}",
+        unit: "km"
+      ),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    RestApi restApi = RestApi();
     Map data = {};
     data = ModalRoute.of(context).settings.arguments;
     postaja = data['postaja'];
     initCards();
+
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
       decoration: BoxDecoration(
@@ -65,72 +106,145 @@ class _PostajaDetailState extends State<PostajaDetail> {
             )
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.only(top: 40, left: 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            postaja.averageTemp.toString(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 100,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w200,
-                                letterSpacing: 2),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              "°C",
+        body: SmartRefresher(
+          enablePullDown: true,
+          controller: _refreshController,
+          onRefresh: onRefresh,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: SizedBox(height: 40),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              postaja.averageTemp.toString(),
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 48,
+                                  fontSize: 100,
                                   fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w100,
+                                  fontWeight: FontWeight.w200,
                                   letterSpacing: 2),
                             ),
-                          )
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                "°C",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.w100,
+                                    letterSpacing: 2),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    minMaxTemp(),
-                    SizedBox(height: 10,),
-                    altitudeRow()
-                  ],
+                      SizedBox(
+                        height: 10,
+                      ),
+                      minMaxTemp(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      altitudeRow()
+                    ],
+                  ),
                 ),
               ),
-              Container(
-                height: 250,
-                margin: EdgeInsets.only(bottom: 60, left: 0),
-                child: Expanded(
-                  child: detailCard(),
-                ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: screenHeight * 0.10),
               ),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: screenHeight * 0.32,
+                  margin: EdgeInsets.only(bottom: 60, left: 0),
+                  child: Expanded(
+                    child: detailCard(),
+                  ),
+                ),
+              )
             ],
           ),
+          /* child: Padding(
+            padding: EdgeInsets.only(top: 40, left: 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              postaja.averageTemp.toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 100,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w200,
+                                  letterSpacing: 2),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                "°C",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.w100,
+                                    letterSpacing: 2),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      minMaxTemp(),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      altitudeRow()
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 250,
+                  margin: EdgeInsets.only(bottom: 60, left: 0),
+                  child: Expanded(
+                    child: detailCard(),
+                  ),
+                ),
+              ],
+            ),
+          ), */
         ),
       ),
     );
   }
 
   Row minMaxTemp() {
-    if(postaja.minTemp == null || postaja.maxTemp == null)
-      return Row();
+    if (postaja.minTemp == null || postaja.maxTemp == null) return Row();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -165,55 +279,58 @@ class _PostajaDetailState extends State<PostajaDetail> {
   }
 
   Row altitudeRow() {
-    if (postaja.altitude == null)
-      return Row();
-    
+    if (postaja.altitude == null) return Row();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Column(
           children: <Widget>[
-            Text("${postaja.altitude} m",
+            Text(
+              "${postaja.altitude} m",
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w300
-              ),
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w300),
             ),
-            Text("Višina",
+            Text(
+              "Višina",
               style: TextStyle(
-                color:Colors.white,
-                fontSize: 18,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w300
-              ),
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w300),
             )
           ],
         ),
-        SizedBox(width: 50,),
+        SizedBox(
+          width: 50,
+        ),
         Column(
           children: <Widget>[
             FlatButton(
-              onPressed: () async{
-                String url = "https://www.google.com/maps/search/?api=1&query=${postaja.geoLat},${postaja.geoLon}";
+              onPressed: () async {
+                String url =
+                    "https://www.google.com/maps/search/?api=1&query=${postaja.geoLat},${postaja.geoLon}";
                 if (await canLaunch(url)) {
                   await launch(url);
                 }
               },
               child: Column(
                 children: <Widget>[
-                  Icon(Icons.map,
+                  Icon(
+                    Icons.map,
                     color: Colors.white,
                     size: 36,
                   ),
-                  Text("Lokacija",
+                  Text(
+                    "Lokacija",
                     style: TextStyle(
-                color:Colors.white,
-                fontSize: 18,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w300
-              ),
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: "Montserrat",
+                        fontWeight: FontWeight.w300),
                   )
                 ],
               ),
@@ -233,11 +350,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
           double paddingLeft = 0;
           if (index == 0) paddingLeft = 20;
 
-          if(card.mainMeasure == null)
-            if(index == 0)
-              return Container(margin: EdgeInsets.only(left: 20),);
-            else
-              return Container();
+          if (card.mainMeasure == null) if (index == 0)
+            return Container(
+              margin: EdgeInsets.only(left: 20),
+            );
+          else
+            return Container();
 
           return Padding(
               padding: EdgeInsets.only(right: 10, left: paddingLeft),
@@ -270,7 +388,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
                                     fontWeight: FontWeight.w300),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(top: 5),
+                                padding: EdgeInsets.only(top: 5, left: 5),
                                 child: Text(
                                   card.unit,
                                   style: TextStyle(
@@ -284,32 +402,35 @@ class _PostajaDetailState extends State<PostajaDetail> {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          card.secondData != null ?
-                          Text("${card.secondData}",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w300,
-                              fontSize: 20
-                            ),
-                          ) : Text("")
-                        ],
-                      ),
-                      Row(
+                            children: <Widget>[
+                              card.secondData != null
+                                  ? Text(
+                                      "${card.secondData}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 20),
+                                    )
+                                  : Text("")
+                            ],
+                          ),
+                          SizedBox(height: 2,),
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          card.thirdData != null ?
-                          Text("${card.thirdData}",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w300,
-                              fontSize: 20
-                            ),
-                          ) : Container()
-                        ],
-                      ),
+                            children: <Widget>[
+                              card.thirdData != null
+                                  ? Text(
+                                      "${card.thirdData}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 18),
+                                    )
+                                  : Container()
+                            ],
+                          ),
                         ],
                       ),
                       Text(
@@ -336,11 +457,10 @@ class DetailCard {
   var secondData;
   var thirdData;
 
-  DetailCard({
-    this.title,
-    this.mainMeasure,
-    this.unit,
-    this.secondData,
-    this.thirdData
-  });
+  DetailCard(
+      {this.title,
+      this.mainMeasure,
+      this.unit,
+      this.secondData,
+      this.thirdData});
 }

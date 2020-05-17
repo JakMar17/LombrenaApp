@@ -110,18 +110,10 @@ class _HomeState extends State<Home> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              Container(
                                 height: 300,
-                                child: ListView.builder(
-                                  physics: ClampingScrollPhysics(),
-                                  shrinkWrap: false,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: postaje.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) =>
-                                          FavCard(
-                                    postaja: postaje[index],
-                                  ),
+                                child: Expanded(
+                                  child: favCards()
                                 ),
                               ),
                               SizedBox(
@@ -175,7 +167,9 @@ class _HomeState extends State<Home> {
                         padding:
                             EdgeInsets.symmetric(vertical: 1, horizontal: 10),
                         child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, categoryMenu[index].url);
+                          },
                           child: Row(
                             children: <Widget>[
                               Container(
@@ -206,6 +200,22 @@ class _HomeState extends State<Home> {
           )),
     );
   }
+
+  Widget favCards() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: postaje.length,
+      itemBuilder: (context, index) {
+        double paddingLeft = index == 0 ? 20 : 0;
+
+        return Padding(
+          padding: EdgeInsets.only(left: paddingLeft),
+          child: FavCard(postaja: postaje[index]),
+        );
+      },
+    );
+  }
+
 }
 
 class FavCard extends StatelessWidget {
@@ -215,116 +225,116 @@ class FavCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.transparent,
-      child: SizedBox(
-        width: 250,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, "/postaja",
-                arguments: {'postaja': postaja});
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
-                    begin: Alignment.bottomRight,
-                    end: Alignment.topLeft)),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            postaja.temperature.toString(),
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, "/postaja",
+              arguments: {'postaja': postaja});
+        },
+        child: Container(
+          width: 230,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                      colors: [CustomColors.lightGrey, CustomColors.darkGrey],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
+              borderRadius: BorderRadius.circular(15)
+            ),
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          postaja.temperature.toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 64,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w300),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            "°C",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 84,
+                                fontSize: 28,
                                 fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w300),
+                                fontWeight: FontWeight.w100),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              "°C",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 28,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w300),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            Icons.compare_arrows,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            postaja.averageWind != null
-                                ? "${postaja.averageWind} km/h"
-                                : postaja.windSpeed != null
-                                    ? "${postaja.windSpeed} km/h"
-                                    : "0 km/h",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                letterSpacing: 0.5,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w300),
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            postaja.averageHum != null
-                                ? "${postaja.averageHum} %"
-                                : "${postaja.humidity} %",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                letterSpacing: 0.5,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w300),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  Text(
-                    postaja.titleLong,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontFamily: "Montserrat",
-                        fontWeight: FontWeight.w400),
-                  )
-                ],
-              ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          Icons.compare_arrows,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          postaja.averageWind != null
+                              ? "${postaja.averageWind} km/h"
+                              : postaja.windSpeed != null
+                                  ? "${postaja.windSpeed} km/h"
+                                  : "0 km/h",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              letterSpacing: 0.5,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w200),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          postaja.averageHum != null
+                              ? "${postaja.averageHum} %"
+                              : "${postaja.humidity} %",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              letterSpacing: 0.5,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w200),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Text(
+                  postaja.titleShort,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.w300),
+                )
+              ],
             ),
           ),
         ),

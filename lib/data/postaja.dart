@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Postaja {
 
   String title;
@@ -14,6 +16,7 @@ class Postaja {
   /* sunrise, sunset */
   String sunrise;
   String sunset;
+  String dayLength;
 
   /* time of update */
   String updateTime;
@@ -34,6 +37,7 @@ class Postaja {
   String windDir;
   double windSpeed;
   double averageWind;
+  double maxWind;
 
   /* preassure */
   double preassure;
@@ -43,6 +47,12 @@ class Postaja {
 
   /* rain */
   double rain;
+
+  /* soncno obsevanje */
+  double obsevanje;
+
+  /*  */
+  double vidnost;
 
   Postaja({
     this.title,
@@ -70,12 +80,36 @@ class Postaja {
     this.windDir,
     this.windSpeed,
     this.averageWind,
+    this.maxWind,
     /*  */
     this.preassure,
     /*  */
     this.snow,
-    this.rain
-  });
+    this.rain,
+    /*  */
+    this.obsevanje,
+    this.vidnost,
+  }) {
+    sunrise = getTimeString(sunrise);
+    sunset = getTimeString(sunset);
+    dayLength = getTimeLengthString();
+  }
+
+  String getTimeString(String date) {
+    var t = date.split(" ");
+    return t[1];
+  }
+
+  String getTimeLengthString() {
+    DateTime srise = DateFormat("HH:mm").parse(sunrise).toUtc();
+    DateTime sset = DateFormat("HH:mm").parse(sunset).toUtc();
+
+    var l = sset.difference(srise);
+    print(l.toString());
+    var t = l.toString().split(":");
+    var tt = t[1] .split(":");
+    return "${t[0]}:${tt[0]}";
+  }
 
   
 }
