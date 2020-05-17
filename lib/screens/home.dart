@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/postaja.dart';
+import 'package:vreme/data/rest_api.dart';
 import '../style/custom_icons.dart';
 import '../data/dummyData.dart';
 import 'dart:math';
@@ -13,10 +15,26 @@ class _HomeState extends State<Home> {
   var currentPage_postaje = avtomatskePostaje.length - 1.0;
   var currentPage_burja = burja.length - 1.0;
 
+  static RestApi restApi = RestApi();
+  List<Postaja> postaje = restApi.getAvtomatskePostaje();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+
     return Container(
-      color: CustomColors.blue,
+      decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [CustomColors.blue, CustomColors.blue2],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft
+            )
+      ),
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -90,10 +108,10 @@ class _HomeState extends State<Home> {
                                 physics: ClampingScrollPhysics(),
                                 shrinkWrap: false,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 15,
+                                itemCount: postaje.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
-                                        FavCard(),
+                                        FavCard(postaja: postaje[index],),
                               ),
                             ),
                             SizedBox(
@@ -183,8 +201,8 @@ class _HomeState extends State<Home> {
 
 class FavCard extends StatelessWidget {
   var data;
-
-  //FavCard({this.data});
+  final Postaja postaja;
+  FavCard({this.postaja});
 
   @override
   Widget build(BuildContext context) {
@@ -195,10 +213,16 @@ class FavCard extends StatelessWidget {
 
         child: GestureDetector(
           onTap: (){
-            Navigator.pushNamed(context, "/postaja");
+            Navigator.pushNamed(context, "/postaja", arguments: {'postaja': postaja});
           },
                   child: Container(
-            color: CustomColors.darkBlue,
+                    decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft
+            )
+      ),
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Column(
@@ -212,7 +236,7 @@ class FavCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "24",
+                            postaja.temperature.toString(),
                             style: TextStyle(
                               color: Colors.white, fontSize: 84,
                               fontFamily: "Montserrat",
@@ -242,7 +266,8 @@ class FavCard extends StatelessWidget {
                             width: 10,
                           ),
                           Text(
-                            "1,4 m/s",
+                            postaja.averageWind != null ? "${postaja.averageWind} km/h":
+                              postaja.windSpeed != null ? "${postaja.windSpeed} km/h" : "0 km/h",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -264,7 +289,7 @@ class FavCard extends StatelessWidget {
                             width: 10,
                           ),
                           Text(
-                            "60 %",
+                            postaja.averageHum != null ? "${postaja.averageHum} %" : "${postaja.humidity} %",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -277,7 +302,7 @@ class FavCard extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    "Letališče Jožeta Pučnika Ljubljana",
+                    postaja.titleLong,
                     style: TextStyle(color: Colors.white, fontSize: 28,
                     fontFamily: "Montserrat",
                                 fontWeight: FontWeight.w400),
