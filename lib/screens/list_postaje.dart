@@ -38,7 +38,7 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
             SliverPadding(padding: EdgeInsets.only(top: 30),),
             SliverList(
               delegate: SliverChildListDelegate(
-                _buildList(50)
+                _buildList()
               ),
             ),
             SliverPadding(padding: EdgeInsets.only(bottom: 30),)
@@ -48,13 +48,13 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
     );
   }
 
-  List _buildList(int count) {
+  List _buildList() {
     RestApi restApi = RestApi();
     List<Postaja> postaje = restApi.getAvtomatskePostaje();
     double screenWidth = MediaQuery.of(context).size.width;
 
     List<Widget> listItems = List();
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < postaje.length; i++) {
       listItems.add(
         Container (
           margin: EdgeInsets.only(bottom: 10, left: 20, right: 20),

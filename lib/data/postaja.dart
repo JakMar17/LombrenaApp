@@ -2,6 +2,9 @@ import 'package:intl/intl.dart';
 
 class Postaja {
 
+  bool isFavourite = false;
+  String id;
+
   String title;
   String titleLong;
   String titleShort;
@@ -90,9 +93,13 @@ class Postaja {
     this.obsevanje,
     this.vidnost,
   }) {
-    sunrise = getTimeString(sunrise);
-    sunset = getTimeString(sunset);
-    dayLength = getTimeLengthString();
+    if(sunrise != null)
+      sunrise = getTimeString(sunrise);
+    if(sunset != null)
+      sunset = getTimeString(sunset);
+    if(sunset != null && sunrise != null)
+      dayLength = getTimeLengthString();
+    id = title;
   }
 
   String getTimeString(String date) {
@@ -110,6 +117,13 @@ class Postaja {
     var tt = t[1] .split(":");
     return "${t[0]}:${tt[0]}";
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id
+  };
+
+  Postaja.fromJson(Map<String, dynamic> json)
+    : id = json["id"];
 
   
 }

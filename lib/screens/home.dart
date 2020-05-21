@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
 import '../style/custom_icons.dart';
@@ -6,6 +7,7 @@ import '../data/dummyData.dart';
 import 'dart:math';
 import '../data/menu_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -13,11 +15,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
   var currentPage_postaje = avtomatskePostaje.length - 1.0;
   var currentPage_burja = burja.length - 1.0;
 
   static RestApi restApi = RestApi();
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
+
+  Favorites favorites;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -29,11 +34,13 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
+    print("cisti zacetek");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    favorites = Favorites();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -71,7 +78,7 @@ class _HomeState extends State<Home> {
             onRefresh: onRefresh,
             child: CustomScrollView(
               slivers: <Widget>[
-                SliverToBoxAdapter(
+                favorites.getFavorites().length != 0 ? SliverToBoxAdapter(
                   child: Container(
                       color: Colors.transparent,
                       child: Padding(
@@ -121,7 +128,7 @@ class _HomeState extends State<Home> {
                               ),
                             ],
                           ))),
-                ),
+                ) : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
                   child: Container(
                     color: Colors.transparent,
@@ -168,7 +175,11 @@ class _HomeState extends State<Home> {
                             EdgeInsets.symmetric(vertical: 1, horizontal: 10),
                         child: FlatButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, categoryMenu[index].url);
+                            Navigator
+                              .pushNamed(context, categoryMenu[index].url)
+                              .then((value) {setState(() {
+                                
+                              });});
                           },
                           child: Row(
                             children: <Widget>[
@@ -202,17 +213,143 @@ class _HomeState extends State<Home> {
   }
 
   Widget favCards() {
+    List<Object> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: postaje.length,
+      itemCount: priljubljene.length,
       itemBuilder: (context, index) {
         double paddingLeft = index == 0 ? 20 : 0;
 
         return Padding(
           padding: EdgeInsets.only(left: paddingLeft),
-          child: FavCard(postaja: postaje[index]),
+          //child: FavCard(postaja: postaje[index], refresh: () {initState();} ),
+          child: favCard(priljubljene[index]),
         );
       },
+    );
+  }
+
+  Widget favCard(Postaja postaja) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: GestureDetector(
+        onTap: () {
+          Navigator
+          .pushNamed(context, "/postaja",
+              arguments: {'postaja': postaja})
+          .then((value) {
+            setState(() {
+              
+            });
+          });
+        },
+        child: Container(
+          width: 230,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                      colors: [CustomColors.lightGrey, CustomColors.darkGrey],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight),
+              borderRadius: BorderRadius.circular(15)
+            ),
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          postaja.temperature.toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 64,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w300),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            "°C",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w100),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          Icons.compare_arrows,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          postaja.averageWind != null
+                              ? "${postaja.averageWind} km/h"
+                              : postaja.windSpeed != null
+                                  ? "${postaja.windSpeed} km/h"
+                                  : "0 km/h",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              letterSpacing: 0.5,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w200),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          postaja.averageHum != null
+                              ? "${postaja.averageHum} %"
+                              : "${postaja.humidity} %",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              letterSpacing: 0.5,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w200),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Text(
+                  postaja.titleShort,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: "Montserrat",
+                      fontWeight: FontWeight.w300),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -221,7 +358,8 @@ class _HomeState extends State<Home> {
 class FavCard extends StatelessWidget {
   var data;
   final Postaja postaja;
-  FavCard({this.postaja});
+  final void refresh;
+  FavCard({this.postaja, this.refresh});
 
   @override
   Widget build(BuildContext context) {
@@ -229,8 +367,12 @@ class FavCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "/postaja",
-              arguments: {'postaja': postaja});
+          Navigator
+          .pushNamed(context, "/postaja",
+              arguments: {'postaja': postaja})
+          .then((value) {
+            refresh;
+          });
         },
         child: Container(
           width: 230,

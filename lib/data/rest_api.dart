@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:xml/xml.dart' as xml;
 import 'dart:convert';
@@ -63,6 +64,8 @@ class RestApi {
       postaje.add(p);
     }
 
+    Favorites f = Favorites();
+    f.setFavorites(postaje);
     return true;
   }
 

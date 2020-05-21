@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -79,6 +80,8 @@ class _PostajaDetailState extends State<PostajaDetail> {
 
   @override
   Widget build(BuildContext context) {
+    Favorites favorites = Favorites();
+
     Map data = {};
     data = ModalRoute.of(context).settings.arguments;
     postaja = data['postaja'];
@@ -101,8 +104,13 @@ class _PostajaDetailState extends State<PostajaDetail> {
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.star_border),
+              onPressed: () {
+                setState(() {
+                  postaja.isFavourite = !postaja.isFavourite;
+                  favorites.addToFavorites(postaja);
+                });  
+              },
+              icon: Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
             )
           ],
         ),
