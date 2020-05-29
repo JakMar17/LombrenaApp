@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
+import 'package:vreme/data/vodotok_postaja.dart';
 import 'package:vreme/screens/search.dart';
 import '../style/custom_icons.dart';
 import '../data/dummyData.dart';
@@ -21,6 +22,7 @@ class _HomeState extends State<Home> {
 
   static RestApi restApi = RestApi();
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
+  List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
 
   Favorites favorites;
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
+import 'package:vreme/data/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class ListOfPostaje extends StatefulWidget {
@@ -9,6 +10,9 @@ class ListOfPostaje extends StatefulWidget {
 }
 
 class _ListOfPostajeState extends State<ListOfPostaje> {
+
+  List<MerilnoMestoVodotok> vodotoki = RestApi().getVodotoki();
+
   @override
   Widget build(BuildContext context) {
     return Container(

@@ -188,67 +188,6 @@ class _PostajaDetailState extends State<PostajaDetail> {
               )
             ],
           ),
-          /* child: Padding(
-            padding: EdgeInsets.only(top: 40, left: 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              postaja.averageTemp.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 100,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w200,
-                                  letterSpacing: 2),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                "°C",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 48,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.w100,
-                                    letterSpacing: 2),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      minMaxTemp(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      altitudeRow()
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 250,
-                  margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Expanded(
-                    child: detailCard(),
-                  ),
-                ),
-              ],
-            ),
-          ), */
         ),
       ),
     );

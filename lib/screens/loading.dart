@@ -21,6 +21,7 @@ class _LoadingState extends State<Loading> {
   void goToHome() async {
     //bool fav = await favorites.setPreferences();
     bool postaje = await restApi.fetchPostajeData();
+    bool vodotoki = await restApi.fetchVodotoki();
     if(postaje != null)
       Navigator.pushReplacementNamed(context, "/");
     else {

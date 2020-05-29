@@ -8,6 +8,7 @@ class MenuItem {
 
 List<MenuItem> categoryMenu = [
   MenuItem(menuName: "Avtomatske postaje", url: "/postaje"),
+  MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
   /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Vodotoki"),
   MenuItem(menuName: "Kakovost zraka"),
