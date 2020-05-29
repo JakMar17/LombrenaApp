@@ -82,7 +82,9 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                 Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/vodotok", arguments: {"vodotok": vodotokiPoRekah[i].vodotoki[j]});
+                    },
                     color: Colors.transparent,
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),

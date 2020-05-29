@@ -4,6 +4,7 @@ import 'package:vreme/screens/list_postaje.dart';
 import 'package:vreme/screens/list_vodotoki.dart';
 import 'package:vreme/screens/loading.dart';
 import 'package:vreme/screens/postaja.dart';
+import 'package:vreme/screens/vodotok_detail.dart';
 import './screens/home.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -19,7 +20,8 @@ void main() async{
       '/postaja': (context) => PostajaDetail(),
       '/loading': (context) => Loading(),
       '/postaje': (context) => ListOfPostaje(),
-      '/vodotoki': (context) => ListOfVodotoki()
+      '/vodotoki': (context) => ListOfVodotoki(),
+      '/vodotok': (context) => VodotokDetail()
     },
     debugShowCheckedModeBanner: false,
   ));
