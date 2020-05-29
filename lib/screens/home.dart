@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
+import 'package:vreme/screens/search.dart';
 import '../style/custom_icons.dart';
 import '../data/dummyData.dart';
 import 'dart:math';
@@ -15,7 +16,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   var currentPage_postaje = avtomatskePostaje.length - 1.0;
   var currentPage_burja = burja.length - 1.0;
 
@@ -34,7 +34,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    print("cisti zacetek");
     super.initState();
   }
 
@@ -56,7 +55,9 @@ class _HomeState extends State<Home> {
             centerTitle: true,
             actions: <Widget>[
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    showSearch(context: context, delegate: Search());
+                  },
                   icon: Icon(
                     Icons.search,
                     size: 30,
@@ -78,32 +79,38 @@ class _HomeState extends State<Home> {
             onRefresh: onRefresh,
             child: CustomScrollView(
               slivers: <Widget>[
-                favorites.getFavorites().length != 0 ? SliverToBoxAdapter(
-                  child: Container(
-                      color: Colors.transparent,
-                      child: Padding(
-                          padding: EdgeInsets.only(top: 30),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: 10, right: 15, bottom: 15),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                favorites.getFavorites().length != 0
+                    ? SliverToBoxAdapter(
+                        child: Container(
+                            color: Colors.transparent,
+                            child: Padding(
+                                padding: EdgeInsets.only(top: 30),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(
-                                      'Priljubljeno',
-                                      style: TextStyle(
-                                          fontSize: 36,
-                                          letterSpacing: 1,
-                                          color: Colors.white,
-                                          fontFamily: "Montserrat",
-                                          fontWeight: FontWeight.w500),
-                                    ),
                                     Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 10, right: 15, bottom: 15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            'Priljubljeno',
+                                            style: TextStyle(
+                                                fontSize: 36,
+                                                letterSpacing: 1,
+                                                color: Colors.white,
+                                                fontFamily: "Montserrat",
+                                                fontWeight: FontWeight.w500),
+                                          ),
+
+                                          /* 
+                                            custom menu for category
+                                          */
+
+                                          /* Padding(
                                       padding: const EdgeInsets.only(right: 15),
                                       child: IconButton(
                                         onPressed: () {},
@@ -113,22 +120,21 @@ class _HomeState extends State<Home> {
                                           size: 12,
                                         ),
                                       ),
-                                    )
+                                    ) */
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 300,
+                                      child: Expanded(child: favCards()),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
                                   ],
-                                ),
-                              ),
-                              Container(
-                                height: 300,
-                                child: Expanded(
-                                  child: favCards()
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                            ],
-                          ))),
-                ) : SliverToBoxAdapter(),
+                                ))),
+                      )
+                    : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
                   child: Container(
                     color: Colors.transparent,
@@ -151,7 +157,10 @@ class _HomeState extends State<Home> {
                                 fontFamily: "Montserrat",
                                 fontWeight: FontWeight.w500),
                           ),
-                          Padding(
+                          /* 
+                                            custom menu for category
+                                          */
+                          /* Padding(
                             padding: const EdgeInsets.only(right: 15),
                             child: IconButton(
                               onPressed: () {},
@@ -161,7 +170,7 @@ class _HomeState extends State<Home> {
                                 size: 12,
                               ),
                             ),
-                          )
+                          ) */
                         ],
                       ),
                     ),
@@ -175,11 +184,11 @@ class _HomeState extends State<Home> {
                             EdgeInsets.symmetric(vertical: 1, horizontal: 10),
                         child: FlatButton(
                           onPressed: () {
-                            Navigator
-                              .pushNamed(context, categoryMenu[index].url)
-                              .then((value) {setState(() {
-                                
-                              });});
+                            Navigator.pushNamed(
+                                    context, categoryMenu[index].url)
+                                .then((value) {
+                              setState(() {});
+                            });
                           },
                           child: Row(
                             children: <Widget>[
@@ -234,24 +243,19 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.only(right: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator
-          .pushNamed(context, "/postaja",
-              arguments: {'postaja': postaja})
-          .then((value) {
-            setState(() {
-              
-            });
+          Navigator.pushNamed(context, "/postaja",
+              arguments: {'postaja': postaja}).then((value) {
+            setState(() {});
           });
         },
         child: Container(
           width: 230,
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                      colors: [CustomColors.lightGrey, CustomColors.darkGrey],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(15)
-            ),
+                  colors: [CustomColors.lightGrey, CustomColors.darkGrey],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight),
+              borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding: EdgeInsets.all(10),
             child: Column(
@@ -352,7 +356,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
 }
 
 class FavCard extends StatelessWidget {
@@ -367,10 +370,8 @@ class FavCard extends StatelessWidget {
       padding: const EdgeInsets.only(right: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator
-          .pushNamed(context, "/postaja",
-              arguments: {'postaja': postaja})
-          .then((value) {
+          Navigator.pushNamed(context, "/postaja",
+              arguments: {'postaja': postaja}).then((value) {
             refresh;
           });
         },
@@ -378,11 +379,10 @@ class FavCard extends StatelessWidget {
           width: 230,
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                      colors: [CustomColors.lightGrey, CustomColors.darkGrey],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(15)
-            ),
+                  colors: [CustomColors.lightGrey, CustomColors.darkGrey],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight),
+              borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding: EdgeInsets.all(10),
             child: Column(

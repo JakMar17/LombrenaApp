@@ -23,6 +23,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
       RefreshController(initialRefresh: false);
   void onRefresh() async {
     await restApi.fetchPostajeData();
+    postaja = restApi.getPostaja(postaja.id);
     _refreshController.refreshCompleted();
     setState(() {});
   }

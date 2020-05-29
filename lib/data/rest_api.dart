@@ -11,7 +11,13 @@ class RestApi {
   List<Postaja> getAvtomatskePostaje() {return postaje;}
 
   Future<bool> fetchPostajeData() async {
-    Response resp = await get("http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
+    Response resp = null;
+    try {
+      resp = await get("http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
+    } on Exception catch (_) {
+      print("no interenet");
+      return null;
+    }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
     rawData = xml.parse(rawData);
@@ -74,5 +80,12 @@ class RestApi {
       return null;
     else
       return double.parse(txt);
+  }
+
+  Postaja getPostaja(String id) {
+    for (Postaja p in postaje)
+      if(p.id == id)
+        return p;
+    return null;
   }
 }

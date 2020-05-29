@@ -14,3 +14,7 @@ List<MenuItem> categoryMenu = [
   MenuItem(menuName: "Vremenska napoved"),
   MenuItem(menuName: "Morje")
 ];
+
+List<dynamic> homeScreen = [
+    
+];

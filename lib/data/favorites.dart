@@ -70,6 +70,7 @@ class Favorites {
         if(f.id == t.id) {
           t.isFavourite = true;
           _favorites[i] = x[j];
+          break;
         }
       }
     }
