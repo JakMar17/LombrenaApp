@@ -8,13 +8,13 @@ class MenuItem {
 
 List<MenuItem> categoryMenu = [
   MenuItem(menuName: "Avtomatske postaje", url: "/postaje"),
-  MenuItem(menuName: "Sistem Burja"),
+  /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Vodotoki"),
   MenuItem(menuName: "Kakovost zraka"),
   MenuItem(menuName: "Vremenska napoved"),
-  MenuItem(menuName: "Morje")
+  MenuItem(menuName: "Morje") */
 ];
 
 List<dynamic> homeScreen = [
-    
+
 ];

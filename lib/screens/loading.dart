@@ -48,13 +48,14 @@ class _LoadingState extends State<Loading> {
   Future<void> showErrorDialog(String error) async {
   return showDialog<void>(
     context: context,
-    barrierDismissible: false, // user must tap button!
+    barrierDismissible: true, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text('Napaka pri pridobivanju podatkov'),
         content: SingleChildScrollView(
           child: Text(error)
         ),
+        actionsPadding: EdgeInsets.all(5),
         actions: <Widget>[
           FlatButton(
             child: Text('Poskusi ponovno'),
