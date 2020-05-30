@@ -37,16 +37,22 @@ class _PostajaDetailState extends State<PostajaDetail> {
     cards = [
       new DetailCard(
           title: "Veter",
-          mainMeasure: postaja.averageWind == null ? null : 
-              postaja.averageWind == 0 ? null : postaja.averageWind,
+          mainMeasure: postaja.averageWind == null
+              ? null
+              : postaja.averageWind == 0 ? null : postaja.averageWind,
           unit: "km/h",
-          secondData: postaja.windAngle != null ? "${postaja.windAngle}° ${postaja.windDir}" : null,
-          thirdData: postaja.maxWind != null ? "max ${postaja.maxWind} km/h" : null
-        ),
+          secondData: postaja.windAngle != null
+              ? "${postaja.windAngle}° ${postaja.windDir}"
+              : null,
+          thirdData:
+              postaja.maxWind != null ? "max ${postaja.maxWind} km/h" : null),
       new DetailCard(
           title: "Padavine",
-          mainMeasure: postaja.rain == null ? (postaja.snow == null ? null: 0) : 
-              postaja.rain == 0 ? (postaja.snow == null ? null: 0) : postaja.rain,
+          mainMeasure: postaja.rain == null
+              ? (postaja.snow == null ? null : 0)
+              : postaja.rain == 0
+                  ? (postaja.snow == null ? null : 0)
+                  : postaja.rain,
           unit: "mm",
           secondData: postaja.snow != null ? "${postaja.snow} cm" : null),
       new DetailCard(
@@ -58,26 +64,24 @@ class _PostajaDetailState extends State<PostajaDetail> {
         unit: "%",
       ),
       new DetailCard(
-        title: "Dolžina dneva",
-        mainMeasure: postaja.dayLength,
-        unit: "",
-        secondData: "${postaja.sunrise}",
-        thirdData: "${postaja.sunset}"
-      ),
+          title: "Dolžina dneva",
+          mainMeasure: postaja.dayLength,
+          unit: "",
+          secondData: "${postaja.sunrise}",
+          thirdData: "${postaja.sunset}"),
       new DetailCard(
           title: "Temperatura rosišča",
           mainMeasure: postaja.dewpoint != null ? postaja.dewpoint : null,
           unit: "°C"),
       new DetailCard(
-        title: "Sončno obsevanje",
-        mainMeasure: postaja.obsevanje == null ? null : "${postaja.obsevanje}",
-        unit: "W/m2"
-      ),
+          title: "Sončno obsevanje",
+          mainMeasure:
+              postaja.obsevanje == null ? null : "${postaja.obsevanje}",
+          unit: "W/m2"),
       new DetailCard(
-        title: "Vidljivost",
-        mainMeasure: postaja.vidnost == null ? null : "${postaja.vidnost}",
-        unit: "km"
-      ),
+          title: "Vidljivost",
+          mainMeasure: postaja.vidnost == null ? null : "${postaja.vidnost}",
+          unit: "km"),
     ];
   }
 
@@ -111,7 +115,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
                 setState(() {
                   postaja.isFavourite = !postaja.isFavourite;
                   favorites.addToFavorites(postaja);
-                });  
+                });
               },
               icon: Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
             )
@@ -365,7 +369,9 @@ class _PostajaDetailState extends State<PostajaDetail> {
                                   : Text("")
                             ],
                           ),
-                          SizedBox(height: 2,),
+                          SizedBox(
+                            height: 2,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[

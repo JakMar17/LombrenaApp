@@ -3,6 +3,7 @@ import 'package:vreme/data/rest_api.dart';
 class MerilnoMestoVodotok {
   
   String sifra;
+  String id;
   
   /* geolocation */
   double geoLat;
@@ -49,7 +50,9 @@ class MerilnoMestoVodotok {
     this.tretjiVodostaj,
     this.znacilnaVisina,
     this.smerValovanja
-  });
+  }) {
+    //id = sifra;
+  }
 }
 
 class VodotokReka {

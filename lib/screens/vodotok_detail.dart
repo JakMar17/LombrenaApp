@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/data/vodotok_postaja.dart';
+import 'package:vreme/screens/postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class VodotokDetail extends StatefulWidget {
@@ -13,6 +15,8 @@ class _VodotokDetailState extends State<VodotokDetail> {
   
   MerilnoMestoVodotok vodotok;
   RestApi restApi = RestApi();
+  double _screenHeight;
+  List<DetailCard> cards;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -23,11 +27,63 @@ class _VodotokDetailState extends State<VodotokDetail> {
     setState(() {});
   }
 
+  void initCards() {
+    cards = [
+      /* new DetailCard(
+          title: "Veter",
+          mainMeasure: postaja.averageWind == null
+              ? null
+              : postaja.averageWind == 0 ? null : postaja.averageWind,
+          unit: "km/h",
+          secondData: postaja.windAngle != null
+              ? "${postaja.windAngle}° ${postaja.windDir}"
+              : null,
+          thirdData:
+              postaja.maxWind != null ? "max ${postaja.maxWind} km/h" : null), */
+      new DetailCard(
+        title: "Temperatura vode",
+        mainMeasure: vodotok.tempVode == null ? null : vodotok.tempVode,
+        unit: "°C",
+      ),
+      new DetailCard(
+        title: "Vodostaj",
+        mainMeasure: vodotok.vodostaj == null ? null : vodotok.vodostaj,
+        unit: "cm"
+      ),
+      new DetailCard(
+        title: "Pretok",
+        mainMeasure: vodotok.pretok == null ? null : vodotok.pretok,
+        unit: "m3/s"
+      ),
+      new DetailCard(
+        title: "Visokovodni pretok",
+        mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok,
+        unit: "m3/s",
+        secondData: "${vodotok.drugiPretok} m3/s",
+        thirdData: "${vodotok.tretjiPretok} m3/s"
+      ),
+      new DetailCard(
+        title: "Visokovodni vodostaj",
+        mainMeasure: vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj,
+        unit: "cm",
+        secondData: "${vodotok.drugiVodostaj} cm",
+        thirdData: "${vodotok.tretjiVodostaj} cm"
+      )
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Map data = {};
     data = ModalRoute.of(context).settings.arguments;
     vodotok = data['vodotok'];
+    initCards();
+    _screenHeight = MediaQuery.of(context).size.height;
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -101,6 +157,30 @@ class _VodotokDetailState extends State<VodotokDetail> {
                     ],
                   ),
                 ),
+              ),
+              /* SliverToBoxAdapter(
+                child: FlatButton(
+                  child: Text("klik"),
+                  onPressed: () async {
+                    String url =
+                      "https://www.google.com/maps/search/?api=1&query=${vodotok.geoLat},${vodotok.geoLon}";
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    }
+                  },
+                ),
+              ), */
+              SliverToBoxAdapter(
+                child: SizedBox(height: _screenHeight * 0.3),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: _screenHeight * 0.32,
+                  margin: EdgeInsets.only(bottom: 60, left: 0),
+                  child: Expanded(
+                    child: detailCard(),
+                  ),
+                ),
               )
             ],
           ),
@@ -166,5 +246,114 @@ class _VodotokDetailState extends State<VodotokDetail> {
       return Image.asset(url, height: 100,);
     else
       return Container();
+  }
+
+  ListView detailCard() {
+    return ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: cards.length,
+        itemBuilder: (context, index) {
+          DetailCard card = cards[index];
+          double paddingLeft = 0;
+          if (index == 0) paddingLeft = 20;
+
+          if (card.mainMeasure == null) if (index == 0)
+            return Container(
+              margin: EdgeInsets.only(left: 20),
+            );
+          else
+            return Container();
+
+          return Padding(
+              padding: EdgeInsets.only(right: 10, left: paddingLeft),
+              child: Container(
+                width: 200,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [CustomColors.lightGrey, CustomColors.darkGrey],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                card.mainMeasure.toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 40,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.w300),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(top: 5, left: 5),
+                                child: Text(
+                                  card.unit,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: "Montserrat",
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              card.secondData != null
+                                  ? Text(
+                                      "${card.secondData}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 20),
+                                    )
+                                  : Text("")
+                            ],
+                          ),
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              card.thirdData != null
+                                  ? Text(
+                                      "${card.thirdData}",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 18),
+                                    )
+                                  : Container()
+                            ],
+                          ),
+                        ],
+                      ),
+                      Text(
+                        card.title,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontFamily: "Montserrat",
+                            fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                ),
+              ));
+        });
   }
 }

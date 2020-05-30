@@ -87,17 +87,21 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                     },
                     color: Colors.transparent,
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(
-                            vodotokiPoRekah[i].vodotoki[j].merilnoMesto,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "Montserrat",
-                                fontSize: 24,
-                                fontWeight: FontWeight.w300),
+                          Container(
+                            width: MediaQuery.of(context).size.width - 200,
+                            child: Text(
+                              vodotokiPoRekah[i].vodotoki[j].merilnoMesto,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w300),
+                            ),
                           ),
                           _setImage(vodotokiPoRekah[i].vodotoki[j])
                         ],

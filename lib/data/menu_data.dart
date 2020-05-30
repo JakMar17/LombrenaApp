@@ -10,10 +10,8 @@ List<MenuItem> categoryMenu = [
   MenuItem(menuName: "Avtomatske postaje", url: "/postaje"),
   MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
   /* MenuItem(menuName: "Sistem Burja"),
-  MenuItem(menuName: "Vodotoki"),
   MenuItem(menuName: "Kakovost zraka"),
-  MenuItem(menuName: "Vremenska napoved"),
-  MenuItem(menuName: "Morje") */
+  MenuItem(menuName: "Vremenska napoved"), */
 ];
 
 List<dynamic> homeScreen = [

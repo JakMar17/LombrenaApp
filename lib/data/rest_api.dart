@@ -115,9 +115,24 @@ class RestApi {
 
     for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
-      var temp = element.findElements("vodostaj_znacilni");
-      print(element.findElements("vodostaj_znacilni"));
+
+      /* getting  sifra from xml argument */
+      var s = element.attributes[0].toString().split("=");
+      s = s[1].split('"');
+      String sifra = s[1];
+
+      /* getting geoLat and geoLon from xml argument */
+      s = element.attributes[1].toString().split("=");
+      s = s[1].split('"');
+      double geoLon = parseDouble(s[1]);
+      s = element.attributes[2].toString().split("=");
+      s = s[1].split('"');
+      double geoLat = parseDouble(s[1]);
+      
       MerilnoMestoVodotok vodotok = MerilnoMestoVodotok(
+        sifra: sifra,
+        geoLat: geoLat,
+        geoLon: geoLon,
         reka: element.findElements("reka").isEmpty ? null : element.findElements("reka").first.text,
         merilnoMesto: element.findElements("merilno_mesto").isEmpty ? null : element.findElements("merilno_mesto").first.text,
         datum: element.findElements("datum").isEmpty ? null : element.findElements("datum").first.text,
@@ -138,7 +153,8 @@ class RestApi {
 
       vodotoki.add(vodotok);
     }
-
+    Favorites f = Favorites();
+    f.setFavorites(vodotoki);
     return true;
   }
 
