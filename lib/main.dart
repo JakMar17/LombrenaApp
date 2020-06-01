@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/favorites.dart';
+import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/list_postaje.dart';
 import 'package:vreme/screens/list_vodotoki.dart';
 import 'package:vreme/screens/loading.dart';
@@ -21,7 +22,8 @@ void main() async{
       '/loading': (context) => Loading(),
       '/postaje': (context) => ListOfPostaje(),
       '/vodotoki': (context) => ListOfVodotoki(),
-      '/vodotok': (context) => VodotokDetail()
+      '/vodotok': (context) => VodotokDetail(),
+      '/search': (context) => CustomSearch()
     },
     debugShowCheckedModeBanner: false,
   ));

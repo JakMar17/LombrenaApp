@@ -58,7 +58,8 @@ class _HomeState extends State<Home> {
             actions: <Widget>[
               IconButton(
                   onPressed: () {
-                    showSearch(context: context, delegate: Search());
+                    //showSearch(context: context, delegate: Search());
+                    Navigator.pushReplacementNamed(context, '/search');
                   },
                   icon: Icon(
                     Icons.search,
