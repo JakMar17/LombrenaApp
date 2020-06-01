@@ -153,6 +153,13 @@ class RestApi {
 
       vodotoki.add(vodotok);
     }
+
+    Comparator<MerilnoMestoVodotok> byMerilnoMesto = (a, b) => a.merilnoMesto.compareTo(b.merilnoMesto);
+    Comparator<MerilnoMestoVodotok> byVodotok = (a, b) => a.reka.compareTo(b.reka);
+
+    vodotoki.sort(byMerilnoMesto);
+    vodotoki.sort(byVodotok);
+
     Favorites f = Favorites();
     f.setFavorites(vodotoki);
     return true;

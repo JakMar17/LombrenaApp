@@ -2,6 +2,8 @@ import 'package:intl/intl.dart';
 
 class Postaja {
 
+  final String type = "avtomatskaPostaja";
+
   bool isFavourite = false;
   String id;
 

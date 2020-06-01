@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/data/vodotok_postaja.dart';
 import 'package:vreme/screens/postaja.dart';
@@ -17,6 +18,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
   RestApi restApi = RestApi();
   double _screenHeight;
   List<DetailCard> cards;
+  Favorites favorites = Favorites();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -100,9 +102,12 @@ class _VodotokDetailState extends State<VodotokDetail> {
           actions: <Widget>[
             IconButton(
               onPressed: () {
-              
+                setState(() {
+                  vodotok.isFavourite = !vodotok.isFavourite;
+                  favorites.addToFavorites(vodotok);
+                });
               },
-              icon: Icon(null == null ? Icons.star : Icons.star_border),
+              icon: Icon(vodotok.isFavourite? Icons.star : Icons.star_border),
             )
           ],
         ),

@@ -224,29 +224,60 @@ class _HomeState extends State<Home> {
   }
 
   Widget favCards() {
-    List<Object> priljubljene = favorites.getFavorites();
+    List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: priljubljene.length,
       itemBuilder: (context, index) {
         double paddingLeft = index == 0 ? 20 : 0;
-
+        dynamic temp = priljubljene[index];
         return Padding(
           padding: EdgeInsets.only(left: paddingLeft),
           //child: FavCard(postaja: postaje[index], refresh: () {initState();} ),
-          child: favCard(priljubljene[index]),
+          child: 
+            temp.type == "avtomatskaPostaja" ?
+              favCard(new FavCard(
+                url: '/postaja',
+                urlArgumentName: "postaja",
+                title: temp.titleShort,
+                object: temp,
+                mainData: temp.temperature.toString(),
+                unit: "°C",
+                secondData: temp.averageWind != null ?
+                  "${temp.averageWind} km/h" :
+                    temp.windSpeed != null ?
+                      "${temp.windSpeed} km/h" : "0 km/h",
+                thirdData: temp.averageHum != null
+                              ? "${temp.averageHum} %"
+                              : "${temp.humidity} %"
+              ))
+              :
+              temp.type == "vodotok" ?
+                favCard(new FavCard(
+                  url: '/vodotok',
+                  urlArgumentName: 'vodotok',
+                  object: temp,
+                  title: temp.merilnoMesto,
+                  mainData: temp.pretok != null ? temp.pretok.toString() : temp.vodostaj.toString(),
+                  unit: temp.pretok != null ? "m3/s" : "cm",
+                  secondData: temp.pretokZnacilni != null ? temp.pretokZnacilni : temp.vodostajZnacilni != null ? temp.vodostajZnacilni : "",
+                  thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : ""
+                ))
+              :
+                Container()
+          /* favCard(priljubljene[index]), */
         );
       },
     );
   }
 
-  Widget favCard(Postaja postaja) {
+  Widget favCard(FavCard card) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "/postaja",
-              arguments: {'postaja': postaja}).then((value) {
+          Navigator.pushNamed(context, card.url,
+              arguments: {"${card.urlArgumentName}": card.object}).then((value) {
             setState(() {});
           });
         },
@@ -271,7 +302,7 @@ class _HomeState extends State<Home> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          postaja.temperature.toString(),
+                          card.mainData,
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 64,
@@ -281,7 +312,7 @@ class _HomeState extends State<Home> {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            "°C",
+                            card.unit,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 28,
@@ -303,11 +334,9 @@ class _HomeState extends State<Home> {
                           width: 10,
                         ),
                         Text(
-                          postaja.averageWind != null
-                              ? "${postaja.averageWind} km/h"
-                              : postaja.windSpeed != null
-                                  ? "${postaja.windSpeed} km/h"
-                                  : "0 km/h",
+                          card.secondData != null
+                              ? "${card.secondData}"
+                              : "",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -329,9 +358,9 @@ class _HomeState extends State<Home> {
                           width: 10,
                         ),
                         Text(
-                          postaja.averageHum != null
-                              ? "${postaja.averageHum} %"
-                              : "${postaja.humidity} %",
+                          card.thirdData != null
+                              ? "${card.thirdData}"
+                              : "",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -344,7 +373,7 @@ class _HomeState extends State<Home> {
                   ],
                 ),
                 Text(
-                  postaja.titleShort,
+                  card.title.toUpperCase(),
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 24,
@@ -360,129 +389,25 @@ class _HomeState extends State<Home> {
   }
 }
 
-class FavCard extends StatelessWidget {
-  var data;
-  final Postaja postaja;
-  final void refresh;
-  FavCard({this.postaja, this.refresh});
+class FavCard {
+  String title;
+  String unit;
+  String mainData;
+  String secondData;
+  String thirdData;
+  String url;
+  String urlArgumentName;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, "/postaja",
-              arguments: {'postaja': postaja}).then((value) {
-            refresh;
-          });
-        },
-        child: Container(
-          width: 230,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [CustomColors.lightGrey, CustomColors.darkGrey],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight),
-              borderRadius: BorderRadius.circular(15)),
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          postaja.temperature.toString(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 64,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w300),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            "°C",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w100),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Icon(
-                          Icons.compare_arrows,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          postaja.averageWind != null
-                              ? "${postaja.averageWind} km/h"
-                              : postaja.windSpeed != null
-                                  ? "${postaja.windSpeed} km/h"
-                                  : "0 km/h",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              letterSpacing: 0.5,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w200),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          postaja.averageHum != null
-                              ? "${postaja.averageHum} %"
-                              : "${postaja.humidity} %",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              letterSpacing: 0.5,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w200),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                Text(
-                  postaja.titleShort,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w300),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  var object;
+
+  FavCard({
+    this.title,
+    this.unit,
+    this.mainData,
+    this.secondData,
+    this.thirdData,
+    this.object,
+    this.url,
+    this.urlArgumentName
+  });
 }

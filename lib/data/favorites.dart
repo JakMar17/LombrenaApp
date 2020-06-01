@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'package:vreme/data/postaja.dart';
+import 'package:vreme/data/vodotok_postaja.dart';
 
 class Favorites {
 
@@ -22,9 +23,20 @@ class Favorites {
         var json = jsonDecode(sharedPreferences.getString("favorites"));
         for (int i = 0; i < json.length; i++) {
           var temp = json[i]["id"];
+          var t;
+          switch(json[i]["type"]) {
+            case "avtomatskaPostaja":
+              t = Postaja(title: temp);
+              break;
+            case "vodotok":
+              t = MerilnoMestoVodotok(sifra: temp);
+              break;
+            default:
+              t = Postaja(title: temp);
+
+          }
           print(temp);
-          Postaja p = Postaja(title: temp);
-          _favorites.add(p);
+          _favorites.add(t);
         }
         
       } catch(Exception) {

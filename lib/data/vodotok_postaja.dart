@@ -1,6 +1,9 @@
 import 'package:vreme/data/rest_api.dart';
 
 class MerilnoMestoVodotok {
+
+  final String type = "vodotok";
+  bool isFavourite = false;
   
   String sifra;
   String id;
@@ -51,8 +54,12 @@ class MerilnoMestoVodotok {
     this.znacilnaVisina,
     this.smerValovanja
   }) {
-    //id = sifra;
+    id = sifra;
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id
+  };
 }
 
 class VodotokReka {
