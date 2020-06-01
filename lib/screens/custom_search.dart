@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/postaja.dart';
+import 'package:vreme/data/rest_api.dart';
+import 'package:vreme/data/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class CustomSearch extends StatefulWidget {
@@ -14,8 +17,25 @@ class _CustomSearchState extends State<CustomSearch> {
     SearchCategory(title: "Vodotoki")
   ];
 
+  RestApi restApi = RestApi();
+  List<Postaja> vremenskePostaje;
+  List<MerilnoMestoVodotok> vodotoki;
+
+  List<ResultElement> show;
+
+  @override
+  void initState() {
+    super.initState();
+    show = [];
+    vremenskePostaje = restApi.getAvtomatskePostaje();
+    vodotoki = restApi.getVodotoki();
+  }
+
   @override
   Widget build(BuildContext context) {
+    
+    search(_textController.text);
+
     return Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -68,7 +88,7 @@ class _CustomSearchState extends State<CustomSearch> {
                                   ),
                                   controller: _textController,
                                   onChanged: (String value) {
-                                    print(value);
+                                    setState(() {});
                                   },
                                 ),
                               ),
@@ -96,12 +116,18 @@ class _CustomSearchState extends State<CustomSearch> {
                       width: double.infinity,
                       height: 50,
                       child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          return _buildInputChip(categories[index]);
-                        }),
-                    )
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            return _buildInputChip(categories[index]);
+                          }),
+                    ),
+                    Expanded(
+                        child: Container(
+                            width: double.infinity,
+                            child: show != null
+                                ? _buildSearchResultsList(show)
+                                : Container()))
                   ],
                 ),
               ),
@@ -128,10 +154,115 @@ class _CustomSearchState extends State<CustomSearch> {
           ),
           onPressed: () {
             setState(() {
+              print(_textController.text);
               cat.searchingIn = !cat.searchingIn;
             });
           }),
     );
+  }
+
+  void search(String searchString) {
+    show = [];
+
+    if(searchString.length == 0)
+      return;
+
+    searchString = searchString.toUpperCase();
+
+    bool showPostaje = categories[0].searchingIn;
+    bool showVodotoki = categories[1].searchingIn;
+    bool first = true;
+
+    if (showPostaje)
+      for (Postaja p in vremenskePostaje) {
+        if (p.titleLong.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(
+                ResultElement(categoryTitle: true, title: "Vremenske postaje"));
+            first = false;
+          }
+
+          show.add(ResultElement(
+              title: p.titleLong,
+              url: () {
+                Navigator.pushNamed(context, '/postaja',
+                    arguments: {"postaja": p});
+              },
+              id: p.id));
+        }
+      }
+    first = true;
+
+    if (showVodotoki)
+      for (MerilnoMestoVodotok v in vodotoki) {
+        if (v.reka.toUpperCase().contains(searchString) ||
+            v.merilnoMesto.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(ResultElement(categoryTitle: true, title: "Vodotoki"));
+            first = false;
+          }
+
+          show.add(ResultElement(
+              categoryTitle: false,
+              title: "${v.merilnoMesto} - ${v.reka}",
+              url: () {
+                Navigator.pushNamed(context, '/vodotok',
+                    arguments: {"vodotok": v});
+              },
+              id: v.id));
+        }
+      }
+  }
+
+  Widget _buildSearchResultsList(List<ResultElement> list) {
+
+    if (list == null) return Container();
+    return ListView.builder(
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          if (list[index].categoryTitle) {
+            double paddingTop = 0;
+            if (index != 0) paddingTop = 15;
+
+            return Padding(
+              padding: EdgeInsets.only(top: paddingTop, bottom: 15),
+              child: Text(list[index].title,
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "Montserrat",
+                      fontSize: 32,
+                      fontWeight: FontWeight.w200)),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: RaisedButton(
+                color: Colors.transparent,
+                onPressed: () {
+                  list[index].url();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Row(
+                    children: <Widget>[
+                      Flexible(
+                                              child: Text(
+                          list[index].title,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w300),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        });
   }
 }
 
@@ -140,4 +271,15 @@ class SearchCategory {
   bool searchingIn = true;
 
   SearchCategory({this.title});
+}
+
+class ResultElement {
+  bool categoryTitle = false;
+  String id;
+  var url;
+  String title;
+
+  ResultElement({this.categoryTitle, this.id, this.url, this.title}) {
+    if (categoryTitle == null) categoryTitle = false;
+  }
 }
