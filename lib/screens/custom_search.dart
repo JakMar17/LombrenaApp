@@ -33,7 +33,6 @@ class _CustomSearchState extends State<CustomSearch> {
 
   @override
   Widget build(BuildContext context) {
-    
     search(_textController.text);
 
     return Container(
@@ -125,7 +124,7 @@ class _CustomSearchState extends State<CustomSearch> {
                     Expanded(
                         child: Container(
                             width: double.infinity,
-                            child: show != null
+                            child: show.length == 0
                                 ? _buildSearchResultsList(show)
                                 : Container()))
                   ],
@@ -164,8 +163,7 @@ class _CustomSearchState extends State<CustomSearch> {
   void search(String searchString) {
     show = [];
 
-    if(searchString.length == 0)
-      return;
+    if (searchString.length == 0) return;
 
     searchString = searchString.toUpperCase();
 
@@ -215,8 +213,21 @@ class _CustomSearchState extends State<CustomSearch> {
   }
 
   Widget _buildSearchResultsList(List<ResultElement> list) {
+    print(list.length);
 
-    if (list == null) return Container();
+    if (list == null || list.length == 0)
+      return Container(
+        width: double.infinity,
+          child: Center(
+              child: Text("Začni z iskanjem, \n vpiši in najdi",
+              textAlign: TextAlign.center,
+                  style: TextStyle(
+                      letterSpacing: 1,
+                      color: Colors.white,
+                      fontFamily: "Montserrat",
+                      fontSize: 32,
+                      fontWeight: FontWeight.w100))));
+
     return ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {
@@ -247,7 +258,7 @@ class _CustomSearchState extends State<CustomSearch> {
                   child: Row(
                     children: <Widget>[
                       Flexible(
-                                              child: Text(
+                        child: Text(
                           list[index].title,
                           style: TextStyle(
                               color: Colors.white,
