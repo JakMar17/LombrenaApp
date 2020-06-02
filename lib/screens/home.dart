@@ -4,6 +4,7 @@ import 'package:vreme/data/postaja.dart';
 import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/data/vodotok_postaja.dart';
 import 'package:vreme/screens/search.dart';
+import 'package:vreme/style/weather_icons.dart';
 import '../style/custom_icons.dart';
 import '../data/dummyData.dart';
 import 'dart:math';
@@ -233,41 +234,49 @@ class _HomeState extends State<Home> {
         double paddingLeft = index == 0 ? 20 : 0;
         dynamic temp = priljubljene[index];
         return Padding(
-          padding: EdgeInsets.only(left: paddingLeft),
-          //child: FavCard(postaja: postaje[index], refresh: () {initState();} ),
-          child: 
-            temp.type == "avtomatskaPostaja" ?
-              favCard(new FavCard(
-                url: '/postaja',
-                urlArgumentName: "postaja",
-                title: temp.titleShort,
-                object: temp,
-                mainData: temp.temperature.toString(),
-                unit: "°C",
-                secondData: temp.averageWind != null ?
-                  "${temp.averageWind} km/h" :
-                    temp.windSpeed != null ?
-                      "${temp.windSpeed} km/h" : "0 km/h",
-                thirdData: temp.averageHum != null
-                              ? "${temp.averageHum} %"
-                              : "${temp.humidity} %"
-              ))
-              :
-              temp.type == "vodotok" ?
-                favCard(new FavCard(
-                  url: '/vodotok',
-                  urlArgumentName: 'vodotok',
-                  object: temp,
-                  title: temp.merilnoMesto,
-                  mainData: temp.pretok != null ? temp.pretok.toString() : temp.vodostaj.toString(),
-                  unit: temp.pretok != null ? "m3/s" : "cm",
-                  secondData: temp.pretokZnacilni != null ? temp.pretokZnacilni : temp.vodostajZnacilni != null ? temp.vodostajZnacilni : "",
-                  thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : ""
-                ))
-              :
-                Container()
-          /* favCard(priljubljene[index]), */
-        );
+            padding: EdgeInsets.only(left: paddingLeft),
+            //child: FavCard(postaja: postaje[index], refresh: () {initState();} ),
+            child: temp.type == "avtomatskaPostaja"
+                ? favCard(new FavCard(
+                    url: '/postaja',
+                    urlArgumentName: "postaja",
+                    title: temp.titleShort,
+                    object: temp,
+                    mainData: temp.temperature.toString(),
+                    unit: "°C",
+                    secondData: temp.averageWind != null
+                        ? "${temp.averageWind} km/h"
+                        : temp.windSpeed != null
+                            ? "${temp.windSpeed} km/h"
+                            : "0 km/h",
+                    thirdData: temp.averageHum != null
+                        ? "${temp.averageHum} %"
+                        : "${temp.humidity} %",
+                    secondDataIcon: WeatherIcons.wind_1,
+                    thirdDataIcon: WeatherIcons.water_drop))
+                : temp.type == "vodotok"
+                    ? favCard(new FavCard(
+                        url: '/vodotok',
+                        urlArgumentName: 'vodotok',
+                        object: temp,
+                        title: temp.merilnoMesto,
+                        mainData: temp.pretok != null
+                            ? temp.pretok.round().toString()
+                            : temp.vodostaj.round().toString(),
+                        unit: temp.pretok != null ? "m3/s" : "cm",
+                        secondData: temp.pretokZnacilni != null
+                            ? temp.pretokZnacilni
+                            : temp.vodostajZnacilni != null
+                                ? temp.vodostajZnacilni
+                                : "",
+                        thirdData:
+                            temp.tempVode != null ? "${temp.tempVode} °C" : "",
+                            secondDataIcon: WeatherIcons.water,
+                            thirdDataIcon: WeatherIcons.temperatire
+                            ))
+                    : Container()
+            /* favCard(priljubljene[index]), */
+            );
       },
     );
   }
@@ -278,7 +287,8 @@ class _HomeState extends State<Home> {
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, card.url,
-              arguments: {"${card.urlArgumentName}": card.object}).then((value) {
+                  arguments: {"${card.urlArgumentName}": card.object})
+              .then((value) {
             setState(() {});
           });
         },
@@ -326,49 +336,50 @@ class _HomeState extends State<Home> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Icon(
-                          Icons.compare_arrows,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        
+
+
+
+                        
                         Text(
-                          card.secondData != null
-                              ? "${card.secondData}"
-                              : "",
+                          card.secondData != null ? "${card.secondData}" : "",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
                               letterSpacing: 0.5,
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w200),
-                        )
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(
+                          card.secondDataIcon,
+                          color: Colors.white70,
+                          size: 24,
+),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
                         Text(
-                          card.thirdData != null
-                              ? "${card.thirdData}"
-                              : "",
+                          card.thirdData != null ? "${card.thirdData}" : "",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
                               letterSpacing: 0.5,
                               fontFamily: "Montserrat",
                               fontWeight: FontWeight.w200),
-                        )
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Icon(
+                          card.thirdDataIcon,
+                          color: Colors.white70,
+                          size: 24,
+                        ),
                       ],
                     )
                   ],
@@ -401,14 +412,18 @@ class FavCard {
 
   var object;
 
-  FavCard({
-    this.title,
-    this.unit,
-    this.mainData,
-    this.secondData,
-    this.thirdData,
-    this.object,
-    this.url,
-    this.urlArgumentName
-  });
+  IconData secondDataIcon;
+  IconData thirdDataIcon;
+
+  FavCard(
+      {this.title,
+      this.unit,
+      this.mainData,
+      this.secondData,
+      this.thirdData,
+      this.object,
+      this.url,
+      this.urlArgumentName,
+      this.secondDataIcon,
+      this.thirdDataIcon});
 }

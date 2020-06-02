@@ -119,6 +119,10 @@ flutter:
           weight: 800
         - asset: assets/fonts/montserrat/Montserrat-Black.ttf
           weight: 900
+    
+    - family: WeatherIcons
+      fonts:
+        - asset: assets/fonts/CustomIcons.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

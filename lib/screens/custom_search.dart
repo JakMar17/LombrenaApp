@@ -14,7 +14,10 @@ class _CustomSearchState extends State<CustomSearch> {
 
   List<SearchCategory> categories = [
     SearchCategory(title: "Vremenske postaje"),
-    SearchCategory(title: "Vodotoki")
+    SearchCategory(title: "Vodotoki"),
+    SearchCategory(title: "Vremenska napoved"),
+    SearchCategory(title: "Kakovost zraka"),
+    SearchCategory(title: "Slovenske gore")
   ];
 
   RestApi restApi = RestApi();
@@ -44,11 +47,11 @@ class _CustomSearchState extends State<CustomSearch> {
         child: Scaffold(
             backgroundColor: Colors.transparent,
             body: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: Column(
-                  children: <Widget>[
-                    Container(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: CustomColors.lightGrey),
@@ -108,27 +111,34 @@ class _CustomSearchState extends State<CustomSearch> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: categories.length,
-                          itemBuilder: (context, index) {
-                            return _buildInputChip(categories[index]);
-                          }),
-                    ),
-                    Expanded(
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          double paddingLeft = 0;
+                          if (index == 0)
+                    paddingLeft = 10;
+                          return Padding(
+                            padding: EdgeInsets.only(left: paddingLeft),
+                            child: _buildInputChip(categories[index]),
+                          );
+                        }),
+                  ),
+                  Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: Container(
                             width: double.infinity,
-                            child: show.length == 0
-                                ? _buildSearchResultsList(show)
-                                : Container()))
-                  ],
-                ),
+                            child: _buildSearchResultsList(show)),
+                      ))
+                ],
               ),
             )));
   }
