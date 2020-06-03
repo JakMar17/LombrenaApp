@@ -23,24 +23,13 @@ class _VodotokDetailState extends State<VodotokDetail> {
       RefreshController(initialRefresh: false);
   void onRefresh() async {
     await restApi.fetchPostajeData();
-    //vodotok = restApi.getPostaja(postaja.id);
+    vodotok = restApi.getVodotok(vodotok.id);
     _refreshController.refreshCompleted();
     setState(() {});
   }
 
   void initCards() {
     cards = [
-      /* new DetailCard(
-          title: "Veter",
-          mainMeasure: postaja.averageWind == null
-              ? null
-              : postaja.averageWind == 0 ? null : postaja.averageWind,
-          unit: "km/h",
-          secondData: postaja.windAngle != null
-              ? "${postaja.windAngle}° ${postaja.windDir}"
-              : null,
-          thirdData:
-              postaja.maxWind != null ? "max ${postaja.maxWind} km/h" : null), */
       new DetailCard(
         title: "Temperatura vode",
         mainMeasure: vodotok.tempVode == null ? null : vodotok.tempVode,

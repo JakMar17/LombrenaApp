@@ -172,4 +172,10 @@ class RestApi {
       return true;
   }
 
+  MerilnoMestoVodotok getVodotok (String id) {
+    for (MerilnoMestoVodotok v in vodotoki)
+      if(v.id == id)
+        return v;
+    return null;
+  }
 }
