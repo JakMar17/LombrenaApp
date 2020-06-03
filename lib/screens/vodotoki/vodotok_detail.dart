@@ -12,7 +12,6 @@ class VodotokDetail extends StatefulWidget {
 }
 
 class _VodotokDetailState extends State<VodotokDetail> {
-  
   MerilnoMestoVodotok vodotok;
   RestApi restApi = RestApi();
   double _screenHeight;
@@ -36,29 +35,26 @@ class _VodotokDetailState extends State<VodotokDetail> {
         unit: "°C",
       ),
       new DetailCard(
-        title: "Vodostaj",
-        mainMeasure: vodotok.vodostaj == null ? null : vodotok.vodostaj,
-        unit: "cm"
-      ),
+          title: "Vodostaj",
+          mainMeasure: vodotok.vodostaj == null ? null : vodotok.vodostaj,
+          unit: "cm"),
       new DetailCard(
-        title: "Pretok",
-        mainMeasure: vodotok.pretok == null ? null : vodotok.pretok,
-        unit: "m3/s"
-      ),
+          title: "Pretok",
+          mainMeasure: vodotok.pretok == null ? null : vodotok.pretok,
+          unit: "m3/s"),
       new DetailCard(
-        title: "Visokovodni pretok",
-        mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok,
-        unit: "m3/s",
-        secondData: "${vodotok.drugiPretok} m3/s",
-        thirdData: "${vodotok.tretjiPretok} m3/s"
-      ),
+          title: "Visokovodni pretok",
+          mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok,
+          unit: "m3/s",
+          secondData: "${vodotok.drugiPretok} m3/s",
+          thirdData: "${vodotok.tretjiPretok} m3/s"),
       new DetailCard(
-        title: "Visokovodni vodostaj",
-        mainMeasure: vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj,
-        unit: "cm",
-        secondData: "${vodotok.drugiVodostaj} cm",
-        thirdData: "${vodotok.tretjiVodostaj} cm"
-      )
+          title: "Visokovodni vodostaj",
+          mainMeasure:
+              vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj,
+          unit: "cm",
+          secondData: "${vodotok.drugiVodostaj} cm",
+          thirdData: "${vodotok.tretjiVodostaj} cm")
     ];
   }
 
@@ -88,14 +84,39 @@ class _VodotokDetailState extends State<VodotokDetail> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  vodotok.isFavourite = !vodotok.isFavourite;
-                  favorites.addToFavorites(vodotok);
-                });
-              },
-              icon: Icon(vodotok.isFavourite? Icons.star : Icons.star_border),
+            Builder(
+              builder: (context) => IconButton(
+                onPressed: () {
+                  setState(() {
+                    vodotok.isFavourite = !vodotok.isFavourite;
+                    favorites.addToFavorites(vodotok);
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 9,
+                            child: Text(vodotok.isFavourite
+                                ? "Vodotok je dodan med priljubljene"
+                                : "Vodotok je odstranjen izmed priljubljenih"),
+                          ),
+                          Flexible(
+                            flex: 3,
+                            child: FlatButton(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Scaffold.of(context).hideCurrentSnackBar();
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+                  });
+                },
+                icon:
+                    Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
+              ),
             )
           ],
         ),
@@ -121,25 +142,28 @@ class _VodotokDetailState extends State<VodotokDetail> {
                         children: <Widget>[
                           Container(
                             width: MediaQuery.of(context).size.width - 50 - 120,
-                            child: Text(vodotok.reka,
+                            child: Text(
+                              vodotok.reka,
                               textAlign: TextAlign.left,
                               style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 40,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.white
-                              ),
+                                  fontFamily: "Montserrat",
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.white),
                             ),
                           ),
                           SizedBox(height: 10),
-                          Text(vodotok.pretokZnacilni != null ? vodotok.pretokZnacilni :
-                            vodotok.vodostajZnacilni != null ? vodotok.vodostajZnacilni : "",
+                          Text(
+                            vodotok.pretokZnacilni != null
+                                ? vodotok.pretokZnacilni
+                                : vodotok.vodostajZnacilni != null
+                                    ? vodotok.vodostajZnacilni
+                                    : "",
                             style: TextStyle(
-                              fontFamily: "Montserrat",
-                              fontSize: 24,
-                              fontWeight: FontWeight.w200,
-                              color: Colors.white
-                            ),  
+                                fontFamily: "Montserrat",
+                                fontSize: 24,
+                                fontWeight: FontWeight.w200,
+                                color: Colors.white),
                           )
                         ],
                       ),
@@ -182,11 +206,29 @@ class _VodotokDetailState extends State<VodotokDetail> {
     );
   }
 
+  void showSnackBar() {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Row(
+        children: <Widget>[
+          Text(
+            vodotok.isFavourite
+                ? "Dodan med priljubljene"
+                : "Odstranjen iz priljubljenih",
+          ),
+          FlatButton(
+            onPressed: () {},
+            child: Text("V redu"),
+          )
+        ],
+      ),
+    ));
+  }
+
   Widget _setImage(MerilnoMestoVodotok vodotok) {
     String url = "assets/images/vodotoki/";
 
-    if(vodotok.pretokZnacilni != null) {
-      switch(vodotok.pretokZnacilni) {
+    if (vodotok.pretokZnacilni != null) {
+      switch (vodotok.pretokZnacilni) {
         case "mali pretok":
           url += "small128.png";
           break;
@@ -208,8 +250,8 @@ class _VodotokDetailState extends State<VodotokDetail> {
         default:
           url = null;
       }
-    } else if(vodotok.vodostajZnacilni != null){
-      switch(vodotok.vodostajZnacilni) {
+    } else if (vodotok.vodostajZnacilni != null) {
+      switch (vodotok.vodostajZnacilni) {
         case "nizek vodostaj":
           url += "small128.png";
           break;
@@ -236,7 +278,10 @@ class _VodotokDetailState extends State<VodotokDetail> {
     }
 
     if (url != null)
-      return Image.asset(url, height: 100,);
+      return Image.asset(
+        url,
+        height: 100,
+      );
     else
       return Container();
   }
