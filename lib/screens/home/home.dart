@@ -232,58 +232,57 @@ class _HomeState extends State<Home> {
 
   Widget favCards() {
     List<dynamic> priljubljene = favorites.getFavorites();
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: priljubljene.length,
-      itemBuilder: (context, index) {
-        double paddingLeft = index == 0 ? 20 : 0;
-        dynamic temp = priljubljene[index];
-        return Padding(
-            padding: EdgeInsets.only(left: paddingLeft),
-            //child: FavCard(postaja: postaje[index], refresh: () {initState();} ),
-            child: temp.type == "avtomatskaPostaja"
-                ? favCard(new FavCard(
-                    url: '/postaja',
-                    urlArgumentName: "postaja",
-                    title: temp.titleShort,
-                    object: temp,
-                    mainData: temp.temperature.toString(),
-                    unit: "°C",
-                    secondData: temp.averageWind != null
-                        ? "${temp.averageWind} km/h"
-                        : temp.windSpeed != null
-                            ? "${temp.windSpeed} km/h"
-                            : "0 km/h",
-                    thirdData: temp.averageHum != null
-                        ? "${temp.averageHum} %"
-                        : "${temp.humidity} %",
-                    //secondDataIcon: WeatherIcons.wind_1,
-                    secondDataIcon: WeatherIcons2.daySunny,
-                    thirdDataIcon: WeatherIcons.water_drop))
-                : temp.type == "vodotok"
-                    ? favCard(new FavCard(
-                        url: '/vodotok',
-                        urlArgumentName: 'vodotok',
-                        object: temp,
-                        title: temp.merilnoMesto,
-                        mainData: temp.pretok != null
-                            ? temp.pretok.round().toString()
-                            : temp.vodostaj.round().toString(),
-                        unit: temp.pretok != null ? "m3/s" : "cm",
-                        secondData: temp.pretokZnacilni != null
-                            ? temp.pretokZnacilni
-                            : temp.vodostajZnacilni != null
-                                ? temp.vodostajZnacilni
-                                : "",
-                        thirdData:
-                            temp.tempVode != null ? "${temp.tempVode} °C" : "",
-                            secondDataIcon: WeatherIcons.water,
-                            thirdDataIcon: WeatherIcons.temperatire
-                            ))
-                    : Container()
-            /* favCard(priljubljene[index]), */
-            );
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: 20),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: priljubljene.length,
+        itemBuilder: (context, index) {
+          dynamic temp = priljubljene[index];
+          if(temp.titleShort == null && temp.type == "avtomatskaPostaja")
+            return Container();
+          return temp.type == "avtomatskaPostaja"
+              ? favCard(new FavCard(
+                  url: '/postaja',
+                  urlArgumentName: "postaja",
+                  title: temp.titleShort,
+                  object: temp,
+                  mainData: temp.temperature.toString(),
+                  unit: "°C",
+                  secondData: temp.averageWind != null
+                      ? "${temp.averageWind} km/h"
+                      : temp.windSpeed != null
+                          ? "${temp.windSpeed} km/h"
+                          : "0 km/h",
+                  thirdData: temp.averageHum != null
+                      ? "${temp.averageHum} %"
+                      : "${temp.humidity} %",
+                  //secondDataIcon: WeatherIcons.wind_1,
+                  secondDataIcon: WeatherIcons2.daySunny,
+                  thirdDataIcon: WeatherIcons.water_drop))
+              : temp.type == "vodotok"
+                  ? favCard(new FavCard(
+                      url: '/vodotok',
+                      urlArgumentName: 'vodotok',
+                      object: temp,
+                      title: temp.merilnoMesto,
+                      mainData: temp.pretok != null
+                          ? temp.pretok.round().toString()
+                          : temp.vodostaj.round().toString(),
+                      unit: temp.pretok != null ? "m3/s" : "cm",
+                      secondData: temp.pretokZnacilni != null
+                          ? temp.pretokZnacilni
+                          : temp.vodostajZnacilni != null
+                              ? temp.vodostajZnacilni
+                              : "",
+                      thirdData:
+                          temp.tempVode != null ? "${temp.tempVode} °C" : "",
+                          secondDataIcon: WeatherIcons.water,
+                          thirdDataIcon: WeatherIcons.temperatire
+                          ))
+                  : Container();
+        },
+      ),
     );
   }
 

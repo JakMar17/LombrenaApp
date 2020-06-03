@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:xml/xml.dart' as xml;
@@ -9,12 +10,18 @@ class RestApi {
 
   static List<Postaja> postaje;
   static List<MerilnoMestoVodotok> vodotoki;
+  static List<Napoved> napoved5dnevna;
 
   List<Postaja> getAvtomatskePostaje() {return postaje;}
   List<MerilnoMestoVodotok> getVodotoki() {
     if(vodotoki == null)
       fetchVodotoki();
     return vodotoki;
+  }
+  List<Napoved> get5dnevnaNapoved() {
+    if(napoved5dnevna == null)
+      fetch5DnevnaNapoved();
+    return napoved5dnevna;
   }
 
   Future<bool> fetchPostajeData() async {
@@ -177,5 +184,53 @@ class RestApi {
       if(v.id == id)
         return v;
     return null;
+  }
+
+  Future<bool> fetch5DnevnaNapoved() async {
+    Response resp = null;
+    try {
+      resp = await get("https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml");
+    } on Exception catch (_) {
+      return null;
+    }
+
+    dynamic rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("metData");
+
+    var elements = rawData.toList();
+
+    napoved5dnevna = [];
+
+    for(int i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      print(parseDouble(""));
+      Napoved n = Napoved(
+        id: element.findElements("domain_id").first.text,
+        title: element.findElements("domain_title").first.text,
+        shortTitle: element.findElements("domain_shortTitle").first.text,
+        longTitle: element.findElements("domain_longTitle").first.text,
+        geoLat: parseDouble(element.findElements("domain_lat").first.text),
+        geoLon: parseDouble(element.findElements("domain_lon").first.text,),
+        altitude: parseDouble(element.findElements("domain_altitude").first.text,),
+        sunrise: element.findElements("sunrise").first.text,
+        sunset: element.findElements("sunset").first.text,
+        date: element.findElements("tsValid_issued").first.text,
+        validDate: element.findElements("valid").first.text,
+        validDay: element.findElements("valid_day").first.text,
+        tempMin: parseDouble(element.findElements("tn").first.text,),
+        tempMax: parseDouble(element.findElements("tx").first.text,),
+        minWind: parseDouble(element.findElements("ff_minimum_kmh").first.text,),
+        maxWind: parseDouble(element.findElements("ff_maximum_kmh").first.text,),
+        wind: element.findElements("dd_shortText").first.text,
+        weatherID: element.findElements("wwsyn_icon").first.text,
+        cloudiness: element.findElements("nn_shortText").first.text,
+        thunderstorm: element.findElements("ts_icon").first.text
+      );
+      
+      napoved5dnevna.add(n);
+    }
+
+    return true;
   }
 }

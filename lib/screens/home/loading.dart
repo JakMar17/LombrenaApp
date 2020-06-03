@@ -21,8 +21,11 @@ class _LoadingState extends State<Loading> {
   void goToHome() async {
     //bool fav = await favorites.setPreferences();
     bool postaje = await restApi.fetchPostajeData();
+    var x = restApi.getAvtomatskePostaje();
+    var f = favorites.getFavorites();
     bool vodotoki = await restApi.fetchVodotoki();
-    if(postaje != null)
+    bool napoved = await restApi.fetch5DnevnaNapoved();
+    if(postaje && vodotoki && napoved)
       Navigator.pushReplacementNamed(context, "/");
     else {
       String errorMessage;
