@@ -111,14 +111,46 @@ class _PostajaDetailState extends State<PostajaDetail> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  postaja.isFavourite = !postaja.isFavourite;
-                  favorites.addToFavorites(postaja);
-                });
-              },
-              icon: Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
+            Builder(
+              builder: (context) => IconButton(
+                onPressed: () {
+                  setState(() {
+                    postaja.isFavourite = !postaja.isFavourite;
+                    favorites.addToFavorites(postaja);
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 9,
+                            child: Text(
+                                postaja.isFavourite
+                                    ? "Vremenska postaja je dodana med priljubljene"
+                                    : "Vremenska postaja je odstranjena izmed priljubljenih",
+                                style: TextStyle(
+                                  fontFamily: "Montserrat",
+                                )),
+                          ),
+                          Flexible(
+                            flex: 3,
+                            child: FlatButton(
+                              child: Text("OK",
+                                  style: TextStyle(
+                                    fontFamily: "Montserrat",
+                                  )),
+                              onPressed: () {
+                                Scaffold.of(context).hideCurrentSnackBar();
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+                  });
+                },
+                icon:
+                    Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
+              ),
             )
           ],
         ),

@@ -96,14 +96,22 @@ class _VodotokDetailState extends State<VodotokDetail> {
                         children: <Widget>[
                           Flexible(
                             flex: 9,
-                            child: Text(vodotok.isFavourite
-                                ? "Vodotok je dodan med priljubljene"
-                                : "Vodotok je odstranjen izmed priljubljenih"),
+                            child: Text(
+                              vodotok.isFavourite
+                                  ? "Vodotok je dodan med priljubljene"
+                                  : "Vodotok je odstranjen izmed priljubljenih",
+                              style: TextStyle(
+                                fontFamily: "Montserrat",
+                              ),
+                            ),
                           ),
                           Flexible(
                             flex: 3,
                             child: FlatButton(
-                              child: Text("OK"),
+                              child: Text("OK",
+                                  style: TextStyle(
+                                    fontFamily: "Montserrat",
+                                  )),
                               onPressed: () {
                                 Scaffold.of(context).hideCurrentSnackBar();
                               },
