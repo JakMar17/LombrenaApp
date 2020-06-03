@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites.dart';
-import 'package:vreme/data/rest_api.dart';
 import 'package:vreme/data/static_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

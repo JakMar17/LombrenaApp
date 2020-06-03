@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites.dart';
-import 'package:vreme/data/postaja.dart';
-import 'package:vreme/data/rest_api.dart';
+import 'package:vreme/data/models/postaja.dart';
+import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -403,20 +404,4 @@ class _PostajaDetailState extends State<PostajaDetail> {
               ));
         });
   }
-}
-
-class DetailCard {
-  String title;
-  var mainMeasure;
-  String unit;
-
-  var secondData;
-  var thirdData;
-
-  DetailCard(
-      {this.title,
-      this.mainMeasure,
-      this.unit,
-      this.secondData,
-      this.thirdData});
 }

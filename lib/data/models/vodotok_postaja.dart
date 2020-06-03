@@ -1,4 +1,5 @@
-import 'package:vreme/data/rest_api.dart';
+
+import 'package:vreme/data/api/rest_api.dart';
 
 class MerilnoMestoVodotok {
 

@@ -1,7 +1,7 @@
 import 'package:http/http.dart';
 import 'package:vreme/data/favorites.dart';
-import 'package:vreme/data/postaja.dart';
-import 'package:vreme/data/vodotok_postaja.dart';
+import 'package:vreme/data/models/postaja.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:xml/xml.dart' as xml;
 import 'dart:convert';
 

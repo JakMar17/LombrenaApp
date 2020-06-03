@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites.dart';
-import 'package:vreme/data/postaja.dart';
-import 'package:vreme/data/rest_api.dart';
-import 'package:vreme/data/vodotok_postaja.dart';
-import 'package:vreme/screens/search.dart';
+import 'package:vreme/data/menu_data.dart';
+import 'package:vreme/data/models/postaja.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
-import '../style/custom_icons.dart';
-import '../data/dummyData.dart';
-import 'dart:math';
-import '../data/menu_data.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,14 +14,21 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var currentPage_postaje = avtomatskePostaje.length - 1.0;
-  var currentPage_burja = burja.length - 1.0;
 
   static RestApi restApi = RestApi();
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
   List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
+  
+  List<MenuItem> categoryMenu = [
+  MenuItem(menuName: "Avtomatske postaje", url: "/postaje"),
+  MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
+  /* MenuItem(menuName: "Sistem Burja"),
+  MenuItem(menuName: "Kakovost zraka"),
+  MenuItem(menuName: "Vremenska napoved"), */
+];
 
   Favorites favorites;
+
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);

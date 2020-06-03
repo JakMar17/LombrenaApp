@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites.dart';
-import 'package:vreme/data/rest_api.dart';
-import 'package:vreme/data/vodotok_postaja.dart';
-import 'package:vreme/screens/postaja.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class VodotokDetail extends StatefulWidget {

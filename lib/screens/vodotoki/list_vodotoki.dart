@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vreme/data/vodotok_postaja.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class ListOfVodotoki extends StatefulWidget {

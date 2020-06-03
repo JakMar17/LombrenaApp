@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vreme/data/postaja.dart';
-import 'package:vreme/data/rest_api.dart';
-import 'package:vreme/data/vodotok_postaja.dart';
+import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/postaja.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class ListOfPostaje extends StatefulWidget {
