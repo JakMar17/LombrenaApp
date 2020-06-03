@@ -7,6 +7,7 @@ import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:vreme/style/weather_icons2.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,8 +21,9 @@ class _HomeState extends State<Home> {
   List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
   
   List<MenuItem> categoryMenu = [
-  MenuItem(menuName: "Avtomatske postaje", url: "/postaje"),
+  MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
   MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
+  MenuItem(menuName: "Vremenska napoved", url: "/napovedi")
   /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),
   MenuItem(menuName: "Vremenska napoved"), */
@@ -255,7 +257,8 @@ class _HomeState extends State<Home> {
                     thirdData: temp.averageHum != null
                         ? "${temp.averageHum} %"
                         : "${temp.humidity} %",
-                    secondDataIcon: WeatherIcons.wind_1,
+                    //secondDataIcon: WeatherIcons.wind_1,
+                    secondDataIcon: WeatherIcons2.daySunny,
                     thirdDataIcon: WeatherIcons.water_drop))
                 : temp.type == "vodotok"
                     ? favCard(new FavCard(

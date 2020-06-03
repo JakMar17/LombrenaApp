@@ -5,6 +5,7 @@ import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
 import 'package:vreme/screens/vodotoki/list_vodotoki.dart';
 import 'package:vreme/screens/vodotoki/vodotok_detail.dart';
+import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:vreme/screens/vremenske_razmere/list_postaje.dart';
 import 'package:vreme/screens/vremenske_razmere/postaja.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -23,7 +24,8 @@ void main() async{
       '/postaje': (context) => ListOfPostaje(),
       '/vodotoki': (context) => ListOfVodotoki(),
       '/vodotok': (context) => VodotokDetail(),
-      '/search': (context) => CustomSearch()
+      '/search': (context) => CustomSearch(),
+      '/napovedi': (context) => ListOfNapovedi()
     },
     debugShowCheckedModeBanner: false,
   ));
