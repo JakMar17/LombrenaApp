@@ -26,7 +26,8 @@ class _LoadingState extends State<Loading> {
     bool vodotoki = await restApi.fetchVodotoki();
     bool napoved = await restApi.fetch5DnevnaNapoved();
     bool napoved3 = await restApi.fetch3DnevnaNapoved();
-    if(postaje && vodotoki && napoved && napoved3)
+    bool napovedPokrajine = await restApi.fetchPokrajinskaNapoved();
+    if(postaje && vodotoki && napoved && napoved3 && napovedPokrajine)
       Navigator.pushReplacementNamed(context, "/");
     else {
       String errorMessage;

@@ -33,9 +33,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
     _cards = [];
     for (Napoved n in napoved.napovedi) {
       var t = n.validDay.split(" ");
+      String main = n.tempMin == null
+          ? "${n.temperature.toInt()}"
+          : "${n.tempMin.toInt()} - ${n.tempMax.toInt()}";
       _cards.add(DetailCard(
           title: t[0],
-          mainMeasure: "${n.tempMin.toInt()} - ${n.tempMax.toInt()}",
+          mainMeasure: main,
           unit: "°C",
           secondData: "${n.minWind.toInt()} - ${n.maxWind.toInt()} km/h",
           icon: n.weatherIcon));
@@ -69,7 +72,9 @@ class _NapovedDetailState extends State<NapovedDetail> {
                 onPressed: () {
                   setState(() {
                     /* vodotok.isFavourite = !vodotok.isFavourite;
-                    favorites.addToFavorites(vodotok);
+                    favorites.addToFavorites(vodotok); */
+                    napoved.isFavourite = !napoved.isFavourite;
+
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,9 +82,9 @@ class _NapovedDetailState extends State<NapovedDetail> {
                           Flexible(
                             flex: 9,
                             child: Text(
-                              vodotok.isFavourite
-                                  ? "Vodotok je dodan med priljubljene"
-                                  : "Vodotok je odstranjen izmed priljubljenih",
+                              napoved.isFavourite
+                                  ? "Napoved je dodana med priljubljene"
+                                  : "Napoved je odstranjena izmed priljubljenih",
                               style: TextStyle(
                                 fontFamily: "Montserrat",
                               ),
@@ -99,10 +104,10 @@ class _NapovedDetailState extends State<NapovedDetail> {
                           )
                         ],
                       ),
-                    )); */
+                    ));
                   });
                 },
-                icon: Icon(Icons.star),
+                icon: Icon(napoved.isFavourite ? Icons.star : Icons.star_border),
               ),
             )
           ],
@@ -128,44 +133,55 @@ class _NapovedDetailState extends State<NapovedDetail> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "${trenutna.tempMin} °C",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w300),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(
-                      Icons.arrow_downward,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Icon(
-                      Icons.arrow_upward,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "${trenutna.tempMax} °C",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w300),
-                    ),
-                  ],
-                ),
+                child: trenutna.tempMin == null
+                    ? Center(
+                        child: Text(
+                          "${trenutna.temperature} °C",
+                          style: TextStyle(
+                              fontSize: 28,
+                              color: Colors.white,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w300),
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "${trenutna.tempMin} °C",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w300),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.arrow_downward,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(
+                            Icons.arrow_upward,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "${trenutna.tempMax} °C",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w300),
+                          ),
+                        ],
+                      ),
               ),
               SliverToBoxAdapter(
                 child: SizedBox(

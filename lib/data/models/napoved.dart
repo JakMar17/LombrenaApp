@@ -23,6 +23,7 @@ class Napoved {
   /* temperature */
   double tempMin;
   double tempMax;
+  double temperature;
   /* wind */
   double minWind;
   double maxWind;
@@ -38,6 +39,7 @@ class Napoved {
 
   Napoved(
       {this.id,
+      this.temperature,
       this.title,
       this.shortTitle,
       this.longTitle,
@@ -216,6 +218,7 @@ class Napoved {
 class NapovedCategory {
   String categoryName;
   List<Napoved> napovedi;
+  bool isFavourite = false;
 
   NapovedCategory({
     this.categoryName,

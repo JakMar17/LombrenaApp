@@ -14,12 +14,14 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
 
   List<NapovedCategory> napoved5dnevna;
   List<NapovedCategory> napoved3dnevna;
+  List<NapovedCategory> napovedPoPokrajinah;
 
   @override
   void initState() {
     napoved5dnevna = [];
     napoved5dnevna.add(restApi.get5dnevnaNapoved());
     napoved3dnevna = restApi.get3dnevnaNapoved();
+    napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
     super.initState();
   }
 
@@ -52,13 +54,16 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
             SliverPadding(
               padding: EdgeInsets.only(top: 30),
             ),
+            SliverList(delegate: SliverChildListDelegate(
+              _buildList("Napoved po pokrajinah", napovedPoPokrajinah)
+            ),),
+            SliverList(delegate: SliverChildListDelegate(
+              _buildList("3 dnevna napoved", napoved3dnevna)
+            ),),
             SliverList(
               delegate: SliverChildListDelegate(
                   _buildList("5 dnevna napoved", napoved5dnevna)),
             ),
-            SliverList(delegate: SliverChildListDelegate(
-              _buildList("3 dnevna napoved", napoved3dnevna)
-            ),),
             SliverPadding(
               padding: EdgeInsets.only(bottom: 30),
             )
@@ -105,14 +110,14 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
-                  /* width: MediaQuery.of(context).size.width -, */
+                  width: MediaQuery.of(context).size.width * 0.7,
                   child: Text(
                     cat[i].categoryName,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Montserrat",
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.w300),
                   ),
                 ),
