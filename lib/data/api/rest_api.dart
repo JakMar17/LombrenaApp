@@ -218,6 +218,7 @@ class RestApi {
     Comparator<MerilnoMestoVodotok> byVodotok =
         (a, b) => a.reka.compareTo(b.reka);
 
+
     vodotoki.sort(byMerilnoMesto);
     vodotoki.sort(byVodotok);
 
