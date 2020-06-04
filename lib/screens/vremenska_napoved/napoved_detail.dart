@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -19,6 +20,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
   double _screenHeight;
   RestApi restApi = RestApi();
   List<DetailCard> _cards;
+  Favorites _favorites = Favorites();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -33,11 +35,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
     _cards = [];
     for (Napoved n in napoved.napovedi) {
       var t = n.validDay.split(" ");
+      String partOfDay = n.validDayPart != null ? n.validDayPart : "";
       String main = n.tempMin == null
           ? "${n.temperature.toInt()}"
           : "${n.tempMin.toInt()} - ${n.tempMax.toInt()}";
       _cards.add(DetailCard(
-          title: t[0],
+          title: t[0] + " " + partOfDay,
           mainMeasure: main,
           unit: "°C",
           secondData: "${n.minWind.toInt()} - ${n.maxWind.toInt()} km/h",
@@ -74,6 +77,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
                     /* vodotok.isFavourite = !vodotok.isFavourite;
                     favorites.addToFavorites(vodotok); */
                     napoved.isFavourite = !napoved.isFavourite;
+                    _favorites.addToFavorites(napoved);
 
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(
@@ -260,7 +264,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
                   overflow: Overflow.clip,
                   children: <Widget>[
                     Positioned(
-                        bottom: 40,
+                        bottom: 80,
                         right: 40,
                         child: Icon(
                           card.icon,

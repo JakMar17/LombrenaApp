@@ -65,6 +65,7 @@ class Favorites {
       _favorites.add(x);
 
     //save to shared preferences
+    print(_favorites);
     String json = jsonEncode(_favorites);
     print(json);
     sharedPreferences.setString("favorites", json);

@@ -20,6 +20,7 @@ class Napoved {
   /* valid date and day */
   String validDate;
   String validDay;
+  String validDayPart;
   /* temperature */
   double tempMin;
   double tempMax;
@@ -51,6 +52,7 @@ class Napoved {
       this.date,
       this.validDate,
       this.validDay,
+      this.validDayPart,
       this.tempMin,
       this.tempMax,
       this.minWind,
@@ -219,9 +221,17 @@ class NapovedCategory {
   String categoryName;
   List<Napoved> napovedi;
   bool isFavourite = false;
+  final String type = "napoved";
+  String id;
 
   NapovedCategory({
     this.categoryName,
     this.napovedi
-  });
+  }){
+    id = categoryName;
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id
+  };
 }

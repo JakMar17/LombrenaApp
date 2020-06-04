@@ -241,7 +241,8 @@ class _HomeState extends State<Home> {
           return Container();
         return Padding(
             padding: EdgeInsets.only(left: leftPadding),
-            child: temp.type == "avtomatskaPostaja"
+            child:
+                /* temp.type == "avtomatskaPostaja"
                 ? favCard(new FavCard(
                     url: '/postaja',
                     urlArgumentName: "postaja",
@@ -279,9 +280,63 @@ class _HomeState extends State<Home> {
                             temp.tempVode != null ? "${temp.tempVode} °C" : "",
                         secondDataIcon: WeatherIcons.water,
                         thirdDataIcon: WeatherIcons.temperatire))
-                    : Container());
+                    : Container() */
+                _doFav(temp));
       },
     );
+  }
+
+  Widget _doFav(var temp) {
+    switch (temp.type) {
+      case "avtomatskaPostaja":
+        return favCard(new FavCard(
+            url: '/postaja',
+            urlArgumentName: "postaja",
+            title: temp.titleShort,
+            object: temp,
+            mainData: temp.temperature.toString(),
+            unit: "°C",
+            secondData: temp.averageWind != null
+                ? "${temp.averageWind} km/h"
+                : temp.windSpeed != null ? "${temp.windSpeed} km/h" : "0 km/h",
+            thirdData: temp.averageHum != null
+                ? "${temp.averageHum} %"
+                : "${temp.humidity} %",
+            secondDataIcon: WeatherIcons.wind_1,
+            //secondDataIcon: WeatherIcons2.daySunny,
+            thirdDataIcon: WeatherIcons.water_drop));
+      case "vodotok":
+        return favCard(new FavCard(
+            url: '/vodotok',
+            urlArgumentName: 'vodotok',
+            object: temp,
+            title: temp.merilnoMesto,
+            mainData: temp.pretok != null
+                ? temp.pretok.round().toString()
+                : temp.vodostaj.round().toString(),
+            unit: temp.pretok != null ? "m3/s" : "cm",
+            secondData: temp.pretokZnacilni != null
+                ? temp.pretokZnacilni
+                : temp.vodostajZnacilni != null ? temp.vodostajZnacilni : "",
+            thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : "",
+            secondDataIcon: WeatherIcons.water,
+            thirdDataIcon: WeatherIcons.temperatire));
+      case "napoved":
+        return favCard(new FavCard(
+            url: '/napoved',
+            urlArgumentName: 'napoved',
+            object: temp,
+            title: temp.napovedi[0].longTitle,
+            unit: "°C",
+            mainData: temp.napovedi[0].temperature != null
+                ? temp.napovedi[0].temperature.toString()
+                : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt())/2}",
+            secondData:
+                "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
+            secondDataIcon: WeatherIcons.wind_1));
+      default:
+        return Container();
+    }
   }
 
   Widget favCard(FavCard card) {
