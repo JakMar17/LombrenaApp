@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -13,17 +14,18 @@ class _CustomSearchState extends State<CustomSearch> {
   TextEditingController _textController = TextEditingController();
 
   List<SearchCategory> categories = [
+    SearchCategory(title: "Vremenska napoved"),
     SearchCategory(title: "Vremenske postaje"),
     SearchCategory(title: "Vodotoki"),
-    SearchCategory(title: "Vremenska napoved"),
-    SearchCategory(title: "Kakovost zraka"),
-    SearchCategory(title: "Slovenske gore")
+    /* SearchCategory(title: "Kakovost zraka"),
+    SearchCategory(title: "Slovenske gore") */
   ];
 
   RestApi restApi = RestApi();
   List<Postaja> vremenskePostaje;
   List<MerilnoMestoVodotok> vodotoki;
-
+  List<NapovedCategory> napoved5dnevna;
+  List<NapovedCategory> napoved3dnevna;
   List<ResultElement> show;
 
   @override
@@ -32,6 +34,10 @@ class _CustomSearchState extends State<CustomSearch> {
     show = [];
     vremenskePostaje = restApi.getAvtomatskePostaje();
     vodotoki = restApi.getVodotoki();
+    napoved3dnevna = restApi.get3dnevnaNapoved();
+    List<NapovedCategory> t = [];
+    t.add(RestApi.napoved5dnevna);
+    napoved5dnevna = t;
   }
 
   @override
@@ -67,7 +73,7 @@ class _CustomSearchState extends State<CustomSearch> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.popAndPushNamed(context, "/home");
                                 },
                               ),
                             ),
@@ -123,8 +129,7 @@ class _CustomSearchState extends State<CustomSearch> {
                         itemCount: categories.length,
                         itemBuilder: (context, index) {
                           double paddingLeft = 0;
-                          if (index == 0)
-                    paddingLeft = 10;
+                          if (index == 0) paddingLeft = 10;
                           return Padding(
                             padding: EdgeInsets.only(left: paddingLeft),
                             child: _buildInputChip(categories[index]),
@@ -133,11 +138,11 @@ class _CustomSearchState extends State<CustomSearch> {
                   ),
                   Expanded(
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                        child: Container(
-                            width: double.infinity,
-                            child: _buildSearchResultsList(show)),
-                      ))
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: Container(
+                        width: double.infinity,
+                        child: _buildSearchResultsList(show)),
+                  ))
                 ],
               ),
             )));
@@ -177,10 +182,48 @@ class _CustomSearchState extends State<CustomSearch> {
 
     searchString = searchString.toUpperCase();
 
-    bool showPostaje = categories[0].searchingIn;
-    bool showVodotoki = categories[1].searchingIn;
+    bool showNapovedi = categories[0].searchingIn;
+    bool showPostaje = categories[1].searchingIn;
+    bool showVodotoki = categories[2].searchingIn;
     bool first = true;
 
+    if (showNapovedi) {
+      for (NapovedCategory c in napoved5dnevna) {
+        if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(ResultElement(
+                categoryTitle: true, title: "Vremenske napovedi"));
+            first = false;
+          }
+          show.add(ResultElement(
+              title: c.napovedi[0].longTitle,
+              url: () {
+                Navigator.pushNamed(context, "/napoved",
+                    arguments: {"napoved": c});
+              },
+              id: c.categoryName));
+        }
+      }
+      
+      for(NapovedCategory c in napoved3dnevna) {
+        if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(ResultElement(
+                categoryTitle: true, title: "Vremenske napovedi"));
+            first = false;
+          }
+          show.add(ResultElement(
+              title: c.napovedi[0].longTitle,
+              url: () {
+                Navigator.pushNamed(context, "/napoved",
+                    arguments: {"napoved": c});
+              },
+              id: c.categoryName));
+        }
+      }
+    }
+
+    first = true;
     if (showPostaje)
       for (Postaja p in vremenskePostaje) {
         if (p.titleLong.toUpperCase().contains(searchString)) {
@@ -227,10 +270,10 @@ class _CustomSearchState extends State<CustomSearch> {
 
     if (list == null || list.length == 0)
       return Container(
-        width: double.infinity,
+          width: double.infinity,
           child: Center(
               child: Text("Začni z iskanjem, \n vpiši in najdi",
-              textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       letterSpacing: 1,
                       color: Colors.white,
