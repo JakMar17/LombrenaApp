@@ -25,7 +25,8 @@ class _LoadingState extends State<Loading> {
     var f = favorites.getFavorites();
     bool vodotoki = await restApi.fetchVodotoki();
     bool napoved = await restApi.fetch5DnevnaNapoved();
-    if(postaje && vodotoki && napoved)
+    bool napoved3 = await restApi.fetch3DnevnaNapoved();
+    if(postaje && vodotoki && napoved && napoved3)
       Navigator.pushReplacementNamed(context, "/");
     else {
       String errorMessage;

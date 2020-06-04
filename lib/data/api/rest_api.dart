@@ -3,31 +3,40 @@ import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:xml/xml.dart' as xml;
 import 'dart:convert';
 
 class RestApi {
-
   static List<Postaja> postaje;
   static List<MerilnoMestoVodotok> vodotoki;
-  static List<Napoved> napoved5dnevna;
+  static NapovedCategory napoved5dnevna;
+  static List<NapovedCategory> napoved3dnevna;
 
-  List<Postaja> getAvtomatskePostaje() {return postaje;}
+  List<Postaja> getAvtomatskePostaje() {
+    return postaje;
+  }
+
   List<MerilnoMestoVodotok> getVodotoki() {
-    if(vodotoki == null)
-      fetchVodotoki();
+    if (vodotoki == null) fetchVodotoki();
     return vodotoki;
   }
-  List<Napoved> get5dnevnaNapoved() {
-    if(napoved5dnevna == null)
-      fetch5DnevnaNapoved();
+
+  NapovedCategory get5dnevnaNapoved() {
+    if (napoved5dnevna == null) fetch5DnevnaNapoved();
     return napoved5dnevna;
+  }
+
+  List<NapovedCategory> get3dnevnaNapoved() {
+    if (napoved3dnevna == null) fetch3DnevnaNapoved();
+    return napoved3dnevna;
   }
 
   Future<bool> fetchPostajeData() async {
     Response resp = null;
     try {
-      resp = await get("http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
+      resp = await get(
+          "http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
     } on Exception catch (_) {
       return null;
     }
@@ -40,46 +49,48 @@ class RestApi {
 
     postaje = [];
 
-    for(int i = 0; i < elements.length; i++) {
+    for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
       print(parseDouble(""));
       Postaja p = Postaja(
-        title: element.findElements("domain_title").first.text,
-        titleLong: element.findElements("domain_longTitle").first.text,
-        titleShort: element.findElements("domain_shortTitle").first.text,
-        /*  */
-        geoLat: parseDouble(element.findElements("domain_lat").first.text),
-        geoLon: parseDouble(element.findElements("domain_lon").first.text),
-        altitude: parseDouble(element.findElements("domain_altitude").first.text),
-        /*  */
-        sunrise: element.findElements("sunrise").first.text,
-        sunset: element.findElements("sunset").first.text,
-        updateTime: element.findElements("tsValid_issued").first.text,
-        /*  */
-        temperature: parseDouble(element.findElements("t").first.text),
-        dewpoint: parseDouble(element.findElements("td").first.text),
-        averageTemp: parseDouble(element.findElements("tavg").first.text),
-        minTemp: parseDouble(element.findElements("tn").first.text),
-        maxTemp: parseDouble(element.findElements("tx").first.text),
-        /*  */
-        humidity: parseDouble(element.findElements("rh").first.text),
-        averageHum: parseDouble(element.findElements("rhavg").first.text),
-        /*  */
-        windAngle: parseDouble(element.findElements("dd_val").first.text),
-        windDir: element.findElements("dd_shortText").first.text,
-        windSpeed: parseDouble(element.findElements("ff_val_kmh").first.text),
-        averageWind: parseDouble(element.findElements("ffavg_val_kmh").first.text),
-        maxWind: parseDouble(element.findElements("ffmax_val_kmh").first.text),
-        /*  */
-        preassure: parseDouble(element.findElements("p").first.text),
-        /*  */
-        snow: parseDouble(element.findElements("snow").first.text),
-        rain: parseDouble(element.findElements("tp_12h_acc").first.text),
-        /*  */
-        obsevanje: parseDouble(element.findElements("gSunRad").first.text),
-        vidnost: parseDouble(element.findElements("vis_val").first.text)
-      );
-      
+          title: element.findElements("domain_title").first.text,
+          titleLong: element.findElements("domain_longTitle").first.text,
+          titleShort: element.findElements("domain_shortTitle").first.text,
+          /*  */
+          geoLat: parseDouble(element.findElements("domain_lat").first.text),
+          geoLon: parseDouble(element.findElements("domain_lon").first.text),
+          altitude:
+              parseDouble(element.findElements("domain_altitude").first.text),
+          /*  */
+          sunrise: element.findElements("sunrise").first.text,
+          sunset: element.findElements("sunset").first.text,
+          updateTime: element.findElements("tsValid_issued").first.text,
+          /*  */
+          temperature: parseDouble(element.findElements("t").first.text),
+          dewpoint: parseDouble(element.findElements("td").first.text),
+          averageTemp: parseDouble(element.findElements("tavg").first.text),
+          minTemp: parseDouble(element.findElements("tn").first.text),
+          maxTemp: parseDouble(element.findElements("tx").first.text),
+          /*  */
+          humidity: parseDouble(element.findElements("rh").first.text),
+          averageHum: parseDouble(element.findElements("rhavg").first.text),
+          /*  */
+          windAngle: parseDouble(element.findElements("dd_val").first.text),
+          windDir: element.findElements("dd_shortText").first.text,
+          windSpeed: parseDouble(element.findElements("ff_val_kmh").first.text),
+          averageWind:
+              parseDouble(element.findElements("ffavg_val_kmh").first.text),
+          maxWind:
+              parseDouble(element.findElements("ffmax_val_kmh").first.text),
+          /*  */
+          preassure: parseDouble(element.findElements("p").first.text),
+          /*  */
+          snow: parseDouble(element.findElements("snow").first.text),
+          rain: parseDouble(element.findElements("tp_12h_acc").first.text),
+          /*  */
+          obsevanje: parseDouble(element.findElements("gSunRad").first.text),
+          vidnost: parseDouble(element.findElements("vis_val").first.text));
+
       postaje.add(p);
     }
 
@@ -96,17 +107,16 @@ class RestApi {
   }
 
   Postaja getPostaja(String id) {
-    for (Postaja p in postaje)
-      if(p.id == id)
-        return p;
+    for (Postaja p in postaje) if (p.id == id) return p;
     return null;
   }
 
-  Future<bool> fetchVodotoki () async {
+  Future<bool> fetchVodotoki() async {
     Response resp = null;
     try {
-      resp = await get("http://www.arso.gov.si/xml/vode/hidro_podatki_zadnji.xml");
-    } on Exception catch(_) {
+      resp =
+          await get("http://www.arso.gov.si/xml/vode/hidro_podatki_zadnji.xml");
+    } on Exception catch (_) {
       return null;
     }
 
@@ -135,34 +145,72 @@ class RestApi {
       s = element.attributes[2].toString().split("=");
       s = s[1].split('"');
       double geoLat = parseDouble(s[1]);
-      
+
       MerilnoMestoVodotok vodotok = MerilnoMestoVodotok(
-        sifra: sifra,
-        geoLat: geoLat,
-        geoLon: geoLon,
-        reka: element.findElements("reka").isEmpty ? null : element.findElements("reka").first.text,
-        merilnoMesto: element.findElements("merilno_mesto").isEmpty ? null : element.findElements("merilno_mesto").first.text,
-        datum: element.findElements("datum").isEmpty ? null : element.findElements("datum").first.text,
-        vodostaj: element.findElements("vodostaj").isEmpty ? null : parseDouble(element.findElements("vodostaj").first.text),
-        pretok: element.findElements("pretok").isEmpty ? null : parseDouble(element.findElements("pretok").first.text),
-        pretokZnacilni: element.findElements("pretok_znacilni").isEmpty ? null : element.findElements("pretok_znacilni").first.text,
-        vodostajZnacilni: element.findElements("vodostaj_znacilni").isEmpty ? null : element.findElements("vodostaj_znacilni").first.text,
-        tempVode: element.findElements("temp_vode").isEmpty ? null : parseDouble(element.findElements("temp_vode").first.text),
-        prviPretok: element.findElements("prvi_vv_pretok").isEmpty ? null : parseDouble(element.findElements("prvi_vv_pretok").first.text),
-        drugiPretok: element.findElements("drugi_vv_pretok").isEmpty ? null : parseDouble(element.findElements("drugi_vv_pretok").first.text),
-        tretjiPretok: element.findElements("tretji_vv_pretok").isEmpty ? null : parseDouble(element.findElements("tretji_vv_pretok").first.text),
-        prviVodostaj: element.findElements("prvi_vv_vodostaj").isEmpty ? null : parseDouble(element.findElements("prvi_vv_vodostaj").first.text),
-        drugiVodostaj: element.findElements("drugi_vv_vodostaj").isEmpty ? null : parseDouble(element.findElements("drugi_vv_vodostaj").first.text),
-        tretjiVodostaj: element.findElements("tretji_vv_vodostaj").isEmpty ? null : parseDouble(element.findElements("tretji_vv_vodostaj").first.text),
-        znacilnaVisina: element.findElements("znacilna_visina_valov").isEmpty ? null : parseDouble(element.findElements("znacilna_visina_valov").first.text),
-        smerValovanja: element.findElements("smer_valovanja").isEmpty ? null : element.findElements("smer_valovanja").first.text
-      );
+          sifra: sifra,
+          geoLat: geoLat,
+          geoLon: geoLon,
+          reka: element.findElements("reka").isEmpty
+              ? null
+              : element.findElements("reka").first.text,
+          merilnoMesto: element.findElements("merilno_mesto").isEmpty
+              ? null
+              : element.findElements("merilno_mesto").first.text,
+          datum: element.findElements("datum").isEmpty
+              ? null
+              : element.findElements("datum").first.text,
+          vodostaj: element.findElements("vodostaj").isEmpty
+              ? null
+              : parseDouble(element.findElements("vodostaj").first.text),
+          pretok: element.findElements("pretok").isEmpty
+              ? null
+              : parseDouble(element.findElements("pretok").first.text),
+          pretokZnacilni: element.findElements("pretok_znacilni").isEmpty
+              ? null
+              : element.findElements("pretok_znacilni").first.text,
+          vodostajZnacilni: element.findElements("vodostaj_znacilni").isEmpty
+              ? null
+              : element.findElements("vodostaj_znacilni").first.text,
+          tempVode: element.findElements("temp_vode").isEmpty
+              ? null
+              : parseDouble(element.findElements("temp_vode").first.text),
+          prviPretok: element.findElements("prvi_vv_pretok").isEmpty
+              ? null
+              : parseDouble(element.findElements("prvi_vv_pretok").first.text),
+          drugiPretok: element.findElements("drugi_vv_pretok").isEmpty
+              ? null
+              : parseDouble(element.findElements("drugi_vv_pretok").first.text),
+          tretjiPretok: element.findElements("tretji_vv_pretok").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("tretji_vv_pretok").first.text),
+          prviVodostaj: element.findElements("prvi_vv_vodostaj").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("prvi_vv_vodostaj").first.text),
+          drugiVodostaj: element.findElements("drugi_vv_vodostaj").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("drugi_vv_vodostaj").first.text),
+          tretjiVodostaj: element.findElements("tretji_vv_vodostaj").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("tretji_vv_vodostaj").first.text),
+          znacilnaVisina: element.findElements("znacilna_visina_valov").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("znacilna_visina_valov").first.text),
+          smerValovanja: element.findElements("smer_valovanja").isEmpty
+              ? null
+              : element.findElements("smer_valovanja").first.text);
 
       vodotoki.add(vodotok);
     }
 
-    Comparator<MerilnoMestoVodotok> byMerilnoMesto = (a, b) => a.merilnoMesto.compareTo(b.merilnoMesto);
-    Comparator<MerilnoMestoVodotok> byVodotok = (a, b) => a.reka.compareTo(b.reka);
+    Comparator<MerilnoMestoVodotok> byMerilnoMesto =
+        (a, b) => a.merilnoMesto.compareTo(b.merilnoMesto);
+    Comparator<MerilnoMestoVodotok> byVodotok =
+        (a, b) => a.reka.compareTo(b.reka);
 
     vodotoki.sort(byMerilnoMesto);
     vodotoki.sort(byVodotok);
@@ -175,21 +223,19 @@ class RestApi {
   Future<bool> fetchAllData() async {
     bool postaje = await fetchPostajeData();
     bool vodotoki = await fetchVodotoki();
-    if (postaje && vodotoki)
-      return true;
+    if (postaje && vodotoki) return true;
   }
 
-  MerilnoMestoVodotok getVodotok (String id) {
-    for (MerilnoMestoVodotok v in vodotoki)
-      if(v.id == id)
-        return v;
+  MerilnoMestoVodotok getVodotok(String id) {
+    for (MerilnoMestoVodotok v in vodotoki) if (v.id == id) return v;
     return null;
   }
 
   Future<bool> fetch5DnevnaNapoved() async {
     Response resp = null;
     try {
-      resp = await get("https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml");
+      resp = await get(
+          "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml");
     } on Exception catch (_) {
       return null;
     }
@@ -200,35 +246,123 @@ class RestApi {
 
     var elements = rawData.toList();
 
-    napoved5dnevna = [];
+    List<Napoved> l = [];
 
-    for(int i = 0; i < elements.length; i++) {
+    for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
       print(parseDouble(""));
       Napoved n = Napoved(
-        id: element.findElements("domain_id").first.text,
-        title: element.findElements("domain_title").first.text,
-        shortTitle: element.findElements("domain_shortTitle").first.text,
-        longTitle: element.findElements("domain_longTitle").first.text,
-        geoLat: parseDouble(element.findElements("domain_lat").first.text),
-        geoLon: parseDouble(element.findElements("domain_lon").first.text,),
-        altitude: parseDouble(element.findElements("domain_altitude").first.text,),
-        sunrise: element.findElements("sunrise").first.text,
-        sunset: element.findElements("sunset").first.text,
-        date: element.findElements("tsValid_issued").first.text,
-        validDate: element.findElements("valid").first.text,
-        validDay: element.findElements("valid_day").first.text,
-        tempMin: parseDouble(element.findElements("tn").first.text,),
-        tempMax: parseDouble(element.findElements("tx").first.text,),
-        minWind: parseDouble(element.findElements("ff_minimum_kmh").first.text,),
-        maxWind: parseDouble(element.findElements("ff_maximum_kmh").first.text,),
-        wind: element.findElements("dd_shortText").first.text,
-        weatherID: element.findElements("wwsyn_icon").first.text,
-        cloudiness: element.findElements("nn_shortText").first.text,
-        thunderstorm: element.findElements("ts_icon").first.text
-      );
-      
-      napoved5dnevna.add(n);
+          id: element.findElements("domain_id").first.text,
+          title: element.findElements("domain_title").first.text,
+          shortTitle: element.findElements("domain_shortTitle").first.text,
+          longTitle: element.findElements("domain_longTitle").first.text,
+          geoLat: parseDouble(element.findElements("domain_lat").first.text),
+          geoLon: parseDouble(
+            element.findElements("domain_lon").first.text,
+          ),
+          altitude: parseDouble(
+            element.findElements("domain_altitude").first.text,
+          ),
+          sunrise: element.findElements("sunrise").first.text,
+          sunset: element.findElements("sunset").first.text,
+          date: element.findElements("tsValid_issued").first.text,
+          validDate: element.findElements("valid").first.text,
+          validDay: element.findElements("valid_day").first.text,
+          tempMin: parseDouble(
+            element.findElements("tn").first.text,
+          ),
+          tempMax: parseDouble(
+            element.findElements("tx").first.text,
+          ),
+          minWind: parseDouble(
+            element.findElements("ff_minimum_kmh").first.text,
+          ),
+          maxWind: parseDouble(
+            element.findElements("ff_maximum_kmh").first.text,
+          ),
+          wind: element.findElements("dd_shortText").first.text,
+          weatherID: element.findElements("wwsyn_icon").first.text,
+          cloudiness: element.findElements("nn_shortText").first.text,
+          thunderstorm: element.findElements("ts_icon").first.text);
+
+      l.add(n);
+    }
+
+    napoved5dnevna = NapovedCategory(categoryName: "Slovenija", napovedi: l);
+    return true;
+  }
+
+  Future<bool> fetch3DnevnaNapoved() async {
+    Response resp = null;
+    String baseUrl =
+        "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/";
+
+    List<String> urls = [
+      "fcast_SLOVENIA_SOUTH-EAST_latest.xml",
+      "fcast_SLOVENIA_SOUTH-WEST_latest.xml",
+      "fcast_SLOVENIA_MIDDLE_latest.xml",
+      "fcast_SLOVENIA_NORTH-EAST_latest.xml",
+      "fcast_SLOVENIA_NORTH-WEST_latest.xml",
+    ];
+
+    napoved3dnevna = [];
+
+    for (int i = 0; i < urls.length; i++) {
+      try {
+        resp = await get("${baseUrl}${urls[i]}");
+      } on Exception catch (_) {
+        return null;
+      }
+
+      dynamic rawData = utf8.decode(resp.bodyBytes);
+      rawData = xml.parse(rawData);
+      rawData = rawData.findAllElements("metData");
+
+      var elements = rawData.toList();
+
+      List<Napoved> l = [];
+
+      for (int i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        print(parseDouble(""));
+        Napoved n = Napoved(
+            id: element.findElements("domain_id").first.text,
+            title: element.findElements("domain_title").first.text,
+            shortTitle: element.findElements("domain_shortTitle").first.text,
+            longTitle: element.findElements("domain_longTitle").first.text,
+            geoLat: parseDouble(element.findElements("domain_lat").first.text),
+            geoLon: parseDouble(
+              element.findElements("domain_lon").first.text,
+            ),
+            altitude: parseDouble(
+              element.findElements("domain_altitude").first.text,
+            ),
+            sunrise: element.findElements("sunrise").first.text,
+            sunset: element.findElements("sunset").first.text,
+            date: element.findElements("tsValid_issued").first.text,
+            validDate: element.findElements("valid").first.text,
+            validDay: element.findElements("valid_day").first.text,
+            tempMin: parseDouble(
+              element.findElements("tn").first.text,
+            ),
+            tempMax: parseDouble(
+              element.findElements("tx").first.text,
+            ),
+            minWind: parseDouble(
+              element.findElements("ff_minimum_kmh").first.text,
+            ),
+            maxWind: parseDouble(
+              element.findElements("ff_maximum_kmh").first.text,
+            ),
+            wind: element.findElements("dd_shortText").first.text,
+            weatherID: element.findElements("wwsyn_icon").first.text,
+            cloudiness: element.findElements("nn_shortText").first.text,
+            thunderstorm: element.findElements("ts_icon").first.text);
+
+        l.add(n);
+      }
+      napoved3dnevna
+          .add(NapovedCategory(categoryName: l[0].longTitle, napovedi: l));
     }
 
     return true;

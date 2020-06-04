@@ -33,4 +33,6 @@ class WeatherIcons2 {
   static const IconData thunderstormSnow = IconData(0xf01d, fontFamily: _fontFamily);
   /*  */
   static const IconData fog = IconData(0xf021, fontFamily: _fontFamily);
+  /*  */
+  static const IconData wind = IconData(0xf050, fontFamily: _fontFamily);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:vreme/style/weather_icons2.dart';
 
 class Napoved {
@@ -104,17 +105,17 @@ class Napoved {
         cloudiness == "rahlo oblačno" ||
         cloudiness == "delno oblačno";
 
-    bool phenomen = weatherID != null;
+    bool phenomen = weatherID != null && weatherID != "";
 
-    bool thunder = thunderstorm != null;
+    bool thunder = thunderstorm != null && thunderstorm != "";
 
-    if(thunder) {
+    /* if(thunder) {
       if(!phenomen)
         return WeatherIcons2.thunderstorm;
       else {
         
       }
-    }
+    } */
 
     if (!phenomen) {
       switch (cloudiness) {
@@ -210,4 +211,14 @@ class Napoved {
     }
     return null;
   }
+}
+
+class NapovedCategory {
+  String categoryName;
+  List<Napoved> napovedi;
+
+  NapovedCategory({
+    this.categoryName,
+    this.napovedi
+  });
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 class DetailCard {
   String title;
   var mainMeasure;
@@ -6,10 +8,14 @@ class DetailCard {
   var secondData;
   var thirdData;
 
+  IconData icon;
+
   DetailCard(
       {this.title,
       this.mainMeasure,
       this.unit,
       this.secondData,
-      this.thirdData});
+      this.thirdData,
+      this.icon
+      });
 }
