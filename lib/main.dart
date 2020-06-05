@@ -3,6 +3,7 @@ import 'package:vreme/data/favorites.dart';
 import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
+import 'package:vreme/screens/text_napoved/text_napoved.dart';
 import 'package:vreme/screens/vodotoki/list_vodotoki.dart';
 import 'package:vreme/screens/vodotoki/vodotok_detail.dart';
 import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
@@ -26,7 +27,8 @@ void main() async{
       '/vodotok': (context) => VodotokDetail(),
       '/search': (context) => CustomSearch(),
       '/napovedi': (context) => ListOfNapovedi(),
-      '/napoved': (context) => NapovedDetail()
+      '/napoved': (context) => NapovedDetail(),
+      '/napoved/tekst': (context) => TekstovnaNapoved()
     },
     debugShowCheckedModeBanner: false,
   ));

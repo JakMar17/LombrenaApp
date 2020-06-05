@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
+import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
@@ -13,6 +14,7 @@ class RestApi {
   static NapovedCategory napoved5dnevna;
   static List<NapovedCategory> napoved3dnevna;
   static List<NapovedCategory> napovedPoPokrajinah;
+  static TextNapoved textNapoved;
 
   Favorites f = Favorites();
 
@@ -38,6 +40,11 @@ class RestApi {
   List<NapovedCategory> getPokrajinskaNapoved() {
     if (napovedPoPokrajinah == null) fetchPokrajinskaNapoved();
     return napovedPoPokrajinah;
+  }
+
+  TextNapoved getTekstovnaNapoved() {
+    if(textNapoved == null) fetchTextNapoved();
+    return textNapoved;
   }
 
   Future<bool> fetchPostajeData() async {
@@ -217,7 +224,6 @@ class RestApi {
         (a, b) => a.merilnoMesto.compareTo(b.merilnoMesto);
     Comparator<MerilnoMestoVodotok> byVodotok =
         (a, b) => a.reka.compareTo(b.reka);
-
 
     vodotoki.sort(byMerilnoMesto);
     vodotoki.sort(byVodotok);
@@ -589,6 +595,70 @@ class RestApi {
     }
 
     f.setFavorites(napovedPoPokrajinah);
+    return true;
+  }
+
+  Future<bool> fetchTextNapoved() async {
+    Response resp = null;
+
+    try {
+      resp = await get(
+          "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_si_text.xml");
+    } on Exception catch (_) {
+      return null;
+    }
+
+    dynamic rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("section");
+
+    var elements = rawData.toList();
+    List<String> arguments = [];
+    List<String> text = [];
+
+    for (var x in elements) {
+      String t = x.attributes[0].toString();
+      var tt = t.split("'");
+      arguments.add(tt[1]);
+      text.add(x.findElements("para").isEmpty
+          ? ""
+          : x.findElements("para").first.text);
+    }
+
+    textNapoved = TextNapoved();
+
+    for (int i = 0; i < arguments.length; i++) {
+      switch (arguments[i]) {
+        case "fcast_SLOVENIA_d1":
+          textNapoved.napovedSlo1 = text[i];
+          break;
+        case "fcast_SLOVENIA_d2":
+          textNapoved.napovedSlo2 = text[i];
+          break;
+        case "fcast_SI_NEIGHBOURS_d1":
+          textNapoved.napovedSos1 = text[i];
+          break;
+        case "fcast_SI_NEIGHBOURS_d2":
+          textNapoved.napovedSos2 = text[i];
+          break;
+        case "fcast_EUROPE_d1":
+          textNapoved.slikaEu1 = text[i];
+          break;
+        case "fcast_EUROPE_d2":
+          textNapoved.slikaEu2 = text[i];
+          break;
+        case "fcast_SLOVENIA_d3-d5":
+          textNapoved.obeti = text[i];
+          break;
+        case "warning_SLOVENIA":
+          textNapoved.opozorilo = text[i];
+          break;
+        case "fcast_summary_SLOVENIA_d1-d2":
+          textNapoved.povzetek = text[i];
+          break;
+      }
+    }
+
     return true;
   }
 }

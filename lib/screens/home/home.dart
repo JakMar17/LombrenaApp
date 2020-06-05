@@ -22,7 +22,8 @@ class _HomeState extends State<Home> {
   List<MenuItem> categoryMenu = [
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
-    MenuItem(menuName: "Vremenska napoved", url: "/napovedi")
+    MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
+    MenuItem(menuName: "Tekstovna napoved", url:"/napoved/tekst")
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),
   MenuItem(menuName: "Vremenska napoved"), */
