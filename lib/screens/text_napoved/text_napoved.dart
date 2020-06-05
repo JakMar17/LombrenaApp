@@ -1,13 +1,10 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:sliver_fab/sliver_fab.dart';
-import 'dart:io';
-import 'package:http/http.dart';
 
 class TekstovnaNapoved extends StatefulWidget {
   TekstovnaNapoved({Key key}) : super(key: key);
@@ -19,7 +16,6 @@ class TekstovnaNapoved extends StatefulWidget {
 class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
   TextNapoved napoved;
   RestApi restApi = RestApi();
-  File track;
   dynamic playButton;
   bool playing = false;
   final String url =
