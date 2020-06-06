@@ -53,16 +53,21 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
         );
       });
 
+      int result;
+
       try {
-        await player.resume();
+        result = await player.resume();
       } on Exception catch (_) {
-        await player.play(url, isLocal: false);
+        result = await player.play(url, isLocal: false);
       }
-      playing = true;
-      setState(() {
-        playButton = Icon(Icons.pause);
-      });
-    } 
+
+      if (result == 1) {
+        playing = true;
+        setState(() {
+          playButton = Icon(Icons.pause);
+        });
+      }
+    }
   }
 
   @override
