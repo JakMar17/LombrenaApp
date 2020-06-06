@@ -201,44 +201,4 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
       ),
     );
   }
-
-  void _snackBar() {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text("jou"),
-    ));
-    /* return Builder(builder: (context) => ,)
-          setState(() {
-            /* vodotok.isFavourite = !vodotok.isFavourite;
-                    favorites.addToFavorites(vodotok); */
-
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                    flex: 9,
-                    child: Text(
-                      "JOU",
-                      style: TextStyle(
-                        fontFamily: "Montserrat",
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 3,
-                    child: FlatButton(
-                      child: Text("OK",
-                          style: TextStyle(
-                            fontFamily: "Montserrat",
-                          )),
-                      onPressed: () {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ));
-          }); */
-  }
 }
