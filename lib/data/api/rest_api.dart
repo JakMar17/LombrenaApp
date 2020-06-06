@@ -53,7 +53,7 @@ class RestApi {
       resp = await get(
           "http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
     } on Exception catch (_) {
-      return null;
+      return false;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -130,7 +130,7 @@ class RestApi {
       resp =
           await get("http://www.arso.gov.si/xml/vode/hidro_podatki_zadnji.xml");
     } on Exception catch (_) {
-      return null;
+      return false;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -249,7 +249,7 @@ class RestApi {
       resp = await get(
           "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml");
     } on Exception catch (_) {
-      return null;
+      return false;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -366,7 +366,7 @@ class RestApi {
       try {
         resp = await get("${baseUrl}${urls[i]}");
       } on Exception catch (_) {
-        return null;
+        return false;
       }
 
       dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -493,7 +493,7 @@ class RestApi {
       try {
         resp = await get("${baseUrl}${urls[i]}");
       } on Exception catch (_) {
-        return null;
+        return false;
       }
 
       dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -605,7 +605,7 @@ class RestApi {
       resp = await get(
           "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_si_text.xml");
     } on Exception catch (_) {
-      return null;
+      return false;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);

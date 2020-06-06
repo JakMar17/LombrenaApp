@@ -32,7 +32,6 @@ dependencies:
   intl: ^0.16.1
   shared_preferences: any
   sliver_fab: ^1.0.0
-  path_provider: ^1.6.10
   audioplayers: ^0.15.1
 
 
