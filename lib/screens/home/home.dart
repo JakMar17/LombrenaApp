@@ -4,6 +4,7 @@ import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/screens/home/drawer.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -58,7 +59,7 @@ class _HomeState extends State<Home> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.transparent,
-            title: Text("Vreme"),
+            title: Text("MarelaApp"),
             centerTitle: true,
             actions: <Widget>[
               IconButton(
@@ -75,9 +76,15 @@ class _HomeState extends State<Home> {
           ),
           drawer: Drawer(
             child: Container(
-              color: CustomColors.darkBlue,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft
+                )
+              ),
               child: SafeArea(
-                child: Text("drawer"),
+                child: CustomDrawer()
               ),
             ),
           ),
