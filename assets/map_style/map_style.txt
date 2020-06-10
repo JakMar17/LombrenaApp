@@ -1,19 +1,20 @@
 [
     {
-        "featureType": "administrative",
-        "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#444444"
-            }
-        ]
-    },
-    {
-        "featureType": "landscape",
-        "elementType": "all",
-        "stylers": [
+                "hue": "#ff1a00"
+            },
             {
-                "color": "#f2f2f2"
+                "invert_lightness": true
+            },
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 33
+            },
+            {
+                "gamma": 0.5
             }
         ]
     },
@@ -31,6 +32,9 @@
         "elementType": "all",
         "stylers": [
             {
+                "visibility": "off"
+            },
+            {
                 "saturation": -100
             },
             {
@@ -43,7 +47,7 @@
         "elementType": "all",
         "stylers": [
             {
-                "visibility": "simplified"
+                "visibility": "off"
             }
         ]
     },
@@ -70,7 +74,8 @@
         "elementType": "all",
         "stylers": [
             {
-                "visibility": "on"
+                "visibility": "on",
+                "color": "#517caa"
             },
             {
                 "weight": "0.36"

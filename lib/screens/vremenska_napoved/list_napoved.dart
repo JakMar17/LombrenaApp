@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/map_marker.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons2.dart';
@@ -54,12 +55,14 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
             SliverPadding(
               padding: EdgeInsets.only(top: 30),
             ),
-            SliverList(delegate: SliverChildListDelegate(
-              _buildList("Napoved po pokrajinah", napovedPoPokrajinah)
-            ),),
-            SliverList(delegate: SliverChildListDelegate(
-              _buildList("3 dnevna napoved", napoved3dnevna)
-            ),),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                  _buildList("Napoved po pokrajinah", napovedPoPokrajinah)),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                  _buildList("3 dnevna napoved", napoved3dnevna)),
+            ),
             SliverList(
               delegate: SliverChildListDelegate(
                   _buildList("5 dnevna napoved", napoved5dnevna)),
@@ -75,18 +78,56 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
 
   List _buildList(String title, List<NapovedCategory> cat) {
     List<Widget> list = [];
+    List<MapMarker> markers = [];
 
     list.add(
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: "Montserrat",
-            fontSize: 32,
-            fontWeight: FontWeight.w400,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Flexible(
+              flex: 10,
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Montserrat",
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Flexible(
+                flex: 2,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.map,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    for (NapovedCategory c in cat) {
+                      var n = c.napovedi[0];
+                      markers.add(MapMarker(
+                          title: n.longTitle,
+                          mainData: n.temperature != null
+                              ? "${n.temperature}"
+                              : "${(n.tempMax + n.tempMin) / 2}",
+                          mainDataUnit: "°C",
+                          lat: n.geoLat,
+                          lon: n.geoLon,
+                          object: n,
+                          onPress: () {
+                            Navigator.pushNamed(context, "/napoved",
+                                arguments: {"napoved": c});
+                          }));
+                    }
+
+                    Navigator.pushNamed(context, "/map",
+                        arguments: {"markers": markers});
+                  },
+                ))
+          ],
         ),
       ),
     );

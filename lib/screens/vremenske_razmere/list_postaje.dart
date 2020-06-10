@@ -50,7 +50,8 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
                         onPress: () {
                           Navigator.pushNamed(context, "/postaja", arguments: {"postaja": p});
                         },
-                        showData: "${p.temperature} °C",
+                        mainData: "${p.temperature}",
+                        mainDataUnit: "°C",
                         object: p,
                         lat: p.geoLat,
                         lon: p.geoLon

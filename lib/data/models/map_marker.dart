@@ -1,10 +1,14 @@
+import 'package:flutter/material.dart';
+
 class MapMarker {
   String title;
-  String showData;
+  String subtitle;
+  String mainData;
+  String mainDataUnit;
   double lat;
   double lon;
   var mark;
-  var leading;
+  Widget leading;
   var closing;
   String url;
   var onPress;
@@ -12,13 +16,15 @@ class MapMarker {
 
   MapMarker({
     this.title,
+    this.subtitle,
     this.closing,
     this.leading,
     this.mark,
     this.object,
     this.onPress,
     this.url,
-    this.showData,
+    this.mainData,
+    this.mainDataUnit,
     this.lat,
     this.lon
   });

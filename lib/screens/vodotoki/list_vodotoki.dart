@@ -54,14 +54,18 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                     for (VodotokReka v in vodotokiPoRekah)
                       for(MerilnoMestoVodotok m in v.vodotoki)
                         markers.add(MapMarker(
-                          title: "${m.merilnoMesto} (${m.reka})",
+                          title: "${m.merilnoMesto}",
+                          subtitle: m.reka,
                           onPress: () {
                             Navigator.pushNamed(context, "/vodotok", arguments: {"vodotok": m});
                           },
-                          showData: m.pretok == null ? "${m.vodostaj} cm" : "${m.pretok} m3/s",
+                          mainData: m.pretok == null ? "${m.vodostaj}" : "${m.pretok}",
+                          mainDataUnit: m.pretok == null ? "cm" : "m3/s",
+                          leading: _setImage(m),
                           object: m,
                           lat: m.geoLat,
-                          lon: m.geoLon
+                          lon: m.geoLon,
+                          mark: "assets/images/vodotoki/small128.png"
                         ));
                     
                     Navigator.pushNamed(context, "/map", arguments: {"markers": markers});

@@ -68,6 +68,7 @@ class _LoadingState extends State<Loading> {
             child: Text('Poskusi ponovno'),
             onPressed: () {
               setState(() {
+                Navigator.pop(context);
                 goToHome();
               });
             },
