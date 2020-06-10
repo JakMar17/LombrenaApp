@@ -3,6 +3,7 @@ import 'package:vreme/data/favorites.dart';
 import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
+import 'package:vreme/screens/maps/map.dart';
 import 'package:vreme/screens/text_napoved/text_napoved.dart';
 import 'package:vreme/screens/vodotoki/list_vodotoki.dart';
 import 'package:vreme/screens/vodotoki/vodotok_detail.dart';
@@ -14,7 +15,7 @@ import 'package:vreme/screens/vremenske_razmere/postaja.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Favorites favorites = Favorites();
-  print(await favorites.setPreferences());
+  await favorites.setPreferences();
 
   runApp(MaterialApp(
     initialRoute: "/loading",
@@ -28,7 +29,8 @@ void main() async{
       '/search': (context) => CustomSearch(),
       '/napovedi': (context) => ListOfNapovedi(),
       '/napoved': (context) => NapovedDetail(),
-      '/napoved/tekst': (context) => TekstovnaNapoved()
+      '/napoved/tekst': (context) => TekstovnaNapoved(),
+      '/map': (context) => MapOfSlovenia()
     },
     debugShowCheckedModeBanner: false,
   ));

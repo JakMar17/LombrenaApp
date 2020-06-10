@@ -114,7 +114,6 @@ class Postaja {
     DateTime sset = DateFormat("HH:mm").parse(sunset).toUtc();
 
     var l = sset.difference(srise);
-    print(l.toString());
     var t = l.toString().split(":");
     var tt = t[1] .split(":");
     return "${t[0]}:${tt[0]}";

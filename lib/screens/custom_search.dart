@@ -168,7 +168,6 @@ class _CustomSearchState extends State<CustomSearch> {
           ),
           onPressed: () {
             setState(() {
-              print(_textController.text);
               cat.searchingIn = !cat.searchingIn;
             });
           }),
@@ -266,7 +265,6 @@ class _CustomSearchState extends State<CustomSearch> {
   }
 
   Widget _buildSearchResultsList(List<ResultElement> list) {
-    print(list.length);
 
     if (list == null || list.length == 0)
       return Container(

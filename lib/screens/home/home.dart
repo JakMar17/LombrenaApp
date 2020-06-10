@@ -24,7 +24,8 @@ class _HomeState extends State<Home> {
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
-    MenuItem(menuName: "Tekstovna napoved", url:"/napoved/tekst")
+    MenuItem(menuName: "Tekstovna napoved", url:"/napoved/tekst"),
+    MenuItem(menuName: "Zemljevid", url: "/map")
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),
   MenuItem(menuName: "Vremenska napoved"), */
@@ -65,6 +66,7 @@ class _HomeState extends State<Home> {
               IconButton(
                   onPressed: () {
                     //showSearch(context: context, delegate: Search());
+                    
                     Navigator.pushReplacementNamed(context, '/search');
                   },
                   icon: Icon(

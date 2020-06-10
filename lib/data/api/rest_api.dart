@@ -137,8 +137,6 @@ class RestApi {
     rawData = xml.parse(rawData);
     rawData = rawData.findAllElements("postaja");
 
-    print(rawData);
-
     var elements = rawData.toList();
 
     vodotoki = [];
@@ -379,7 +377,6 @@ class RestApi {
 
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
-        print(parseDouble(""));
         Napoved n = Napoved(
             id: element.findElements("domain_id").isEmpty
                 ? null
@@ -506,7 +503,6 @@ class RestApi {
 
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
-        print(parseDouble(""));
         Napoved n = Napoved(
           id: element.findElements("domain_id").isEmpty
               ? null

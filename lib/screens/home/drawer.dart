@@ -20,7 +20,8 @@ class CustomDrawer extends StatelessWidget {
                       CircleAvatar(
                         //backgroundColor: Colors.black12,
                         radius: 50,
-                        backgroundImage: AssetImage("assets/images/icon128.png"),
+                        backgroundImage:
+                            AssetImage("assets/images/icon128.png"),
                       ),
                       SizedBox(
                         width: 20,
@@ -54,17 +55,31 @@ class CustomDrawer extends StatelessWidget {
                 SizedBox(
                   height: 100,
                 ),
-                buttonRow(Icons.cloud, "Vremenska napoved", (){Navigator.pushNamed(context, "/napovedi");}),
-                buttonRow(Icons.wb_sunny, "Vremenske razmere", (){Navigator.pushNamed(context, "/postaje");}),
-                buttonRow(Icons.textsms, "Tekstovna napoved", (){Navigator.pushNamed(context, "/napoved/tekst");}),
-                buttonRow(WeatherIcons.water, "Vodotoki", (){Navigator.pushNamed(context, "/vodotoki");})
+                buttonRow(Icons.cloud, "Vremenska napoved", () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/napovedi");
+                }),
+                buttonRow(Icons.wb_sunny, "Vremenske razmere", () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/postaje");
+                }),
+                buttonRow(Icons.textsms, "Tekstovna napoved", () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/napoved/tekst");
+                }),
+                buttonRow(WeatherIcons.water, "Vodotoki", () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/vodotoki");
+                })
               ],
             ),
             Column(
               children: <Widget>[
-                buttonRow(Icons.settings, "Nastavitve", (){}),
-                buttonRow(Icons.library_books, "O aplikaciji", (){}),
-                SizedBox(height: 20,)
+                buttonRow(Icons.settings, "Nastavitve", () {}),
+                buttonRow(Icons.library_books, "O aplikaciji", () {}),
+                SizedBox(
+                  height: 20,
+                )
               ],
             )
           ],
