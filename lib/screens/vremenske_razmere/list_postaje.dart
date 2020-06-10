@@ -3,6 +3,7 @@ import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
+import 'package:vreme/data/models/map_marker.dart';
 
 class ListOfPostaje extends StatefulWidget {
   @override
@@ -36,7 +37,29 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
                     color: Colors.white,
                     fontWeight: FontWeight.w500
                   ),),
+          
               ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.map, color: Colors.white),
+                  onPressed: (){
+                    List<MapMarker> markers = [];
+                    for (Postaja p in postaje)
+                      markers.add(MapMarker(
+                        title: p.titleLong,
+                        onPress: () {
+                          Navigator.pushNamed(context, "/postaja", arguments: {"postaja": p});
+                        },
+                        showData: "${p.temperature} °C",
+                        object: p,
+                        lat: p.geoLat,
+                        lon: p.geoLon
+                      ));
+                    
+                    Navigator.pushNamed(context, "/map", arguments: {"markers": markers});
+                  },
+                )
+              ],
               
             ),
             SliverPadding(padding: EdgeInsets.only(top: 30),),
@@ -52,9 +75,11 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
     );
   }
 
+  List<Postaja> postaje;
+
   List _buildList() {
     RestApi restApi = RestApi();
-    List<Postaja> postaje = restApi.getAvtomatskePostaje();
+    postaje = restApi.getAvtomatskePostaje();
     double screenWidth = MediaQuery.of(context).size.width;
 
     List<Widget> listItems = List();

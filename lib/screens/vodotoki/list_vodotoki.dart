@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/style/custom_icons.dart';
+import 'package:vreme/data/models/map_marker.dart';
 
 class ListOfVodotoki extends StatefulWidget {
   @override
@@ -42,6 +43,31 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                       fontWeight: FontWeight.w500),
                 ),
               ),
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.map,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    List<MapMarker> markers = [];
+                    for (VodotokReka v in vodotokiPoRekah)
+                      for(MerilnoMestoVodotok m in v.vodotoki)
+                        markers.add(MapMarker(
+                          title: "${m.merilnoMesto} (${m.reka})",
+                          onPress: () {
+                            Navigator.pushNamed(context, "/vodotok", arguments: {"vodotok": m});
+                          },
+                          showData: m.pretok == null ? "${m.vodostaj} cm" : "${m.pretok} m3/s",
+                          object: m,
+                          lat: m.geoLat,
+                          lon: m.geoLon
+                        ));
+                    
+                    Navigator.pushNamed(context, "/map", arguments: {"markers": markers});
+                  },
+                )
+              ],
             ),
             SliverPadding(
               padding: EdgeInsets.only(top: 30),
@@ -80,10 +106,13 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
               SizedBox(height: 5),
               for (int j = 0; j < vodotokiPoRekah[i].vodotoki.length; j++)
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 5),
                   child: RaisedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, "/vodotok", arguments: {"vodotok": vodotokiPoRekah[i].vodotoki[j]});
+                      Navigator.pushNamed(context, "/vodotok", arguments: {
+                        "vodotok": vodotokiPoRekah[i].vodotoki[j]
+                      });
                     },
                     color: Colors.transparent,
                     child: Container(
@@ -121,8 +150,8 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
   Widget _setImage(MerilnoMestoVodotok vodotok) {
     String url = "assets/images/vodotoki/";
 
-    if(vodotok.pretokZnacilni != null) {
-      switch(vodotok.pretokZnacilni) {
+    if (vodotok.pretokZnacilni != null) {
+      switch (vodotok.pretokZnacilni) {
         case "mali pretok":
           url += "small128.png";
           break;
@@ -144,8 +173,8 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
         default:
           url = null;
       }
-    } else if(vodotok.vodostajZnacilni != null){
-      switch(vodotok.vodostajZnacilni) {
+    } else if (vodotok.vodostajZnacilni != null) {
+      switch (vodotok.vodostajZnacilni) {
         case "nizek vodostaj":
           url += "small128.png";
           break;
@@ -172,7 +201,10 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
     }
 
     if (url != null)
-      return Image.asset(url, height: 32,);
+      return Image.asset(
+        url,
+        height: 32,
+      );
     else
       return Container();
   }
