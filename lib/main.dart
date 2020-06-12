@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/favorites.dart';
 import 'package:vreme/screens/custom_search.dart';
+import 'package:vreme/screens/drawer/about_app.dart';
 import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
 import 'package:vreme/screens/maps/map.dart';
@@ -30,7 +31,8 @@ void main() async{
       '/napovedi': (context) => ListOfNapovedi(),
       '/napoved': (context) => NapovedDetail(),
       '/napoved/tekst': (context) => TekstovnaNapoved(),
-      '/map': (context) => MapOfSlovenia()
+      '/map': (context) => MapOfSlovenia(),
+      '/about': (context) => AboutApp()
     },
     debugShowCheckedModeBanner: false,
   ));

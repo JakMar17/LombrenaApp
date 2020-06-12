@@ -4,7 +4,7 @@ import 'package:vreme/data/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
-import 'package:vreme/screens/home/drawer.dart';
+import 'package:vreme/screens/drawer/drawer.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

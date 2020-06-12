@@ -76,7 +76,9 @@ class CustomDrawer extends StatelessWidget {
             Column(
               children: <Widget>[
                 buttonRow(Icons.settings, "Nastavitve", () {}),
-                buttonRow(Icons.library_books, "O aplikaciji", () {}),
+                buttonRow(Icons.library_books, "O aplikaciji", () {
+                  Navigator.pushNamed(context, "/about");
+                }),
                 SizedBox(
                   height: 20,
                 )
