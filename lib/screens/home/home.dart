@@ -123,17 +123,20 @@ class _HomeState extends State<Home> {
                                             custom menu for category
                                           */
 
-                                          /* Padding(
-                                      padding: const EdgeInsets.only(right: 15),
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          CustomIcons.option,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    ) */
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 15),
+                                            child: IconButton(
+                                              onPressed: () {
+                                                Navigator.pushNamed(context, "/reorder/favorites");
+                                              },
+                                              icon: Icon(
+                                                CustomIcons.option,
+                                                color: Colors.white,
+                                                size: 12,
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -228,7 +231,9 @@ class _HomeState extends State<Home> {
                     childCount: categoryMenu.length,
                   ),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 50),),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 50),
+                ),
               ],
             ),
           )),

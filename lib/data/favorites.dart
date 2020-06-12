@@ -14,7 +14,11 @@ class Favorites {
     return true;
   }
 
-  List<Object> getFavorites() {
+  void setFav(List<dynamic> f) {
+    _favorites = f;
+  }
+
+  List<dynamic> getFavorites() {
     if(_favorites == null) {
       //get from shared preferences
       _favorites = [];
