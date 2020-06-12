@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapMarker {
   String title;
@@ -13,6 +14,7 @@ class MapMarker {
   String url;
   var onPress;
   var object;
+  var pin;
 
   MapMarker({
     this.title,

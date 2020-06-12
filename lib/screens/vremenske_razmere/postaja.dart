@@ -77,7 +77,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
       new DetailCard(
           title: "Sončno obsevanje",
           mainMeasure:
-              postaja.obsevanje == null ? null : "${postaja.obsevanje}",
+              postaja.obsevanje == null ? null : "${postaja.obsevanje.toInt()}",
           unit: "W/m2"),
       new DetailCard(
           title: "Vidljivost",
@@ -380,7 +380,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
                                   card.unit,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 16,
                                       fontFamily: "Montserrat",
                                       fontWeight: FontWeight.w300),
                                 ),
@@ -397,7 +397,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
                                           color: Colors.white,
                                           fontFamily: "Montserrat",
                                           fontWeight: FontWeight.w300,
-                                          fontSize: 20),
+                                          fontSize: 18),
                                     )
                                   : Text("")
                             ],

@@ -30,6 +30,7 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
 
     setState(() {
       for (MapMarker m in dataToShow) {
+        if (m.title == "Miren") print(m.mark);
         Marker marker = Marker(
           markerId: MarkerId(m.title),
           position: LatLng(m.lat, m.lon),
@@ -41,7 +42,7 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
               pinPillPosition = 0;
             });
           },
-          //icon: BitmapDescriptor.fromAsset(m.mark),
+          icon: /* BitmapDescriptor.fromAsset(m.mark), */ m.pin.pin,
         );
         _mapMarkers[marker.markerId.toString()] = marker;
       }
@@ -57,11 +58,19 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
     });
   }
 
+  void setCustomMarkers() {
+    for (MapMarker m in dataToShow) {
+      CustomMarker c = CustomMarker(asset: m.mark);
+      m.pin = c;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Map data = {};
     data = ModalRoute.of(context).settings.arguments;
     dataToShow = data['markers'];
+    setCustomMarkers();
 
     return Scaffold(
       body: Stack(
@@ -129,12 +138,12 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
           onTap: selectedPin.onPress,
           child: Container(
             margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-            height: 70,
+            
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [CustomColors.blue2, CustomColors.blue],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter),
+                    colors: [CustomColors.blue2, CustomColors.blue],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter),
                 borderRadius: BorderRadius.circular(50),
                 boxShadow: <BoxShadow>[
                   BoxShadow(
@@ -143,7 +152,7 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
                       color: Colors.grey.withOpacity(0.5))
                 ]),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -151,46 +160,48 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
                     flex: 7,
                     child: Row(
                       children: <Widget>[
+                        selectedPin.leading == null ? Container(): Flexible(
+                          flex: 2,
+                          child: selectedPin.leading
+                        ),
                         Flexible(
                           flex: 1,
-                          child: selectedPin.leading == null
-                              ? Container()
-                              : selectedPin.leading,
-                        ),
-                        SizedBox(
-                          width: 8,
+                          child: Container(),
                         ),
                         Flexible(
                           flex: 5,
-                          child: selectedPin.subtitle == null ? Text(
-                            selectedPin.title,
-                            style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 22,
-                                letterSpacing: 0.6,
-                                color: Colors.white),
-                          )
-                          : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                            Text(
-                            selectedPin.title,
-                            style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 22,
-                                letterSpacing: 0.6,
-                                color: Colors.white),),
-                            Text(
-                            selectedPin.subtitle,
-                            style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 18,
-                                letterSpacing: 0.6,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.white),),
-                          ],)
-                          ,
+                          child: selectedPin.subtitle == null
+                              ? Text(
+                                  selectedPin.title,
+                                  style: TextStyle(
+                                      fontFamily: "Montserrat",
+                                      fontSize: 22,
+                                      letterSpacing: 0.6,
+                                      color: Colors.white),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      selectedPin.title,
+                                      style: TextStyle(
+                                          fontFamily: "Montserrat",
+                                          fontSize: 22,
+                                          letterSpacing: 0.6,
+                                          color: Colors.white),
+                                    ),
+                                    Text(
+                                      selectedPin.subtitle,
+                                      style: TextStyle(
+                                          fontFamily: "Montserrat",
+                                          fontSize: 18,
+                                          letterSpacing: 0.6,
+                                          fontWeight: FontWeight.w200,
+                                          color: Colors.white),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ],
                     ),
@@ -209,7 +220,8 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
                           style: TextStyle(
                               fontFamily: "Montserrat",
                               fontSize: 32,
-                              fontWeight: FontWeight.w300, color: Colors.white),
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 2),
@@ -218,7 +230,8 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
                             style: TextStyle(
                                 fontFamily: "Montserrat",
                                 fontSize: 20,
-                                fontWeight: FontWeight.w300, color: Colors.white),
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white),
                           ),
                         )
                       ],
@@ -231,5 +244,18 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
         ),
       ),
     );
+  }
+}
+
+class CustomMarker {
+  BitmapDescriptor pin;
+  String asset;
+
+  CustomMarker({this.asset}) {
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(devicePixelRatio: 2.5), asset)
+        .then((onValue) {
+      pin = onValue;
+    });
   }
 }

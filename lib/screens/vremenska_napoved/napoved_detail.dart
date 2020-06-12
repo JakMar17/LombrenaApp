@@ -43,7 +43,9 @@ class _NapovedDetailState extends State<NapovedDetail> {
           title: t[0] + " " + partOfDay,
           mainMeasure: main,
           unit: "°C",
-          secondData: "${n.minWind.toInt()} - ${n.maxWind.toInt()} km/h",
+          secondData: n.minWind == 0
+              ? n.maxWind == 0 ? "0 km/h" : "do ${n.maxWind.toInt()} km/h"
+              : "${n.minWind.toInt()} - ${n.maxWind.toInt()} km/h",
           icon: n.weatherIcon));
     }
   }
@@ -111,7 +113,8 @@ class _NapovedDetailState extends State<NapovedDetail> {
                     ));
                   });
                 },
-                icon: Icon(napoved.isFavourite ? Icons.star : Icons.star_border),
+                icon:
+                    Icon(napoved.isFavourite ? Icons.star : Icons.star_border),
               ),
             )
           ],
@@ -212,7 +215,11 @@ class _NapovedDetailState extends State<NapovedDetail> {
                       width: 20,
                     ),
                     Text(
-                      "${trenutna.minWind.toInt()} - ${trenutna.maxWind.toInt()} km/h",
+                      trenutna.minWind == 0
+                          ? trenutna.maxWind == 0
+                              ? "0 km/h"
+                              : "do ${trenutna.maxWind.toInt()} km/h"
+                          : "${trenutna.minWind.toInt()} - ${trenutna.maxWind.toInt()} km/h",
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.white,

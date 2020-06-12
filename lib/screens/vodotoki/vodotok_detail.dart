@@ -44,17 +44,17 @@ class _VodotokDetailState extends State<VodotokDetail> {
           unit: "m3/s"),
       new DetailCard(
           title: "Visokovodni pretok",
-          mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok,
+          mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok.toInt(),
           unit: "m3/s",
-          secondData: "${vodotok.drugiPretok} m3/s",
-          thirdData: "${vodotok.tretjiPretok} m3/s"),
+          secondData: "${vodotok.drugiPretok == null ? null : vodotok.drugiPretok.toInt()} m3/s",
+          thirdData: "${vodotok.tretjiPretok == null ? null : vodotok.tretjiPretok.toInt()} m3/s"),
       new DetailCard(
           title: "Visokovodni vodostaj",
           mainMeasure:
-              vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj,
+              vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj.toInt(),
           unit: "cm",
-          secondData: "${vodotok.drugiVodostaj} cm",
-          thirdData: "${vodotok.tretjiVodostaj} cm")
+          secondData: "${vodotok.drugiVodostaj == null ? null: vodotok.drugiVodostaj.toInt()} cm",
+          thirdData: "${vodotok.tretjiVodostaj == null ? null : vodotok.tretjiVodostaj.toInt()} cm")
     ];
   }
 
@@ -144,36 +144,39 @@ class _VodotokDetailState extends State<VodotokDetail> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width - 50 - 120,
-                            child: Text(
-                              vodotok.reka,
-                              textAlign: TextAlign.left,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.55,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width - 50 - 120,
+                              child: Text(
+                                vodotok.reka,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontFamily: "Montserrat",
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.w300,
+                                    color: Colors.white),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              vodotok.pretokZnacilni != null
+                                  ? /* vodotok.pretokZnacilni */ "prvi visokovodni pretok"
+                                  : vodotok.vodostajZnacilni != null
+                                      ? vodotok.vodostajZnacilni
+                                      : "",
                               style: TextStyle(
                                   fontFamily: "Montserrat",
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.w300,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w200,
                                   color: Colors.white),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            vodotok.pretokZnacilni != null
-                                ? vodotok.pretokZnacilni
-                                : vodotok.vodostajZnacilni != null
-                                    ? vodotok.vodostajZnacilni
-                                    : "",
-                            style: TextStyle(
-                                fontFamily: "Montserrat",
-                                fontSize: 24,
-                                fontWeight: FontWeight.w200,
-                                color: Colors.white),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
@@ -346,7 +349,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
                                   card.unit,
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 20,
+                                      fontSize: 16,
                                       fontFamily: "Montserrat",
                                       fontWeight: FontWeight.w300),
                                 ),

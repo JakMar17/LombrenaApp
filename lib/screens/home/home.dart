@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
-    MenuItem(menuName: "Tekstovna napoved", url:"/napoved/tekst"),
+    MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
     //MenuItem(menuName: "Zemljevid", url: "/map")
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),
@@ -66,7 +66,7 @@ class _HomeState extends State<Home> {
               IconButton(
                   onPressed: () {
                     //showSearch(context: context, delegate: Search());
-                    
+
                     Navigator.pushReplacementNamed(context, '/search');
                   },
                   icon: Icon(
@@ -79,15 +79,11 @@ class _HomeState extends State<Home> {
           drawer: Drawer(
             child: Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
-                  begin: Alignment.bottomRight,
-                  end: Alignment.topLeft
-                )
-              ),
-              child: SafeArea(
-                child: CustomDrawer()
-              ),
+                  gradient: LinearGradient(
+                      colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
+                      begin: Alignment.bottomRight,
+                      end: Alignment.topLeft)),
+              child: SafeArea(child: CustomDrawer()),
             ),
           ),
           body: SmartRefresher(
@@ -231,7 +227,8 @@ class _HomeState extends State<Home> {
                     },
                     childCount: categoryMenu.length,
                   ),
-                )
+                ),
+                SliverToBoxAdapter(child: SizedBox(height: 50),),
               ],
             ),
           )),
@@ -340,9 +337,12 @@ class _HomeState extends State<Home> {
             unit: "°C",
             mainData: temp.napovedi[0].temperature != null
                 ? temp.napovedi[0].temperature.toString()
-                : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt())/2}",
-            secondData:
-                "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
+                : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt()) / 2}",
+            secondData: temp.napovedi[0].minWind.toInt() == 0
+                ? temp.napovedi[0].maxWind.toInt() == 0
+                    ? "0 km/h"
+                    : "do ${temp.napovedi[0].maxWind.toInt()} km/h"
+                : "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
             secondDataIcon: WeatherIcons.wind_1));
       default:
         return Container();
@@ -350,6 +350,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget favCard(FavCard card) {
+    double cardWidth = 230.0;
+
     return Padding(
       padding: const EdgeInsets.only(right: 10),
       child: GestureDetector(
@@ -361,7 +363,7 @@ class _HomeState extends State<Home> {
           });
         },
         child: Container(
-          width: 230,
+          width: cardWidth,
           decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [CustomColors.lightGrey, CustomColors.darkGrey],
@@ -404,14 +406,18 @@ class _HomeState extends State<Home> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Text(
-                          card.secondData != null ? "${card.secondData}" : "",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              letterSpacing: 0.5,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w200),
+                        Container(
+                          width: cardWidth * 0.75,
+                          child: Text(
+                            card.secondData != null ? "${card.secondData}" : "",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                letterSpacing: 0.5,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w200),
+                          ),
                         ),
                         SizedBox(
                           width: 10,
@@ -426,14 +432,18 @@ class _HomeState extends State<Home> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        Text(
-                          card.thirdData != null ? "${card.thirdData}" : "",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              letterSpacing: 0.5,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w200),
+                        Container(
+                          width: cardWidth * 0.75,
+                          child: Text(
+                            card.thirdData != null ? "${card.thirdData}" : "",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                letterSpacing: 0.5,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w200),
+                          ),
                         ),
                         SizedBox(
                           width: 10,

@@ -52,23 +52,26 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                   onPressed: () {
                     List<MapMarker> markers = [];
                     for (VodotokReka v in vodotokiPoRekah)
-                      for(MerilnoMestoVodotok m in v.vodotoki)
+                      for (MerilnoMestoVodotok m in v.vodotoki)
                         markers.add(MapMarker(
-                          title: "${m.merilnoMesto}",
-                          subtitle: m.reka,
-                          onPress: () {
-                            Navigator.pushNamed(context, "/vodotok", arguments: {"vodotok": m});
-                          },
-                          mainData: m.pretok == null ? "${m.vodostaj}" : "${m.pretok}",
-                          mainDataUnit: m.pretok == null ? "cm" : "m3/s",
-                          leading: _setImage(m),
-                          object: m,
-                          lat: m.geoLat,
-                          lon: m.geoLon,
-                          mark: "assets/images/vodotoki/small128.png"
-                        ));
-                    
-                    Navigator.pushNamed(context, "/map", arguments: {"markers": markers});
+                            title: "${m.merilnoMesto}",
+                            subtitle: m.reka,
+                            onPress: () {
+                              Navigator.pushNamed(context, "/vodotok",
+                                  arguments: {"vodotok": m});
+                            },
+                            mainData: m.pretok == null
+                                ? "${m.vodostaj}"
+                                : "${m.pretok}",
+                            mainDataUnit: m.pretok == null ? "cm" : "m3/s",
+                            leading: _setImage(m),
+                            object: m,
+                            lat: m.geoLat,
+                            lon: m.geoLon,
+                            mark: _setUrl(m)));
+
+                    Navigator.pushNamed(context, "/map",
+                        arguments: {"markers": markers});
                   },
                 )
               ],
@@ -151,7 +154,7 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
     return list;
   }
 
-  Widget _setImage(MerilnoMestoVodotok vodotok) {
+  String _setUrl(MerilnoMestoVodotok vodotok) {
     String url = "assets/images/vodotoki/";
 
     if (vodotok.pretokZnacilni != null) {
@@ -203,6 +206,13 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
     } else {
       url = null;
     }
+
+    print("${vodotok.merilnoMesto}  $url");
+    return url;
+  }
+
+  Widget _setImage(MerilnoMestoVodotok vodotok) {
+    String url = _setUrl(vodotok);
 
     if (url != null)
       return Image.asset(

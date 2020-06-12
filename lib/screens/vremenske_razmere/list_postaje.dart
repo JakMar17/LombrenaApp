@@ -54,7 +54,8 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
                         mainDataUnit: "°C",
                         object: p,
                         lat: p.geoLat,
-                        lon: p.geoLon
+                        lon: p.geoLon,
+                        mark: setMarker(p.temperature)  /* "assets/images/temperature/temp001.png" */
                       ));
                     
                     Navigator.pushNamed(context, "/map", arguments: {"markers": markers});
@@ -143,5 +144,30 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
       );
     }
     return listItems;
+  }
+
+  String setMarker(double temp) {
+    String base = "assets/images/temperature/";
+    print(temp);
+    if(temp < -10)
+      return "${base}temp001.png";
+    else if(temp < 0)
+      return "${base}temp002.png";
+    else if(temp < 5)
+      return "${base}temp003.png";
+    else if(temp < 10)
+      return "${base}temp004.png";
+    else if(temp < 15)
+      return "${base}temp005.png";
+    else if(temp < 20)
+      return "${base}temp006.png";
+    else if(temp < 28)
+      return "${base}temp007.png";
+    else if(temp < 32)
+      return "${base}temp008.png";
+    else
+      return "${base}temp009.png";
+
+    //return "";
   }
 }

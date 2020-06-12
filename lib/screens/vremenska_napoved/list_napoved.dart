@@ -117,6 +117,13 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                           lat: n.geoLat,
                           lon: n.geoLon,
                           object: n,
+                          leading: Column(
+                            children: <Widget>[
+                              Icon(n.weatherIcon, color: Colors.white, size: 40,),
+                              SizedBox(height: 12,)
+                            ],
+                          ),
+                          mark: setMarker(n.temperature == null ? ((n.tempMax - n.tempMin) /2) : n.temperature),
                           onPress: () {
                             Navigator.pushNamed(context, "/napoved",
                                 arguments: {"napoved": c});
@@ -170,5 +177,30 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
     }
 
     return list;
+  }
+
+  String setMarker(double temp) {
+    String base = "assets/images/temperature/";
+    print(temp);
+    if(temp < -10)
+      return "${base}temp001.png";
+    else if(temp < 0)
+      return "${base}temp002.png";
+    else if(temp < 5)
+      return "${base}temp003.png";
+    else if(temp < 10)
+      return "${base}temp004.png";
+    else if(temp < 15)
+      return "${base}temp005.png";
+    else if(temp < 20)
+      return "${base}temp006.png";
+    else if(temp < 28)
+      return "${base}temp007.png";
+    else if(temp < 32)
+      return "${base}temp008.png";
+    else
+      return "${base}temp009.png";
+
+    //return "";
   }
 }

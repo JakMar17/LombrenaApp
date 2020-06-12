@@ -56,8 +56,10 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/vodotoki/
+    - assets/images/vodotoki/big128.png
     - assets/images/
     - assets/map_style/
+    - assets/images/temperature/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
