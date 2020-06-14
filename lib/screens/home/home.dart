@@ -9,6 +9,7 @@ import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/style/weather_icons2.dart';
+import 'package:vreme/data/location_services/location_services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -41,14 +42,21 @@ class _HomeState extends State<Home> {
     setState(() {});
   }
 
+  LocationServices locationServices = LocationServices();
   @override
   void initState() {
+    x(locationServices);
     super.initState();
+  }
+
+  void x(LocationServices locationServices) async {
+    var y = await locationServices.getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     favorites = Favorites();
+    List<dynamic> list = locationServices.getClosestData();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -94,7 +102,11 @@ class _HomeState extends State<Home> {
               slivers: <Widget>[
                 favorites.getFavorites().length != 0
                     ? SliverToBoxAdapter(
-                        child: Container(
+                        child: _cardRow(
+                            "Priljubljene", favorites.getFavorites(), () {
+                          Navigator.pushNamed(context, "/reorder/favorites");
+                        }),
+                        /* child: Container(
                             color: Colors.transparent,
                             child: Padding(
                                 padding: EdgeInsets.only(top: 30),
@@ -145,9 +157,17 @@ class _HomeState extends State<Home> {
                                       height: 30,
                                     ),
                                   ],
-                                ))),
+                                ))), */
                       )
                     : SliverToBoxAdapter(),
+                SliverToBoxAdapter(
+                    child: _cardRow(
+                        "V bližini", locationServices.getClosestData(), null)),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 30,
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: Container(
                     color: Colors.transparent,
@@ -168,7 +188,7 @@ class _HomeState extends State<Home> {
                                 color: Colors.white,
                                 letterSpacing: 1,
                                 fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w500),
+                                fontWeight: FontWeight.w300),
                           ),
                         ],
                       ),
@@ -223,6 +243,67 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Widget _cardRow(String rowName, List<dynamic> list, void onPress()) {
+    return Container(
+        color: Colors.transparent,
+        child: Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        rowName,
+                        style: TextStyle(
+                            fontSize: 36,
+                            letterSpacing: 1,
+                            color: Colors.white,
+                            fontFamily: "Montserrat",
+                            fontWeight: FontWeight.w300),
+                      ),
+                      onPress != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: IconButton(
+                                onPressed: onPress,
+                                icon: Icon(
+                                  CustomIcons.option,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 300,
+                  child: Expanded(
+                      child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      dynamic temp = list[index];
+                      double leftPadding = 0;
+                      if (index == 0) leftPadding = 20;
+                      if (temp.type == "avtomatskaPostaja" &&
+                          temp.titleShort == null) return Container();
+                      return Padding(
+                          padding: EdgeInsets.only(left: leftPadding),
+                          child: _createCard(temp));
+                    },
+                  )),
+                ),
+              ],
+            )));
+  }
+
   Widget buildCardList(List<dynamic> list) {
     //List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
@@ -235,7 +316,8 @@ class _HomeState extends State<Home> {
         if (temp.type == "avtomatskaPostaja" && temp.titleShort == null)
           return Container();
         return Padding(
-            padding: EdgeInsets.only(left: leftPadding), child: _createCard(temp));
+            padding: EdgeInsets.only(left: leftPadding),
+            child: _createCard(temp));
       },
     );
   }

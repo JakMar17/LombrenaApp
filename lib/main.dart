@@ -6,6 +6,7 @@ import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
 import 'package:vreme/screens/home/reordering_favorites.dart';
 import 'package:vreme/screens/maps/map.dart';
+import 'package:vreme/screens/settings/settings.dart';
 import 'package:vreme/screens/text_napoved/text_napoved.dart';
 import 'package:vreme/screens/vodotoki/list_vodotoki.dart';
 import 'package:vreme/screens/vodotoki/vodotok_detail.dart';
@@ -34,7 +35,8 @@ void main() async{
       '/napoved/tekst': (context) => TekstovnaNapoved(),
       '/map': (context) => MapOfSlovenia(),
       '/about': (context) => AboutApp(),
-      '/reorder/favorites': (context) => ReorderingFavorites()
+      '/reorder/favorites': (context) => ReorderingFavorites(),
+      '/settings': (sontext) => SettingsScreen()
     },
     debugShowCheckedModeBanner: false,
   ));
