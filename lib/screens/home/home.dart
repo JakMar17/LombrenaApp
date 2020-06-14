@@ -119,10 +119,6 @@ class _HomeState extends State<Home> {
                                                 fontWeight: FontWeight.w500),
                                           ),
 
-                                          /* 
-                                            custom menu for category
-                                          */
-
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 right: 15),
@@ -143,7 +139,7 @@ class _HomeState extends State<Home> {
                                     ),
                                     Container(
                                       height: 300,
-                                      child: Expanded(child: favCards()),
+                                      child: Expanded(child: buildCardList(favorites.getFavorites())),
                                     ),
                                     SizedBox(
                                       height: 30,
@@ -227,27 +223,27 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget favCards() {
-    List<dynamic> priljubljene = favorites.getFavorites();
+  Widget buildCardList(List<dynamic> list) {
+    //List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: priljubljene.length,
+      itemCount: list.length,
       itemBuilder: (context, index) {
-        dynamic temp = priljubljene[index];
+        dynamic temp = list[index];
         double leftPadding = 0;
         if (index == 0) leftPadding = 20;
         if (temp.type == "avtomatskaPostaja" && temp.titleShort == null)
           return Container();
         return Padding(
-            padding: EdgeInsets.only(left: leftPadding), child: _doFav(temp));
+            padding: EdgeInsets.only(left: leftPadding), child: _createCard(temp));
       },
     );
   }
 
-  Widget _doFav(var temp) {
+  Widget _createCard(var temp) {
     switch (temp.type) {
       case "avtomatskaPostaja":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/postaja',
             urlArgumentName: "postaja",
             title: temp.titleShort,
@@ -264,7 +260,7 @@ class _HomeState extends State<Home> {
             //secondDataIcon: WeatherIcons2.daySunny,
             thirdDataIcon: WeatherIcons.water_drop));
       case "vodotok":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/vodotok',
             urlArgumentName: 'vodotok',
             object: temp,
@@ -280,7 +276,7 @@ class _HomeState extends State<Home> {
             secondDataIcon: WeatherIcons.water,
             thirdDataIcon: WeatherIcons.temperatire));
       case "napoved":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/napoved',
             urlArgumentName: 'napoved',
             object: temp,
@@ -300,7 +296,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget favCard(FavCard card) {
+  Widget _card(Card card) {
     double cardWidth = 230.0;
 
     return Padding(
@@ -425,7 +421,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-class FavCard {
+class Card {
   String title;
   String unit;
   String mainData;
@@ -439,7 +435,7 @@ class FavCard {
   IconData secondDataIcon;
   IconData thirdDataIcon;
 
-  FavCard(
+  Card(
       {this.title,
       this.unit,
       this.mainData,
