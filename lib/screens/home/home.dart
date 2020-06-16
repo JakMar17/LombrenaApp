@@ -65,8 +65,6 @@ class _HomeState extends State<Home> {
             actions: <Widget>[
               IconButton(
                   onPressed: () {
-                    //showSearch(context: context, delegate: Search());
-
                     Navigator.pushReplacementNamed(context, '/search');
                   },
                   icon: Icon(
@@ -118,22 +116,6 @@ class _HomeState extends State<Home> {
                                                 fontFamily: "Montserrat",
                                                 fontWeight: FontWeight.w500),
                                           ),
-
-                                          /* 
-                                            custom menu for category
-                                          */
-
-                                          /* Padding(
-                                      padding: const EdgeInsets.only(right: 15),
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          CustomIcons.option,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    ) */
                                         ],
                                       ),
                                     ),
@@ -249,46 +231,7 @@ class _HomeState extends State<Home> {
         return Padding(
             padding: EdgeInsets.only(left: leftPadding),
             child:
-                /* temp.type == "avtomatskaPostaja"
-                ? favCard(new FavCard(
-                    url: '/postaja',
-                    urlArgumentName: "postaja",
-                    title: temp.titleShort,
-                    object: temp,
-                    mainData: temp.temperature.toString(),
-                    unit: "°C",
-                    secondData: temp.averageWind != null
-                        ? "${temp.averageWind} km/h"
-                        : temp.windSpeed != null
-                            ? "${temp.windSpeed} km/h"
-                            : "0 km/h",
-                    thirdData: temp.averageHum != null
-                        ? "${temp.averageHum} %"
-                        : "${temp.humidity} %",
-                    secondDataIcon: WeatherIcons.wind_1,
-                    //secondDataIcon: WeatherIcons2.daySunny,
-                    thirdDataIcon: WeatherIcons.water_drop))
-                : temp.type == "vodotok"
-                    ? favCard(new FavCard(
-                        url: '/vodotok',
-                        urlArgumentName: 'vodotok',
-                        object: temp,
-                        title: temp.merilnoMesto,
-                        mainData: temp.pretok != null
-                            ? temp.pretok.round().toString()
-                            : temp.vodostaj.round().toString(),
-                        unit: temp.pretok != null ? "m3/s" : "cm",
-                        secondData: temp.pretokZnacilni != null
-                            ? temp.pretokZnacilni
-                            : temp.vodostajZnacilni != null
-                                ? temp.vodostajZnacilni
-                                : "",
-                        thirdData:
-                            temp.tempVode != null ? "${temp.tempVode} °C" : "",
-                        secondDataIcon: WeatherIcons.water,
-                        thirdDataIcon: WeatherIcons.temperatire))
-                    : Container() */
-                _doFav(temp));
+            _doFav(temp));
       },
     );
   }
