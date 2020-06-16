@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';

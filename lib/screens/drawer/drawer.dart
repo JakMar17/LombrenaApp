@@ -76,8 +76,7 @@ class CustomDrawer extends StatelessWidget {
             Column(
               children: <Widget>[
                 buttonRow(Icons.settings, "Nastavitve", () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/settings");
+                  Navigator.pushNamedAndRemoveUntil(context, "/settings", (r) => false);
                 }),
                 buttonRow(Icons.library_books, "O aplikaciji", () {
                   Navigator.pop(context);

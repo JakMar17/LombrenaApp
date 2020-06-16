@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
@@ -10,6 +10,7 @@ import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/style/weather_icons2.dart';
 import 'package:vreme/data/location_services/location_services.dart';
+import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -20,6 +21,8 @@ class _HomeState extends State<Home> {
   static RestApi restApi = RestApi();
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
   List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
+
+  SettingsPreferences _settings = SettingsPreferences();
 
   List<MenuItem> categoryMenu = [
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
@@ -161,15 +164,19 @@ class _HomeState extends State<Home> {
                       )
                     : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
-                    child: _cardRow(
-                        "V bližini", locationServices.getClosestData(), null)),
+                    child: _settings.getSetting("settings_bliznje_lokacije")
+                        ? _cardRow("V bližini",
+                            locationServices.getClosestData(), null)
+                        : Container()),
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: 30,
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: Container(
+                  child: 
+                  _settings.getSetting("settings_visible_categories") ? 
+                  Container(
                     color: Colors.transparent,
                     child:
                         /* 
@@ -193,8 +200,9 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                  ),
+                  ) : Container()
                 ),
+                _settings.getSetting("settings_visible_categories") ?
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
@@ -233,7 +241,7 @@ class _HomeState extends State<Home> {
                     },
                     childCount: categoryMenu.length,
                   ),
-                ),
+                ) : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
                   child: SizedBox(height: 50),
                 ),
@@ -282,6 +290,7 @@ class _HomeState extends State<Home> {
                     ],
                   ),
                 ),
+                SizedBox(height: 15),
                 Container(
                   height: 300,
                   child: Expanded(

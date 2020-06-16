@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';

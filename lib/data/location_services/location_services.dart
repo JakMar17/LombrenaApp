@@ -44,6 +44,10 @@ class LocationServices {
   }
 
   dynamic closestElement(List<dynamic> list) {
+
+    if(list == null)
+      return null;
+
     var closest;
     double rad;
 

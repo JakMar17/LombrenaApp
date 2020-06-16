@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/style/custom_icons.dart';
+import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -7,7 +8,26 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool isSwitched = true;
+  SettingsPreferences _settings;
+
+  Toggle pokaziBliznje;
+  Toggle pokaziKategorije;
+
+  @override
+  void initState() {
+    super.initState();
+    _settings = SettingsPreferences();
+    pokaziBliznje = Toggle(
+        title: "Bližnje lokcaije",
+        description: "Prikaži bližnje postaje in napovedi",
+        isSwitched: _settings.getSetting("settings_bliznje_lokacije"),
+        id: "settings_bliznje_lokacije");
+    pokaziKategorije = Toggle(
+        title: "Kategorije",
+        description: "Vidnost menuja s kategorijami",
+        isSwitched: _settings.getSetting("settings_visible_categories"),
+        id: "settings_visible_categories");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +46,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title: Text(
             "Nastavitve",
             style: TextStyle(fontFamily: "Montserrat"),
+          ),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, "/");
+            },
           ),
           actions: <Widget>[
             IconButton(
@@ -54,12 +84,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SizedBox(
                 height: 15,
               ),
-              toggleSettingRow(
-                  "Bližnje lokacije", "Prikaži bližnje postaje in napovedi"),
+              toggleSettingRow(pokaziBliznje),
               SizedBox(
                 height: 5,
               ),
-              toggleSettingRow("Kategorije", "Vidnost menuja s kategorijami"),
+              toggleSettingRow(pokaziKategorije),
               SizedBox(
                 height: 5,
               ),
@@ -101,11 +130,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  GestureDetector toggleSettingRow(String title, String subtitle) {
+  GestureDetector toggleSettingRow(Toggle toggle) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          isSwitched = !isSwitched;
+          toggle.switchToggle(_settings);
         });
       },
       child: Row(
@@ -117,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  title,
+                  toggle.title,
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
@@ -125,7 +154,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  subtitle,
+                  toggle.description,
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
@@ -140,10 +169,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Switch(
               onChanged: (value) {
                 setState(() {
-                  isSwitched = !isSwitched;
+                  toggle.switchToggle(_settings);
                 });
               },
-              value: isSwitched,
+              value: toggle.isSwitched,
               activeTrackColor: CustomColors.lightGrey,
               activeColor: CustomColors.darkGrey,
             ),
@@ -151,5 +180,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+}
+
+class Toggle {
+  String title;
+  String description;
+  String id;
+  bool isSwitched = false;
+
+  Toggle({this.title, this.description, this.id, this.isSwitched}) {
+    if (isSwitched == null) isSwitched = true;
+  }
+
+  void switchToggle(SettingsPreferences s) {
+    isSwitched = !isSwitched;
+    s.setSetting(id, isSwitched);
   }
 }
