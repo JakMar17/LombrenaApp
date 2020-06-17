@@ -12,6 +12,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Toggle pokaziBliznje;
   Toggle pokaziKategorije;
+  Toggle pokaziOpozorila;
 
   @override
   void initState() {
@@ -27,6 +28,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         description: "Vidnost menuja s kategorijami",
         isSwitched: _settings.getSetting("settings_visible_categories"),
         id: "settings_visible_categories");
+    pokaziOpozorila = Toggle(
+        title: "Prikaži vremenska opozorila",
+        description: "Obvestilo, ko ARSO izda vremensko opozorilo",
+        isSwitched: _settings.getSetting("settings_opozorila_prikazi"),
+        id: "settings_opozorila_prikazi");
   }
 
   @override
@@ -91,43 +97,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 toggleSettingRow(pokaziBliznje),
                 SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
                 toggleSettingRow(pokaziKategorije),
                 SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              "Postavitev",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "Montserrat",
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Text(
-                              "Prilagodi postavitev domačega zaslona",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "Montserrat",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w300),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )
+                buttonRow("Postavitev", "Prilagodi postavitev domačega zaslona",
+                    () {}),
+                SizedBox(
+                  height: 25,
+                ),
+                Text("Vremenska opozorila",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Montserrat",
+                        fontSize: 28,
+                        fontWeight: FontWeight.w300)),
+                SizedBox(
+                  height: 15,
+                ),
+                toggleSettingRow(pokaziOpozorila),
+                SizedBox(
+                  height: 10,
+                ),
+                pokaziOpozorila.isSwitched
+                    ? buttonRow("Izbira pokrajin",
+                        "Za katere naj se pojavijo obvestila", () {})
+                    : Container(),
+                SizedBox(
+                  height: 10,
+                ),
+                pokaziOpozorila.isSwitched
+                    ? buttonRow("Najnižja stopnja opozorila",
+                        "Za katerega se pojavijo obvestila", () {
+                        _warningLevelDialog();
+                      })
+                    : Container(),
               ],
             ),
           ),
@@ -186,6 +192,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  GestureDetector buttonRow(String title, String description, void onTap()) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "Montserrat",
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  description,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "Montserrat",
+                      fontSize: 16,
+                      fontWeight: FontWeight.w300),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _warningLevelDialog() async {
+    switch (await showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text("Najnižja stopnja opozorila"),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Rdeče opozorilo - ukrepajte"),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Oranžno opozorilo - bodite pripravljeni"),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Rumeno opozorilo - bodite pozorni"),
+            )
+          ],
+        );
+      },
+    )) {
+    }
   }
 }
 
