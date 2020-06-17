@@ -12,7 +12,7 @@ import 'package:vreme/style/weather_icons2.dart';
 import 'package:vreme/data/location_services/location_services.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatefulWidget  {
   @override
   _HomeState createState() => _HomeState();
 }
@@ -51,6 +51,7 @@ class _HomeState extends State<Home> {
     x(locationServices);
     super.initState();
   }
+
 
   void x(LocationServices locationServices) async {
     var y = await locationServices.getLocation();
@@ -174,74 +175,75 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: 
-                  _settings.getSetting("settings_visible_categories") ? 
-                  Container(
-                    color: Colors.transparent,
-                    child:
-                        /* 
+                    child: _settings.getSetting("settings_visible_categories")
+                        ? Container(
+                            color: Colors.transparent,
+                            child:
+                                /* 
                       Kategorije
                     */
-                        Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Kategorije",
-                            style: TextStyle(
-                                fontSize: 36,
-                                color: Colors.white,
-                                letterSpacing: 1,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ) : Container()
-                ),
-                _settings.getSetting("settings_visible_categories") ?
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                    context, categoryMenu[index].url)
-                                .then((value) {
-                              setState(() {});
-                            });
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                color: Colors.transparent,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    categoryMenu[index].menuName,
+                                Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 15, bottom: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Kategorije",
                                     style: TextStyle(
+                                        fontSize: 36,
                                         color: Colors.white,
-                                        fontSize: 20,
-                                        letterSpacing: 0.6,
+                                        letterSpacing: 1,
                                         fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.w400),
+                                        fontWeight: FontWeight.w300),
                                   ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Container()),
+                _settings.getSetting("settings_visible_categories")
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 10),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                          context, categoryMenu[index].url)
+                                      .then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Colors.transparent,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          categoryMenu[index].menuName,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              letterSpacing: 0.6,
+                                              fontFamily: "Montserrat",
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
+                          childCount: categoryMenu.length,
                         ),
-                      );
-                    },
-                    childCount: categoryMenu.length,
-                  ),
-                ) : SliverToBoxAdapter(),
+                      )
+                    : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
                   child: SizedBox(height: 50),
                 ),
@@ -373,6 +375,7 @@ class _HomeState extends State<Home> {
             object: temp,
             title: temp.napovedi[0].longTitle,
             unit: "°C",
+            icon: temp.napovedi[0].weatherIcon,
             mainData: temp.napovedi[0].temperature != null
                 ? temp.napovedi[0].temperature.toString()
                 : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt()) / 2}",
@@ -495,13 +498,31 @@ class _HomeState extends State<Home> {
                     )
                   ],
                 ),
-                Text(
-                  card.title.toUpperCase(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w300),
+                Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: <Widget>[
+                    card.icon != null ? 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Icon(card.icon, color: Colors.white30, size: 96,),
+                            SizedBox(height: 48,)
+                          ],
+                        ),
+                        SizedBox(width: 45,)
+                      ],
+                    ) : Container(),
+                    Text(
+                      card.title.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
                 )
               ],
             ),
@@ -522,6 +543,7 @@ class Card {
   String urlArgumentName;
 
   var object;
+  IconData icon;
 
   IconData secondDataIcon;
   IconData thirdDataIcon;
@@ -536,5 +558,6 @@ class Card {
       this.url,
       this.urlArgumentName,
       this.secondDataIcon,
-      this.thirdDataIcon});
+      this.thirdDataIcon,
+      this.icon});
 }

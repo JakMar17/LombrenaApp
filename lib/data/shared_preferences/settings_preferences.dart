@@ -15,7 +15,8 @@ class SettingsPreferences {
 
   bool getSetting(String name) {
     try{
-      return _sharedPreferences.getBool(name);
+      bool x = _sharedPreferences.getBool(name);
+      return x == null ? true : x;
       } catch(Exception) {
         return false;
       }
