@@ -119,13 +119,25 @@ class _LoadingState extends State<Loading> {
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 30),
-                child: Text(
-                  "2020 Jakob Marušič",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w300),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "2020",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w300),
+                    ),
+                    Text(
+                      "MarelaTeam",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
                 ),
               )
             ],
