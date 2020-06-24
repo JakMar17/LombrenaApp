@@ -29,6 +29,7 @@ class _HomeState extends State<Home> {
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
     MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
+    MenuItem(menuName: "Izdana opozorila", url: "/warnings")
     //MenuItem(menuName: "Zemljevid", url: "/map")
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),

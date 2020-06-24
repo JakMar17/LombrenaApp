@@ -70,19 +70,24 @@ class CustomDrawer extends StatelessWidget {
                 buttonRow(WeatherIcons.water, "Vodotoki", () {
                   Navigator.pop(context);
                   Navigator.pushNamed(context, "/vodotoki");
+                }),
+                buttonRow(Icons.warning, "Opozorila", () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/warnings");
                 })
               ],
             ),
             Column(
               children: <Widget>[
                 buttonRow(Icons.settings, "Nastavitve", () {
-                  Navigator.pushNamedAndRemoveUntil(context, "/settings", (r) => false);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/settings", (r) => false);
                   /* Navigator.pop(context);
                   Navigator.pushNamed(context, "/settings"); */
                 }),
                 buttonRow(Icons.library_books, "O aplikaciji", () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, "/about");
+                  Navigator.pushNamed(context, ("/about"));
                 }),
                 SizedBox(
                   height: 20,
