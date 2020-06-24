@@ -28,6 +28,7 @@ class _LoadingState extends State<Loading> {
     bool napoved3 = await restApi.fetch3DnevnaNapoved();
     bool napovedPokrajine = await restApi.fetchPokrajinskaNapoved();
     await restApi.fetchTextNapoved();
+    await restApi.fecthWarnings();
     if (postaje && vodotoki && napoved && napoved3 && napovedPokrajine)
       Navigator.pushReplacementNamed(context, "/");
     else {

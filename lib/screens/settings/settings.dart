@@ -14,12 +14,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Toggle pokaziKategorije;
   Toggle pokaziOpozorila;
 
+  List<Toggle> warningRegions;
+
   @override
   void initState() {
     super.initState();
     _settings = SettingsPreferences();
     pokaziBliznje = Toggle(
-        title: "Bližnje lokcaije",
+        title: "Bližnje lokacije",
         description: "Prikaži bližnje postaje in napovedi",
         isSwitched: _settings.getSetting("settings_bliznje_lokacije"),
         id: "settings_bliznje_lokacije");
@@ -31,8 +33,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     pokaziOpozorila = Toggle(
         title: "Prikaži vremenska opozorila",
         description: "Obvestilo, ko ARSO izda vremensko opozorilo",
-        isSwitched: _settings.getSetting("settings_opozorila_prikazi"),
-        id: "settings_opozorila_prikazi");
+        isSwitched: _settings.getSetting("settings_warnings_notify"),
+        id: "settings_warnings_notify");
+    warningRegions = [
+      Toggle(title: "osrednja Slovenija"),
+      Toggle(title: "jugovzhodna Slovenija"),
+    ];
   }
 
   @override
@@ -100,11 +106,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 10,
                 ),
                 toggleSettingRow(pokaziKategorije),
-                SizedBox(
+                /* SizedBox(
                   height: 10,
                 ),
                 buttonRow("Postavitev", "Prilagodi postavitev domačega zaslona",
-                    () {}),
+                    () {}), */
                 SizedBox(
                   height: 25,
                 ),
@@ -123,7 +129,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 pokaziOpozorila.isSwitched
                     ? buttonRow("Izbira pokrajin",
-                        "Za katere naj se pojavijo obvestila", () {})
+                        "Za katere naj se pojavijo obvestila", () {
+                          Navigator.pushNamed(
+                            context, '/settings/warnings/regions');
+                        })
                     : Container(),
                 SizedBox(
                   height: 10,
@@ -131,7 +140,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 pokaziOpozorila.isSwitched
                     ? buttonRow("Najnižja stopnja opozorila",
                         "Za katerega se pojavijo obvestila", () {
-                        _warningLevelDialog();
+                        _warningLevelDialog(
+                          
+                        );
                       })
                     : Container(),
               ],
@@ -237,18 +248,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
+                _settings.setStringSetting("settings_warnings_notify_level", "red");
                 Navigator.pop(context);
               },
               child: Text("Rdeče opozorilo - ukrepajte"),
             ),
             SimpleDialogOption(
               onPressed: () {
+                _settings.setStringSetting("settings_warnings_notify_level", "orange");
                 Navigator.pop(context);
               },
               child: Text("Oranžno opozorilo - bodite pripravljeni"),
             ),
             SimpleDialogOption(
               onPressed: () {
+                _settings.setStringSetting("settings_warnings_notify_level", "yellow");
                 Navigator.pop(context);
               },
               child: Text("Rumeno opozorilo - bodite pozorni"),
@@ -258,6 +272,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
     )) {
     }
+  }
+
+  bool isChecked = false;
+  Future<void> _displayDialog(List<Toggle> regions) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Izbira pokrajin'),
+            /* content: CheckboxListTile(
+              title: Text("CheckBox Text"),
+              value: isChecked,
+              onChanged: (val) {
+                setState(() {
+                  if(isChecked != null)
+                    isChecked = !isChecked;
+                  else
+                    isChecked = true;
+                  
+                });
+              },
+            ), */
+            content: Column(children: <Widget>[
+              for(Toggle t in regions)
+                Row(children: <Widget>[
+                  Text(t.title),
+                  Checkbox(
+                    value: t.isSwitched,
+                    onChanged: (val) {
+                      setState(() {
+                        t.switchToggle(null);
+                      });
+                    },
+                  )
+                ],)
+            ],),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('Shrani'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 }
 
@@ -273,6 +333,7 @@ class Toggle {
 
   void switchToggle(SettingsPreferences s) {
     isSwitched = !isSwitched;
-    s.setSetting(id, isSwitched);
+    if(s != null)
+      s.setSetting(id, isSwitched);
   }
 }
