@@ -255,6 +255,9 @@ class _HomeState extends State<Home> {
   }
 
   Widget _cardRow(String rowName, List<dynamic> list, void onPress()) {
+    if(list == null)
+      return Container();
+
     return Container(
         color: Colors.transparent,
         child: Padding(
