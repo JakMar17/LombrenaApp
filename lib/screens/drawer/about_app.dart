@@ -96,11 +96,11 @@ class AboutApp extends StatelessWidget {
                       fontWeight: FontWeight.w200),
                 ),
                 Text(
-                  "Vse pravice pridržane",
+                  "Vse pravice pridržane, vir podatkov je ARSO",
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w200),
                 ),
                 SizedBox(
