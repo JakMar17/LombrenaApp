@@ -151,8 +151,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
                 icon:
                     Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
               ),
+<<<<<<< HEAD
             ),
             //IconButton(icon: Icon(Icons.notifications, color: Colors.white), color: Colors.white ,)
+=======
+            )
+>>>>>>> develop
           ],
         ),
         body: SmartRefresher(
@@ -177,7 +181,11 @@ class _PostajaDetailState extends State<PostajaDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
+<<<<<<< HEAD
                               postaja.temperature.toString(),
+=======
+                              postaja.averageTemp.toString(),
+>>>>>>> develop
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 100,

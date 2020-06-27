@@ -1,6 +1,10 @@
 import 'package:http/http.dart';
+<<<<<<< HEAD
 import 'package:vreme/data/models/opozorila.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
+=======
+import 'package:vreme/data/favorites.dart';
+>>>>>>> develop
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';
@@ -16,7 +20,10 @@ class RestApi {
   static List<NapovedCategory> napoved3dnevna;
   static List<NapovedCategory> napovedPoPokrajinah;
   static TextNapoved textNapoved;
+<<<<<<< HEAD
   static List<WarningRegion> opozorilaPoRegijah;
+=======
+>>>>>>> develop
 
   Favorites f = Favorites();
 
