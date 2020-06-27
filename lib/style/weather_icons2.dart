@@ -35,4 +35,15 @@ class WeatherIcons2 {
   static const IconData fog = IconData(0xf021, fontFamily: _fontFamily);
   /*  */
   static const IconData wind = IconData(0xf050, fontFamily: _fontFamily);
+  /*  */
+  static const IconData warning_wind = wind;
+  static const IconData warning_rain = IconData(0xf04e, fontFamily: _fontFamily);
+  static const IconData warning_thunderstorm = IconData(0xf016, fontFamily: _fontFamily);
+  static const IconData warning_snow = IconData(0xf076, fontFamily: _fontFamily);
+  static const IconData warning_ice = IconData(0xf063, fontFamily: _fontFamily);
+  static const IconData warning_lowTemp = IconData(0xf053, fontFamily: _fontFamily);
+  static const IconData warning_highTemp = IconData(0xf055, fontFamily: _fontFamily);
+  static const IconData warning_fire = IconData(0xf0c7, fontFamily: _fontFamily);
+  static const IconData warning_coast = IconData(0xf07c, fontFamily: _fontFamily);
+  static const IconData warning_avalanche = IconData(0xf0c5, fontFamily: _fontFamily);
 }

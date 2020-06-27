@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/data/shared_preferences/shared_preferences.dart';
 
 class Favorites {
 
@@ -14,7 +15,16 @@ class Favorites {
     return true;
   }
 
-  List<Object> getFavorites() {
+  Favorites() {
+    Preferences p = Preferences();
+    sharedPreferences = p.getPreferences();
+  }
+
+  void setFav(List<dynamic> f) {
+    _favorites = f;
+  }
+
+  List<dynamic> getFavorites() {
     if(_favorites == null) {
       //get from shared preferences
       _favorites = [];

@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/models/opozorila.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';
@@ -15,6 +16,7 @@ class RestApi {
   static List<NapovedCategory> napoved3dnevna;
   static List<NapovedCategory> napovedPoPokrajinah;
   static TextNapoved textNapoved;
+  static List<WarningRegion> opozorilaPoRegijah;
 
   Favorites f = Favorites();
 
@@ -653,6 +655,69 @@ class RestApi {
           textNapoved.povzetek = text[i];
           break;
       }
+    }
+
+    return true;
+  }
+
+  List<WarningRegion> getWarnings() {
+    if(opozorilaPoRegijah == null) fecthWarnings();
+    return opozorilaPoRegijah;
+  }
+
+  Future<bool> fecthWarnings() async {
+    Response resp = null;
+    String baseUrl =
+        "https://meteo.arso.gov.si/uploads/probase/www/warning/text/sl/";
+
+    List<String> urls = [
+      "warning_SLOVENIA_SOUTH-EAST_latest_CAP.xml",
+      "warning_SLOVENIA_SOUTH-WEST_latest_CAP.xml",
+      "warning_SLOVENIA_MIDDLE_latest_CAP.xml",
+      "warning_SLOVENIA_NORTH-EAST_latest_CAP.xml",
+      "warning_SLOVENIA_NORTH-WEST_latest_CAP.xml",
+    ];
+
+    List<String> names = [
+      "jugovzhodna Slovenija",
+      "jugozahodna Slovenija",
+      "osrednja Slovenija",
+      "severovzhodna Slovenija",
+      "severozahodna Slovenija"
+    ];
+
+    opozorilaPoRegijah = [];
+
+    for (int i = 0; i < urls.length; i++) {
+      try {
+        resp = await get("${baseUrl}${urls[i]}");
+      } on Exception catch (_) {
+        return false;
+      }
+
+      dynamic rawData = utf8.decode(resp.bodyBytes);
+      rawData = xml.parse(rawData);
+      rawData = rawData.findAllElements("info");
+
+      var elements = rawData.toList();
+
+      WarningRegion wr = WarningRegion(
+        region: names[i]
+      );
+
+      for(int j = 0; j < elements.length; j++) {
+        var element = elements[j];
+        if(element.findElements("language").first.text != "sl")
+          continue;
+        Warning w = Warning(
+          event: element.findElements("event").first.text,
+          parameterValue: element.findElements("parameter").first.findElements("value").first.text,
+        );
+        wr.addWarning(w);
+      print(i.toString() + " " + j.toString());
+      }
+
+      opozorilaPoRegijah.add(wr);
     }
 
     return true;

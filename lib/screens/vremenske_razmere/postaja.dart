@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -151,7 +151,8 @@ class _PostajaDetailState extends State<PostajaDetail> {
                 icon:
                     Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
               ),
-            )
+            ),
+            //IconButton(icon: Icon(Icons.notifications, color: Colors.white), color: Colors.white ,)
           ],
         ),
         body: SmartRefresher(
@@ -176,7 +177,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              postaja.averageTemp.toString(),
+                              postaja.temperature.toString(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 100,
