@@ -24,14 +24,14 @@ class AboutApp extends StatelessWidget {
             style: TextStyle(fontFamily: "Montserrat"),
           ),
           actions: <Widget>[
-            IconButton(
+            /* IconButton(
               icon: Icon(
                 Icons.library_books,
                 color: Colors.white,
               ),
               color: Colors.white,
               onPressed: (){},
-            ),
+            ), */
             IconButton(
               icon: Icon(Icons.mail_outline),
               onPressed: () async {
