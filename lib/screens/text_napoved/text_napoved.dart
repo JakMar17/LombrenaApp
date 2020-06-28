@@ -67,9 +67,7 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
       var resp;
       try {
         resp = await get(url);
-      } on Exception catch (_) {
-        print("No internet?");
-      }
+      } on Exception catch (_) {}
 
       if (resp != null && resp.statusCode == 200) {
         try {
@@ -81,9 +79,7 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
         setState(() {
           playButton = Icon(Icons.pause);
         });
-      } else if (resp != null) {
-        print("smt wrong");
-      }
+      } else if (resp != null) {}
     }
   }
 

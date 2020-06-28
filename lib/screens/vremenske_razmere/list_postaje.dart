@@ -148,7 +148,6 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
 
   String setMarker(double temp) {
     String base = "assets/images/temperature/";
-    print(temp);
     if(temp < -10)
       return "${base}temp001.png";
     else if(temp < 0)

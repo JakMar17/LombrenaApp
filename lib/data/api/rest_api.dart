@@ -712,9 +712,10 @@ class RestApi {
         Warning w = Warning(
           event: element.findElements("event").first.text,
           parameterValue: element.findElements("parameter").first.findElements("value").first.text,
+          sOnset: element.findElements("onset").first.text,
+          sExpires: element.findElements("expires").first.text
         );
         wr.addWarning(w);
-      print(i.toString() + " " + j.toString());
       }
 
       opozorilaPoRegijah.add(wr);

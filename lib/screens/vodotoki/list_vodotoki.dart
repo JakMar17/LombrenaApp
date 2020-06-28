@@ -206,8 +206,6 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
     } else {
       url = null;
     }
-
-    print("${vodotok.merilnoMesto}  $url");
     return url;
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vreme/style/weather_icons2.dart';
 
 class Warning {
@@ -8,13 +9,19 @@ class Warning {
   String description;
   IconData icon;
   Color color;
+  DateTime onset;
+  DateTime expires;
 
   Warning({
     String event,
-    String parameterValue
+    String parameterValue,
+    String sOnset,
+    String sExpires
   }) {
-    //print(event);
-    //print(parameterValue);
+
+    //onset = DateTime.parse(sOnset, true);
+    onset = DateFormat("yyyy-MM-ddTHH:mm:ss").parse(sOnset, true);
+    onset.toLocal();
 
     List<String> x = event.split(" - ");
     List<String> y = parameterValue.split("; ");
@@ -86,10 +93,17 @@ class WarningRegion {
   }
 
   void addWarning(Warning warning) {
+
+    if(warning.onset.difference(DateTime.now()).inDays != 0)
+      return;
+
     for(Warning w in warnings)
       if(w.title == warning.title)
-        return;
-      
+        if(warning.level > w.level)
+          w = warning;
+        else
+          return;
+    
     warnings.add(warning);
   }
 }
