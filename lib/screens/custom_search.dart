@@ -44,108 +44,115 @@ class _CustomSearchState extends State<CustomSearch> {
   Widget build(BuildContext context) {
     search(_textController.text);
 
-    return Container(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [CustomColors.blue, CustomColors.blue2],
-                begin: Alignment.bottomRight,
-                end: Alignment.topLeft)),
-        child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SafeArea(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: CustomColors.lightGrey),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: <Widget>[
-                            Flexible(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  Navigator.popAndPushNamed(context, "/home");
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              flex: 10,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: TextField(
-                                  style: TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Išči in najdi",
-                                    hintStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: "Montserrat"),
-                                    labelStyle: TextStyle(color: Colors.white),
-                                    counterStyle:
-                                        TextStyle(color: Colors.white),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, "/");
+      },
+      child: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [CustomColors.blue, CustomColors.blue2],
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft)),
+          child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: CustomColors.lightGrey),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Row(
+                            children: <Widget>[
+                              Flexible(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.white,
                                   ),
-                                  controller: _textController,
-                                  onChanged: (String value) {
-                                    setState(() {});
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                        context, "/");
                                   },
                                 ),
                               ),
-                            ),
-                            Flexible(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.clear,
-                                  color: Colors.white,
+                              Flexible(
+                                flex: 10,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  child: TextField(
+                                    style: TextStyle(color: Colors.white),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "Išči in najdi",
+                                      hintStyle: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat"),
+                                      labelStyle:
+                                          TextStyle(color: Colors.white),
+                                      counterStyle:
+                                          TextStyle(color: Colors.white),
+                                    ),
+                                    controller: _textController,
+                                    onChanged: (String value) {
+                                      setState(() {});
+                                    },
+                                  ),
                                 ),
-                                onPressed: () {
-                                  _textController.clear();
-                                },
                               ),
-                            ),
-                          ],
+                              Flexible(
+                                flex: 1,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    _textController.clear();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          double paddingLeft = 0;
-                          if (index == 0) paddingLeft = 10;
-                          return Padding(
-                            padding: EdgeInsets.only(left: paddingLeft),
-                            child: _buildInputChip(categories[index]),
-                          );
-                        }),
-                  ),
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Container(
-                        width: double.infinity,
-                        child: _buildSearchResultsList(show)),
-                  ))
-                ],
-              ),
-            )));
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            double paddingLeft = 0;
+                            if (index == 0) paddingLeft = 10;
+                            return Padding(
+                              padding: EdgeInsets.only(left: paddingLeft),
+                              child: _buildInputChip(categories[index]),
+                            );
+                          }),
+                    ),
+                    Expanded(
+                        child: Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: Container(
+                          width: double.infinity,
+                          child: _buildSearchResultsList(show)),
+                    ))
+                  ],
+                ),
+              ))),
+    );
   }
 
   Widget _buildInputChip(SearchCategory cat) {
@@ -203,8 +210,8 @@ class _CustomSearchState extends State<CustomSearch> {
               id: c.categoryName));
         }
       }
-      
-      for(NapovedCategory c in napoved3dnevna) {
+
+      for (NapovedCategory c in napoved3dnevna) {
         if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(ResultElement(
@@ -265,7 +272,6 @@ class _CustomSearchState extends State<CustomSearch> {
   }
 
   Widget _buildSearchResultsList(List<ResultElement> list) {
-
     if (list == null || list.length == 0)
       return Container(
           width: double.infinity,

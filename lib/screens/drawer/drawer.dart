@@ -56,8 +56,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 100,
-                  ),
+                    height: MediaQuery.of(context).size.height * 0.05),
                   buttonRow(Icons.cloud, "Vremenska napoved", () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, "/napovedi");
