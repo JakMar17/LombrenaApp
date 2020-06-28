@@ -219,8 +219,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
                 child: Container(
                   height: screenHeight * 0.32,
                   margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Expanded(
-                    child: detailCard(),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: detailCard(),
+                      ),
+                    ],
                   ),
                 ),
               )

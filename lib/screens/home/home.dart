@@ -299,21 +299,25 @@ class _HomeState extends State<Home> {
                 SizedBox(height: 15),
                 Container(
                   height: 300,
-                  child: Expanded(
-                      child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      dynamic temp = list[index];
-                      double leftPadding = 0;
-                      if (index == 0) leftPadding = 20;
-                      if (temp.type == "avtomatskaPostaja" &&
-                          temp.titleShort == null) return Container();
-                      return Padding(
-                          padding: EdgeInsets.only(left: leftPadding),
-                          child: _createCard(temp));
-                    },
-                  )),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          dynamic temp = list[index];
+                          double leftPadding = 0;
+                          if (index == 0) leftPadding = 20;
+                          if (temp.type == "avtomatskaPostaja" &&
+                              temp.titleShort == null) return Container();
+                          return Padding(
+                              padding: EdgeInsets.only(left: leftPadding),
+                              child: _createCard(temp));
+                        },
+                      )),
+                    ],
+                  ),
                 ),
               ],
             )));
