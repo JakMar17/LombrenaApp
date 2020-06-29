@@ -5,6 +5,7 @@ import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
+import 'package:vreme/data/notification_services/local_notifications.dart';
 
 class VodotokDetail extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
   double _screenHeight;
   List<DetailCard> cards;
   Favorites favorites = Favorites();
+  LocalNotifications _localNotifications = LocalNotifications();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -61,6 +63,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -125,7 +128,11 @@ class _VodotokDetailState extends State<VodotokDetail> {
                 icon:
                     Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
               ),
-            )
+            ),
+            IconButton(icon: Icon(Icons.notifications), onPressed: (){
+                _localNotifications.showNotification(title: "${vodotok.merilnoMesto} (${vodotok.reka})", 
+                body: notificationBody());
+            },)
           ],
         ),
         body: SmartRefresher(
@@ -408,5 +415,19 @@ class _VodotokDetailState extends State<VodotokDetail> {
                 ),
               ));
         });
+  }
+
+  String notificationBody() {
+    String body = "";
+
+    if(vodotok.pretokZnacilni != null)
+      body += vodotok.pretokZnacilni + " (${vodotok.pretok} m3/s)";
+    else if (vodotok.vodostajZnacilni != null)
+      body += vodotok.vodostajZnacilni + " (${vodotok.vodostaj} cm)";
+    
+    if(vodotok.tempVode != null)
+      body += "\nTemperatura vode: ${vodotok.tempVode} °C";
+
+    return body;
   }
 }

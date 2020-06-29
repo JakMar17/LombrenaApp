@@ -20,11 +20,16 @@ class CustomDrawer extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        CircleAvatar(
-                          //backgroundColor: Colors.black12,
-                          radius: 50,
-                          backgroundImage:
-                              AssetImage("assets/images/icon128.png"),
+                        GestureDetector(
+                          onDoubleTap: () {
+                            Navigator.pushNamed(context, "/test/notifications");
+                          },
+                          child: CircleAvatar(
+                            //backgroundColor: Colors.black12,
+                            radius: 50,
+                            backgroundImage:
+                                AssetImage("assets/images/icon128.png"),
+                          ),
                         ),
                         SizedBox(
                           width: 20,
@@ -55,8 +60,7 @@ class CustomDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   buttonRow(Icons.cloud, "Vremenska napoved", () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, "/napovedi");
