@@ -31,7 +31,7 @@ class LocationServices {
   }
 
   List<dynamic> getClosestData() {
-    if (_locationData == null) getLocation();
+    if (_locationData == null) return null;
 
     List<dynamic> list = [];
 

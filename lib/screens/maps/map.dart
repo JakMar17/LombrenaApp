@@ -30,7 +30,6 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
 
     setState(() {
       for (MapMarker m in dataToShow) {
-        if (m.title == "Miren") print(m.mark);
         Marker marker = Marker(
           markerId: MarkerId(m.title),
           position: LatLng(m.lat, m.lon),

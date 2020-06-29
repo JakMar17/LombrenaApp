@@ -24,14 +24,14 @@ class AboutApp extends StatelessWidget {
             style: TextStyle(fontFamily: "Montserrat"),
           ),
           actions: <Widget>[
-            IconButton(
+            /* IconButton(
               icon: Icon(
                 Icons.library_books,
                 color: Colors.white,
               ),
               color: Colors.white,
               onPressed: (){},
-            ),
+            ), */
             IconButton(
               icon: Icon(Icons.mail_outline),
               onPressed: () async {
@@ -96,11 +96,11 @@ class AboutApp extends StatelessWidget {
                       fontWeight: FontWeight.w200),
                 ),
                 Text(
-                  "Vse pravice pridržane",
+                  "Vse pravice pridržane, vir podatkov je ARSO",
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
-                      fontSize: 18,
+                      fontSize: 14,
                       fontWeight: FontWeight.w200),
                 ),
                 SizedBox(

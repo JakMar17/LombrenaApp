@@ -28,9 +28,7 @@ class SettingsPreferences {
   void setSetting(String name, bool value) {
     try{
         _sharedPreferences.setBool(name, value);
-      } catch(Exception) {
-        print("error");
-      }
+      } catch(Exception) {}
   }
 
   String getStringSetting(String name) {
@@ -45,9 +43,7 @@ class SettingsPreferences {
   void setStringSetting(String name, String value) {
     try{
         _sharedPreferences.setString(name, value);
-      } catch(Exception) {
-        print("error");
-      }
+      } catch(Exception) {}
   }
 
   List<String> getStringListSetting(String name) {
@@ -62,9 +58,7 @@ class SettingsPreferences {
   void setStringListSetting(String name, List<String> values) {
     try{
         _sharedPreferences.setStringList(name, values);
-      } catch(Exception) {
-        print("error");
-      }
+      } catch(Exception) {}
   }
 }
 

@@ -236,8 +236,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
                 child: Container(
                   height: _screenHeight * 0.32,
                   margin: EdgeInsets.only(bottom: 0, left: 0),
-                  child: Expanded(
-                    child: _buildCards(),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: _buildCards(),
+                      ),
+                    ],
                   ),
                 ),
               )

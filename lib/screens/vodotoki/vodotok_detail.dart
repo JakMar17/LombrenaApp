@@ -165,7 +165,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
                             SizedBox(height: 10),
                             Text(
                               vodotok.pretokZnacilni != null
-                                  ? /* vodotok.pretokZnacilni */ "prvi visokovodni pretok"
+                                  ? vodotok.pretokZnacilni
                                   : vodotok.vodostajZnacilni != null
                                       ? vodotok.vodostajZnacilni
                                       : "",
@@ -199,14 +199,18 @@ class _VodotokDetailState extends State<VodotokDetail> {
                 ),
               ), */
               SliverToBoxAdapter(
-                child: SizedBox(height: _screenHeight * 0.3),
+                child: SizedBox(height: _screenHeight * 0.15),
               ),
               SliverToBoxAdapter(
                 child: Container(
                   height: _screenHeight * 0.32,
                   margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Expanded(
-                    child: detailCard(),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: detailCard(),
+                      ),
+                    ],
                   ),
                 ),
               )

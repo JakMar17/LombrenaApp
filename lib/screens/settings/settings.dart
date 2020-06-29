@@ -111,7 +111,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 buttonRow("Postavitev", "Prilagodi postavitev domačega zaslona",
                     () {}), */
-                SizedBox(
+                /*  */
+                /* SizedBox(
                   height: 25,
                 ),
                 Text("Vremenska opozorila",
@@ -130,9 +131,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 pokaziOpozorila.isSwitched
                     ? buttonRow("Izbira pokrajin",
                         "Za katere naj se pojavijo obvestila", () {
-                          Navigator.pushNamed(
+                        Navigator.pushNamed(
                             context, '/settings/warnings/regions');
-                        })
+                      })
                     : Container(),
                 SizedBox(
                   height: 10,
@@ -140,11 +141,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 pokaziOpozorila.isSwitched
                     ? buttonRow("Najnižja stopnja opozorila",
                         "Za katerega se pojavijo obvestila", () {
-                        _warningLevelDialog(
-                          
-                        );
+                        _warningLevelDialog();
                       })
-                    : Container(),
+                    : Container(), */
               ],
             ),
           ),
@@ -248,21 +247,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           children: <Widget>[
             SimpleDialogOption(
               onPressed: () {
-                _settings.setStringSetting("settings_warnings_notify_level", "red");
+                _settings.setStringSetting(
+                    "settings_warnings_notify_level", "red");
                 Navigator.pop(context);
               },
               child: Text("Rdeče opozorilo - ukrepajte"),
             ),
             SimpleDialogOption(
               onPressed: () {
-                _settings.setStringSetting("settings_warnings_notify_level", "orange");
+                _settings.setStringSetting(
+                    "settings_warnings_notify_level", "orange");
                 Navigator.pop(context);
               },
               child: Text("Oranžno opozorilo - bodite pripravljeni"),
             ),
             SimpleDialogOption(
               onPressed: () {
-                _settings.setStringSetting("settings_warnings_notify_level", "yellow");
+                _settings.setStringSetting(
+                    "settings_warnings_notify_level", "yellow");
                 Navigator.pop(context);
               },
               child: Text("Rumeno opozorilo - bodite pozorni"),
@@ -294,20 +296,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 });
               },
             ), */
-            content: Column(children: <Widget>[
-              for(Toggle t in regions)
-                Row(children: <Widget>[
-                  Text(t.title),
-                  Checkbox(
-                    value: t.isSwitched,
-                    onChanged: (val) {
-                      setState(() {
-                        t.switchToggle(null);
-                      });
-                    },
+            content: Column(
+              children: <Widget>[
+                for (Toggle t in regions)
+                  Row(
+                    children: <Widget>[
+                      Text(t.title),
+                      Checkbox(
+                        value: t.isSwitched,
+                        onChanged: (val) {
+                          setState(() {
+                            t.switchToggle(null);
+                          });
+                        },
+                      )
+                    ],
                   )
-                ],)
-            ],),
+              ],
+            ),
             actions: <Widget>[
               new FlatButton(
                 child: new Text('Shrani'),
@@ -333,7 +339,6 @@ class Toggle {
 
   void switchToggle(SettingsPreferences s) {
     isSwitched = !isSwitched;
-    if(s != null)
-      s.setSetting(id, isSwitched);
+    if (s != null) s.setSetting(id, isSwitched);
   }
 }

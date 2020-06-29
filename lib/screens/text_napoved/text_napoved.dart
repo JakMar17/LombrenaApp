@@ -67,9 +67,7 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
       var resp;
       try {
         resp = await get(url);
-      } on Exception catch (_) {
-        print("No internet?");
-      }
+      } on Exception catch (_) {}
 
       if (resp != null && resp.statusCode == 200) {
         try {
@@ -81,9 +79,7 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
         setState(() {
           playButton = Icon(Icons.pause);
         });
-      } else if (resp != null) {
-        print("smt wrong");
-      }
+      } else if (resp != null) {}
     }
   }
 
@@ -126,41 +122,22 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
                   _buildTitle("Napoved za Slovenijo"),
                   _buildParagraph(napoved.napovedSlo1),
                   _buildParagraph(napoved.napovedSlo2),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 20,
-                    ),
-                  ),
+                  _emptySpace(20, 0),
                   _buildTitle("Napoved za sosednje pokrajine"),
                   _buildParagraph(napoved.napovedSos1),
-                  _buildParagraph(napoved.napovedSos2),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 30,
-                    ),
-                  ),
+                  napoved.napovedSos2.length == 0 ? SliverToBoxAdapter() : _buildParagraph(napoved.napovedSos2),
+                  //napoved.napovedSos2.length != 0 ? _buildParagraph(napoved.napovedSos2) : Container(),
+                  _emptySpace(20, 0),
                   _buildTitle("Vremenska slika"),
                   _buildParagraph(napoved.slikaEu1),
                   _buildParagraph(napoved.slikaEu2),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 20,
-                    ),
-                  ),
+                  _emptySpace(20, 0),
                   _buildTitle("Obeti"),
                   _buildParagraph(napoved.obeti),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 20,
-                    ),
-                  ),
+                  _emptySpace(20, 0),
                   _buildTitle("Opozorilo"),
                   _buildParagraph(napoved.opozorilo),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 100,
-                    ),
-                  ),
+                  _emptySpace(100, 0),
                 ],
               ),
             ),
@@ -198,6 +175,15 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
               letterSpacing: 0.6,
               fontWeight: FontWeight.w300),
         ),
+      ),
+    );
+  }
+
+  Widget _emptySpace(double height, double width) {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: height,
+        width: width,
       ),
     );
   }
