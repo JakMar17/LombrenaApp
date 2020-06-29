@@ -224,11 +224,16 @@ class NapovedCategory {
   final String type = "napoved";
   String id;
 
+  double geoLat;
+  double geoLon;
+
   NapovedCategory({
     this.categoryName,
     this.napovedi
   }){
     id = categoryName;
+    geoLat = napovedi[0].geoLat;
+    geoLon = napovedi[0].geoLon;
   }
 
   Map<String, dynamic> toJson() => {

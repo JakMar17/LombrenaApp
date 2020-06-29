@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
-import 'package:vreme/screens/home/drawer.dart';
+import 'package:vreme/screens/drawer/drawer.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/style/weather_icons2.dart';
+import 'package:vreme/data/location_services/location_services.dart';
+import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
-class Home extends StatefulWidget {
+class Home extends StatefulWidget  {
   @override
   _HomeState createState() => _HomeState();
 }
@@ -20,11 +22,14 @@ class _HomeState extends State<Home> {
   List<Postaja> postaje = restApi.getAvtomatskePostaje();
   List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
 
+  SettingsPreferences _settings = SettingsPreferences();
+
   List<MenuItem> categoryMenu = [
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
     MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
+    MenuItem(menuName: "Izdana opozorila", url: "/warnings")
     //MenuItem(menuName: "Zemljevid", url: "/map")
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),
@@ -41,14 +46,22 @@ class _HomeState extends State<Home> {
     setState(() {});
   }
 
+  LocationServices locationServices = LocationServices();
   @override
   void initState() {
+    x(locationServices);
     super.initState();
+  }
+
+
+  void x(LocationServices locationServices) async {
+    var y = await locationServices.getLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     favorites = Favorites();
+    List<dynamic> list = locationServices.getClosestData();
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -94,7 +107,11 @@ class _HomeState extends State<Home> {
               slivers: <Widget>[
                 favorites.getFavorites().length != 0
                     ? SliverToBoxAdapter(
-                        child: Container(
+                        child: _cardRow(
+                            "Priljubljene", favorites.getFavorites(), () {
+                          Navigator.pushNamed(context, "/reorder/favorites");
+                        }),
+                        /* child: Container(
                             color: Colors.transparent,
                             child: Padding(
                                 padding: EdgeInsets.only(top: 30),
@@ -119,184 +136,215 @@ class _HomeState extends State<Home> {
                                                 fontWeight: FontWeight.w500),
                                           ),
 
-                                          /* 
-                                            custom menu for category
-                                          */
-
-                                          /* Padding(
-                                      padding: const EdgeInsets.only(right: 15),
-                                      child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          CustomIcons.option,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ),
-                                    ) */
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 15),
+                                            child: IconButton(
+                                              onPressed: () {
+                                                Navigator.pushNamed(context,
+                                                    "/reorder/favorites");
+                                              },
+                                              icon: Icon(
+                                                CustomIcons.option,
+                                                color: Colors.white,
+                                                size: 12,
+                                              ),
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ),
                                     Container(
                                       height: 300,
-                                      child: Expanded(child: favCards()),
+                                      child: Expanded(child: buildCardList(favorites.getFavorites())),
                                     ),
                                     SizedBox(
                                       height: 30,
                                     ),
                                   ],
-                                ))),
+                                ))), */
                       )
                     : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
-                  child: Container(
-                    color: Colors.transparent,
-                    child:
-                        /* 
+                    child: _settings.getSetting("settings_bliznje_lokacije")
+                        ? _cardRow("V bližini",
+                            locationServices.getClosestData(), null)
+                        : Container()),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 30,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                    child: _settings.getSetting("settings_visible_categories")
+                        ? Container(
+                            color: Colors.transparent,
+                            child:
+                                /* 
                       Kategorije
                     */
-                        Padding(
-                      padding: const EdgeInsets.only(
-                          left: 10, right: 15, bottom: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            "Kategorije",
-                            style: TextStyle(
-                                fontSize: 36,
-                                color: Colors.white,
-                                letterSpacing: 1,
-                                fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w500),
-                          ),
-                          /* 
-                                            custom menu for category
-                                          */
-                          /* Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                CustomIcons.option,
-                                color: Colors.white,
-                                size: 12,
+                                Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 15, bottom: 15),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    "Kategorije",
+                                    style: TextStyle(
+                                        fontSize: 36,
+                                        color: Colors.white,
+                                        letterSpacing: 1,
+                                        fontFamily: "Montserrat",
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ],
                               ),
                             ),
-                          ) */
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 1, horizontal: 10),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                    context, categoryMenu[index].url)
-                                .then((value) {
-                              setState(() {});
-                            });
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                color: Colors.transparent,
-                                child: Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    categoryMenu[index].menuName,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        letterSpacing: 0.6,
-                                        fontFamily: "Montserrat",
-                                        fontWeight: FontWeight.w400),
-                                  ),
+                          )
+                        : Container()),
+                _settings.getSetting("settings_visible_categories")
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 1, horizontal: 10),
+                              child: FlatButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                          context, categoryMenu[index].url)
+                                      .then((value) {
+                                    setState(() {});
+                                  });
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Colors.transparent,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text(
+                                          categoryMenu[index].menuName,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              letterSpacing: 0.6,
+                                              fontFamily: "Montserrat",
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            );
+                          },
+                          childCount: categoryMenu.length,
                         ),
-                      );
-                    },
-                    childCount: categoryMenu.length,
-                  ),
+                      )
+                    : SliverToBoxAdapter(),
+                SliverToBoxAdapter(
+                  child: SizedBox(height: 50),
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 50),),
               ],
             ),
           )),
     );
   }
 
-  Widget favCards() {
-    List<dynamic> priljubljene = favorites.getFavorites();
+  Widget _cardRow(String rowName, List<dynamic> list, void onPress()) {
+    if(list == null)
+      return Container();
+
+    return Container(
+        color: Colors.transparent,
+        child: Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        rowName,
+                        style: TextStyle(
+                            fontSize: 36,
+                            letterSpacing: 1,
+                            color: Colors.white,
+                            fontFamily: "Montserrat",
+                            fontWeight: FontWeight.w300),
+                      ),
+                      onPress != null
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: IconButton(
+                                onPressed: onPress,
+                                icon: Icon(
+                                  CustomIcons.option,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  ),
+                ),
+                SizedBox(height: 15),
+                Container(
+                  height: 300,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: list.length,
+                        itemBuilder: (context, index) {
+                          dynamic temp = list[index];
+                          double leftPadding = 0;
+                          if (index == 0) leftPadding = 20;
+                          if (temp.type == "avtomatskaPostaja" &&
+                              temp.titleShort == null) return Container();
+                          return Padding(
+                              padding: EdgeInsets.only(left: leftPadding),
+                              child: _createCard(temp));
+                        },
+                      )),
+                    ],
+                  ),
+                ),
+              ],
+            )));
+  }
+
+  Widget buildCardList(List<dynamic> list) {
+    //List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: priljubljene.length,
+      itemCount: list.length,
       itemBuilder: (context, index) {
-        dynamic temp = priljubljene[index];
+        dynamic temp = list[index];
         double leftPadding = 0;
         if (index == 0) leftPadding = 20;
         if (temp.type == "avtomatskaPostaja" && temp.titleShort == null)
           return Container();
         return Padding(
             padding: EdgeInsets.only(left: leftPadding),
-            child:
-                /* temp.type == "avtomatskaPostaja"
-                ? favCard(new FavCard(
-                    url: '/postaja',
-                    urlArgumentName: "postaja",
-                    title: temp.titleShort,
-                    object: temp,
-                    mainData: temp.temperature.toString(),
-                    unit: "°C",
-                    secondData: temp.averageWind != null
-                        ? "${temp.averageWind} km/h"
-                        : temp.windSpeed != null
-                            ? "${temp.windSpeed} km/h"
-                            : "0 km/h",
-                    thirdData: temp.averageHum != null
-                        ? "${temp.averageHum} %"
-                        : "${temp.humidity} %",
-                    secondDataIcon: WeatherIcons.wind_1,
-                    //secondDataIcon: WeatherIcons2.daySunny,
-                    thirdDataIcon: WeatherIcons.water_drop))
-                : temp.type == "vodotok"
-                    ? favCard(new FavCard(
-                        url: '/vodotok',
-                        urlArgumentName: 'vodotok',
-                        object: temp,
-                        title: temp.merilnoMesto,
-                        mainData: temp.pretok != null
-                            ? temp.pretok.round().toString()
-                            : temp.vodostaj.round().toString(),
-                        unit: temp.pretok != null ? "m3/s" : "cm",
-                        secondData: temp.pretokZnacilni != null
-                            ? temp.pretokZnacilni
-                            : temp.vodostajZnacilni != null
-                                ? temp.vodostajZnacilni
-                                : "",
-                        thirdData:
-                            temp.tempVode != null ? "${temp.tempVode} °C" : "",
-                        secondDataIcon: WeatherIcons.water,
-                        thirdDataIcon: WeatherIcons.temperatire))
-                    : Container() */
-                _doFav(temp));
+            child: _createCard(temp));
       },
     );
   }
 
-  Widget _doFav(var temp) {
+  Widget _createCard(var temp) {
     switch (temp.type) {
       case "avtomatskaPostaja":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/postaja',
             urlArgumentName: "postaja",
             title: temp.titleShort,
@@ -313,7 +361,7 @@ class _HomeState extends State<Home> {
             //secondDataIcon: WeatherIcons2.daySunny,
             thirdDataIcon: WeatherIcons.water_drop));
       case "vodotok":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/vodotok',
             urlArgumentName: 'vodotok',
             object: temp,
@@ -329,12 +377,13 @@ class _HomeState extends State<Home> {
             secondDataIcon: WeatherIcons.water,
             thirdDataIcon: WeatherIcons.temperatire));
       case "napoved":
-        return favCard(new FavCard(
+        return _card(new Card(
             url: '/napoved',
             urlArgumentName: 'napoved',
             object: temp,
             title: temp.napovedi[0].longTitle,
             unit: "°C",
+            icon: temp.napovedi[0].weatherIcon,
             mainData: temp.napovedi[0].temperature != null
                 ? temp.napovedi[0].temperature.toString()
                 : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt()) / 2}",
@@ -349,7 +398,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget favCard(FavCard card) {
+  Widget _card(Card card) {
     double cardWidth = 230.0;
 
     return Padding(
@@ -457,13 +506,31 @@ class _HomeState extends State<Home> {
                     )
                   ],
                 ),
-                Text(
-                  card.title.toUpperCase(),
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w300),
+                Stack(
+                  alignment: Alignment.bottomLeft,
+                  children: <Widget>[
+                    card.icon != null ? 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Icon(card.icon, color: Colors.white30, size: 96,),
+                            SizedBox(height: 48,)
+                          ],
+                        ),
+                        SizedBox(width: 45,)
+                      ],
+                    ) : Container(),
+                    Text(
+                      card.title.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ],
                 )
               ],
             ),
@@ -474,7 +541,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-class FavCard {
+class Card {
   String title;
   String unit;
   String mainData;
@@ -484,11 +551,12 @@ class FavCard {
   String urlArgumentName;
 
   var object;
+  IconData icon;
 
   IconData secondDataIcon;
   IconData thirdDataIcon;
 
-  FavCard(
+  Card(
       {this.title,
       this.unit,
       this.mainData,
@@ -498,5 +566,6 @@ class FavCard {
       this.url,
       this.urlArgumentName,
       this.secondDataIcon,
-      this.thirdDataIcon});
+      this.thirdDataIcon,
+      this.icon});
 }

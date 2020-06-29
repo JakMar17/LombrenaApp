@@ -34,6 +34,8 @@ dependencies:
   sliver_fab: ^1.0.0
   audioplayers: ^0.15.1
   google_maps_flutter: ^0.5.27+3
+  location: ^3.0.0
+  flutter_local_notifications: ^1.4.4+1
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -236,8 +236,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
                 child: Container(
                   height: _screenHeight * 0.32,
                   margin: EdgeInsets.only(bottom: 0, left: 0),
-                  child: Expanded(
-                    child: _buildCards(),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: _buildCards(),
+                      ),
+                    ],
                   ),
                 ),
               )

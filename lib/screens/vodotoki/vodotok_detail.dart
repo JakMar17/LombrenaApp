@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/favorites.dart';
+import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -165,7 +165,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
                             SizedBox(height: 10),
                             Text(
                               vodotok.pretokZnacilni != null
-                                  ? /* vodotok.pretokZnacilni */ "prvi visokovodni pretok"
+                                  ? vodotok.pretokZnacilni
                                   : vodotok.vodostajZnacilni != null
                                       ? vodotok.vodostajZnacilni
                                       : "",
@@ -199,14 +199,18 @@ class _VodotokDetailState extends State<VodotokDetail> {
                 ),
               ), */
               SliverToBoxAdapter(
-                child: SizedBox(height: _screenHeight * 0.3),
+                child: SizedBox(height: _screenHeight * 0.15),
               ),
               SliverToBoxAdapter(
                 child: Container(
                   height: _screenHeight * 0.32,
                   margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Expanded(
-                    child: detailCard(),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: detailCard(),
+                      ),
+                    ],
                   ),
                 ),
               )
