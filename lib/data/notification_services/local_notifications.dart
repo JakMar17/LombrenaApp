@@ -1,15 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:meta/meta.dart';
+import 'package:workmanager/workmanager.dart';
 
 class LocalNotifications {
   static FlutterLocalNotificationsPlugin notifications;
-  static int lastId = 0;
-  int myId;
+  int notificationID;
 
-  LocalNotifications() {
+  LocalNotifications(int id) {
     if (notifications == null) _initialization();
-    myId = lastId;
-    lastId++;
+    notificationID = id;
   }
 
   void _initialization() {
@@ -32,9 +32,9 @@ class LocalNotifications {
 
   NotificationDetails get _ongoing {
     final androidChannelSpecifics = AndroidNotificationDetails(
-      'your channel id',
-      'your channel name',
-      'your channel description',
+      'marelaApp_id',
+      'MarelaApp',
+      'MarelaApp',
       importance: Importance.Max,
       priority: Priority.High,
       ongoing: false,
@@ -50,8 +50,7 @@ class LocalNotifications {
     int id = 0,
   }) {
     _showNotification(notifications,
-        title: title, body: body, id: myId, type: _ongoing);
-    lastId++;
+        title: title, body: body, id: notificationID, type: _ongoing);
   }
 
   Future _showNotification(
@@ -62,5 +61,4 @@ class LocalNotifications {
     int id = 0,
   }) =>
       notifications.show(id, title, body, type);
-
 }

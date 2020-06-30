@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/notification_services/notification_manager.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/data/notification_services/local_notifications.dart';
+import 'package:workmanager/workmanager.dart';
 
 class VodotokDetail extends StatefulWidget {
   @override
@@ -18,7 +20,6 @@ class _VodotokDetailState extends State<VodotokDetail> {
   double _screenHeight;
   List<DetailCard> cards;
   Favorites favorites = Favorites();
-  LocalNotifications _localNotifications = LocalNotifications();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -130,8 +131,11 @@ class _VodotokDetailState extends State<VodotokDetail> {
               ),
             ),
             IconButton(icon: Icon(Icons.notifications), onPressed: (){
-                _localNotifications.showNotification(title: "${vodotok.merilnoMesto} (${vodotok.reka})", 
-                body: notificationBody());
+              NotificationManager _m = NotificationManager();
+                var inputData = {
+                  "vodotokId": vodotok.id
+                };
+                _m.addNotification(vodotok.id, "vodotok", inputData, true);
             },)
           ],
         ),

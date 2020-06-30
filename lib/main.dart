@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/drawer/about_app.dart';
@@ -18,12 +20,42 @@ import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:vreme/screens/vremenska_napoved/napoved_detail.dart';
 import 'package:vreme/screens/vremenske_razmere/list_postaje.dart';
 import 'package:vreme/screens/vremenske_razmere/postaja.dart';
+import 'package:workmanager/workmanager.dart';
 import './screens/home/notification.dart';
+import 'package:vreme/data/notification_services/local_notifications.dart';
+
+void callbackDispatcher() {
+  Workmanager.executeTask((taskName, inputdata) async {
+    RestApi r = RestApi();
+    int notificationId = int.parse(inputdata["notificationID"]);
+    LocalNotifications _ln = LocalNotifications(notificationId);
+    switch (taskName) {
+      case "vodotok":
+        String vodotokId = inputdata["vodotokId"];
+        await r.fetchVodotoki();
+        MerilnoMestoVodotok m = r.getVodotok(vodotokId);
+        String body = "";
+
+        if (m.pretokZnacilni != null)
+          body += m.pretokZnacilni + " (${m.pretok} m3/s)";
+        else if (m.vodostajZnacilni != null)
+          body += m.vodostajZnacilni + " (${m.vodostaj} cm)";
+
+        if (m.tempVode != null) body += "\nTemperatura vode: ${m.tempVode} °C";
+        _ln.showNotification(
+            title: "${m.merilnoMesto} (${m.reka})", body: body);
+        break;
+    }
+    return Future.value(true);
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Favorites favorites = Favorites();
   await favorites.setPreferences();
+
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
