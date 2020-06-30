@@ -39,6 +39,8 @@ class LocalNotifications {
       priority: Priority.High,
       ongoing: false,
       autoCancel: false,
+      enableVibration: true,
+      playSound: false
     );
     final iOSChannelSpecifics = IOSNotificationDetails();
     return NotificationDetails(androidChannelSpecifics, iOSChannelSpecifics);

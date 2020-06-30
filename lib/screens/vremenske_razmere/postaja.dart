@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/notification_services/notification_manager.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -19,6 +20,7 @@ class _PostajaDetailState extends State<PostajaDetail> {
 
   static RestApi restApi = RestApi();
   List<DetailCard> cards;
+  NotificationManager _notificationManager = NotificationManager();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -111,6 +113,25 @@ class _PostajaDetailState extends State<PostajaDetail> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
+            IconButton(
+              icon: Icon(_notificationManager.isEnabled(postaja.id)
+                  ? Icons.notifications
+                  : Icons.notifications_off),
+              onPressed: () {
+                if (_notificationManager.isEnabled(postaja.id))
+                  _notificationManager.removeNotification(postaja.id);
+                else {
+                  var inputData = {"id": postaja.id};
+                  _notificationManager.addNotification(
+                      postaja.id,
+                      "vremenske razmere",
+                      inputData,
+                      true,
+                      Duration(minutes: 30));
+                }
+                setState(() {});
+              },
+            ),
             Builder(
               builder: (context) => IconButton(
                 onPressed: () {

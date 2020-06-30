@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/screens/custom_search.dart';
@@ -29,11 +30,11 @@ void callbackDispatcher() {
     RestApi r = RestApi();
     int notificationId = int.parse(inputdata["notificationID"]);
     LocalNotifications _ln = LocalNotifications(notificationId);
+    String id = inputdata["id"];
     switch (taskName) {
       case "vodotok":
-        String vodotokId = inputdata["vodotokId"];
         await r.fetchVodotoki();
-        MerilnoMestoVodotok m = r.getVodotok(vodotokId);
+        MerilnoMestoVodotok m = r.getVodotok(id);
         String body = "";
 
         if (m.pretokZnacilni != null)
@@ -45,6 +46,20 @@ void callbackDispatcher() {
         _ln.showNotification(
             title: "${m.merilnoMesto} (${m.reka})", body: body);
         break;
+      /*  */
+      case "vremenske razmere":
+        await r.fetchPostajeData();
+        Postaja p = r.getPostaja(id);
+        String body = "";
+        if(p.temperature !=  null) body += "${p.temperature}°C ";
+        if(p.windSpeed != null) body += "${p.windSpeed}km/h ";
+        if(p.rain != null && p.rain != 0)
+          if(p.snow != null && p.snow != 0)
+            body += "${p.rain}mm (${p.snow} cm)";
+        _ln.showNotification(title: "${p.titleLong}", body: body);
+        break;
+      /*  */
+      
     }
     return Future.value(true);
   });

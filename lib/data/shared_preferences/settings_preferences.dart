@@ -10,6 +10,7 @@ class SettingsPreferences {
   final String notifyWarnings = "settings_warnings_notify";
   final String notifyWarningsLevel = "settings_warnings_notify_level";
   final String notifyWarningRegions = "settings_warnings_notify_regions";
+  final String notifications = "active_notifications";
 
   SettingsPreferences() {
     Preferences p = Preferences();

@@ -20,6 +20,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
   double _screenHeight;
   List<DetailCard> cards;
   Favorites favorites = Favorites();
+  NotificationManager _m = NotificationManager();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -47,24 +48,29 @@ class _VodotokDetailState extends State<VodotokDetail> {
           unit: "m3/s"),
       new DetailCard(
           title: "Visokovodni pretok",
-          mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok.toInt(),
+          mainMeasure:
+              vodotok.prviPretok == null ? null : vodotok.prviPretok.toInt(),
           unit: "m3/s",
-          secondData: "${vodotok.drugiPretok == null ? null : vodotok.drugiPretok.toInt()} m3/s",
-          thirdData: "${vodotok.tretjiPretok == null ? null : vodotok.tretjiPretok.toInt()} m3/s"),
+          secondData:
+              "${vodotok.drugiPretok == null ? null : vodotok.drugiPretok.toInt()} m3/s",
+          thirdData:
+              "${vodotok.tretjiPretok == null ? null : vodotok.tretjiPretok.toInt()} m3/s"),
       new DetailCard(
           title: "Visokovodni vodostaj",
-          mainMeasure:
-              vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj.toInt(),
+          mainMeasure: vodotok.prviVodostaj == null
+              ? null
+              : vodotok.prviVodostaj.toInt(),
           unit: "cm",
-          secondData: "${vodotok.drugiVodostaj == null ? null: vodotok.drugiVodostaj.toInt()} cm",
-          thirdData: "${vodotok.tretjiVodostaj == null ? null : vodotok.tretjiVodostaj.toInt()} cm")
+          secondData:
+              "${vodotok.drugiVodostaj == null ? null : vodotok.drugiVodostaj.toInt()} cm",
+          thirdData:
+              "${vodotok.tretjiVodostaj == null ? null : vodotok.tretjiVodostaj.toInt()} cm")
     ];
   }
 
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
@@ -88,6 +94,21 @@ class _VodotokDetailState extends State<VodotokDetail> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
+            IconButton(
+              icon: Icon(_m.isEnabled(vodotok.id)
+                  ? Icons.notifications
+                  : Icons.notifications_off),
+              onPressed: () {
+                if (_m.isEnabled(vodotok.id))
+                  _m.removeNotification(vodotok.id);
+                else {
+                  var inputData = {"id": vodotok.id};
+                  _m.addNotification(vodotok.id, "vodotok", inputData, true,
+                      Duration(minutes: 30));
+                }
+                setState(() {});
+              },
+            ),
             Builder(
               builder: (context) => IconButton(
                 onPressed: () {
@@ -130,13 +151,6 @@ class _VodotokDetailState extends State<VodotokDetail> {
                     Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
               ),
             ),
-            IconButton(icon: Icon(Icons.notifications), onPressed: (){
-              NotificationManager _m = NotificationManager();
-                var inputData = {
-                  "vodotokId": vodotok.id
-                };
-                _m.addNotification(vodotok.id, "vodotok", inputData, true);
-            },)
           ],
         ),
         body: SmartRefresher(
@@ -162,7 +176,8 @@ class _VodotokDetailState extends State<VodotokDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              width: MediaQuery.of(context).size.width - 50 - 120,
+                              width:
+                                  MediaQuery.of(context).size.width - 50 - 120,
                               child: Text(
                                 vodotok.reka,
                                 textAlign: TextAlign.left,
@@ -424,12 +439,12 @@ class _VodotokDetailState extends State<VodotokDetail> {
   String notificationBody() {
     String body = "";
 
-    if(vodotok.pretokZnacilni != null)
+    if (vodotok.pretokZnacilni != null)
       body += vodotok.pretokZnacilni + " (${vodotok.pretok} m3/s)";
     else if (vodotok.vodostajZnacilni != null)
       body += vodotok.vodostajZnacilni + " (${vodotok.vodostaj} cm)";
-    
-    if(vodotok.tempVode != null)
+
+    if (vodotok.tempVode != null)
       body += "\nTemperatura vode: ${vodotok.tempVode} °C";
 
     return body;
