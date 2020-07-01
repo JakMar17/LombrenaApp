@@ -5,9 +5,10 @@ import 'package:workmanager/workmanager.dart';
 
 class NotificationManager {
   static HashMap _notifications;
-  static SettingsPreferences sp = SettingsPreferences();
+  static SettingsPreferences sp;
 
   NotificationManager() {
+    if(sp == null) sp = SettingsPreferences();
     if (_notifications == null) {
       List<String> p = sp.getStringListSetting("active_notifications");
       _notifications = HashMap<String, int>();
@@ -15,8 +16,6 @@ class NotificationManager {
         for(String s in p)
           _notifications[s] = computeHash(s);
     }
-
-    if(sp == null) sp = SettingsPreferences();
   }
 
   bool addNotification(String id, String type, Map<String, dynamic> inputdata, bool periodic, Duration period) {
@@ -29,6 +28,7 @@ class NotificationManager {
           inputData: inputdata, frequency: period);
       else
         Workmanager.registerOneOffTask(calculatedHash.toString(), type, inputData: inputdata);
+      _saveToPreferences();
       return true;
     } catch (_) {
       return false;
@@ -39,6 +39,7 @@ class NotificationManager {
     int h = _notifications[id];
     Workmanager.cancelByUniqueName(h.toString());
     _notifications.remove(id);
+    _saveToPreferences();
     return true;
   }
 

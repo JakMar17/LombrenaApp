@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/notification_services/notification_manager.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -21,6 +22,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
   RestApi restApi = RestApi();
   List<DetailCard> _cards;
   Favorites _favorites = Favorites();
+  NotificationManager _notificationManager = NotificationManager();
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -72,6 +74,25 @@ class _NapovedDetailState extends State<NapovedDetail> {
           centerTitle: true,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
+            IconButton(
+              icon: Icon(_notificationManager.isEnabled(napoved.id)
+                  ? Icons.notifications
+                  : Icons.notifications_off),
+              onPressed: () {
+                if (_notificationManager.isEnabled(napoved.id))
+                  _notificationManager.removeNotification(napoved.id);
+                else {
+                  var inputData = {"id": napoved.id};
+                  _notificationManager.addNotification(
+                      napoved.id,
+                      "napoved",
+                      inputData,
+                      true,
+                      Duration(minutes: 15));
+                }
+                setState(() {});
+              },
+            ),
             Builder(
               builder: (context) => IconButton(
                 onPressed: () {

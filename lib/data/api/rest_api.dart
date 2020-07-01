@@ -44,6 +44,25 @@ class RestApi {
     return napovedPoPokrajinah;
   }
 
+  NapovedCategory getNapoved(String id) {
+    if(napoved5dnevna == null) fetch5DnevnaNapoved();
+    if(napoved3dnevna == null) fetch3DnevnaNapoved();
+    if(napovedPoPokrajinah == null) fetchPokrajinskaNapoved();
+
+    if(id == napoved5dnevna.id)
+      return napoved5dnevna;
+
+    for(NapovedCategory n in napovedPoPokrajinah)
+      if(n.id == id)
+        return n;
+
+    for(NapovedCategory n in napoved3dnevna)
+      if(n.id == id)
+        return n;
+
+    return null;
+  }
+
   TextNapoved getTekstovnaNapoved() {
     if(textNapoved == null) fetchTextNapoved();
     return textNapoved;

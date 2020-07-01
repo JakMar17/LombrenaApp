@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
@@ -59,6 +60,21 @@ void callbackDispatcher() {
         _ln.showNotification(title: "${p.titleLong}", body: body);
         break;
       /*  */
+      case "napoved":
+        await r.fetch3DnevnaNapoved();
+        await r.fetch5DnevnaNapoved();
+        await r.fetchPokrajinskaNapoved();
+        NapovedCategory n = r.getNapoved(id);
+        String body = "";
+        if(n.napovedi[0].temperature != null) body += "${n.napovedi[0].temperature}°C ";
+        else if(n.napovedi[0].tempMin != null) body += "${n.napovedi[0].tempMin} - ${n.napovedi[0].tempMax}°C ";
+        if(n.napovedi[0].minWind != null) 
+          if(n.napovedi[0].minWind == 0 && n.napovedi[0].maxWind == 0)
+            body += "0 km/h";
+          else
+            body += "${n.napovedi[0].minWind} - ${n.napovedi[0].maxWind}km/h";
+        _ln.showNotification(title: "${n.categoryName}", body: body);
+        break;
       
     }
     return Future.value(true);

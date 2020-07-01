@@ -37,9 +37,10 @@ class LocalNotifications {
       'MarelaApp',
       importance: Importance.Max,
       priority: Priority.High,
+      onlyAlertOnce: true,
       ongoing: false,
       autoCancel: false,
-      enableVibration: true,
+      enableVibration: false,
       playSound: false
     );
     final iOSChannelSpecifics = IOSNotificationDetails();
