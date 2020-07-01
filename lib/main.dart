@@ -86,7 +86,7 @@ void main() async {
   Favorites favorites = Favorites();
   await favorites.setPreferences();
 
-  Workmanager.initialize(callbackDispatcher, isInDebugMode: true);
+  Workmanager.initialize(callbackDispatcher, isInDebugMode: false);
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
