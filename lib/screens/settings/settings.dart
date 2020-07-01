@@ -89,8 +89,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           body: Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              //crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text("Domači zaslon",
                     style: TextStyle(
@@ -106,13 +106,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 10,
                 ),
                 toggleSettingRow(pokaziKategorije),
-                /* SizedBox(
+                /*SizedBox(
                   height: 10,
                 ),
                 buttonRow("Postavitev", "Prilagodi postavitev domačega zaslona",
                     () {}), */
                 /*  */
-                /* SizedBox(
+                SizedBox(
                   height: 25,
                 ),
                 Text("Vremenska opozorila",
@@ -143,7 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         "Za katerega se pojavijo obvestila", () {
                         _warningLevelDialog();
                       })
-                    : Container(), */
+                    : Container(),
               ],
             ),
           ),

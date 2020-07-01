@@ -99,17 +99,15 @@ class _WarningRegionSelectorState extends State<WarningRegionSelector> {
                       SizedBox(
                         width: 5,
                       ),
-                      Wrap(
-                        children: <Widget>[
-                          Text(
-                            names[index],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "Montserrat",
-                                fontSize: 24,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ],
+                      Flexible(
+                                                  child: Text(
+                          names[index],
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Montserrat",
+                              fontSize: 24,
+                              fontWeight: FontWeight.w300),
+                        ),
                       ),
                     ],
                   ),
