@@ -37,7 +37,7 @@ class LocalNotifications {
       'MarelaApp',
       importance: Importance.Max,
       priority: Priority.High,
-      onlyAlertOnce: true,
+      onlyAlertOnce: false,
       ongoing: false,
       autoCancel: false,
       enableVibration: false,

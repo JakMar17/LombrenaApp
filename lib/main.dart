@@ -13,6 +13,7 @@ import 'package:vreme/screens/home/reordering_favorites.dart';
 import 'package:vreme/screens/maps/map.dart';
 import 'package:vreme/screens/opozorila/list_opozorila.dart';
 import 'package:vreme/screens/opozorila/opozorilo_detail.dart';
+import 'package:vreme/screens/settings/active_notifications_list.dart';
 import 'package:vreme/screens/settings/settings.dart';
 import 'package:vreme/screens/settings/warning_region_selector.dart';
 import 'package:vreme/screens/text_napoved/text_napoved.dart';
@@ -110,6 +111,7 @@ void main() async {
         '/warnings': (context) => ListOfWarnings(),
         '/warning': (context) => WarningDetail(),
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
+        '/settings/customization/notifications': (context) => ActiveNotificationsList(),
         '/test/notifications': (context) => NotificationTest(),
       },
       debugShowCheckedModeBanner: false,

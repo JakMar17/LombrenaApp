@@ -115,6 +115,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(
                   height: 25,
                 ),
+                Text("Obvestila",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: "Montserrat",
+                        fontSize: 28,
+                        fontWeight: FontWeight.w300)),
+                SizedBox(
+                  height: 15,
+                ),
+                buttonRow("Upravljajte z obvestili",
+                    "Upravljajte z lokacijami, o katerih želite biti obveščeni",
+                    () {
+                  Navigator.pushNamed(
+                      context, "/settings/customization/notifications");
+                }),
+                SizedBox(
+                  height: 25,
+                ),
                 Text("Vremenska opozorila",
                     style: TextStyle(
                         color: Colors.white,

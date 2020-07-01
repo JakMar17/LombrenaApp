@@ -70,4 +70,12 @@ class NotificationManager {
     }
     return cal;
   }
+
+  List<String> getAllNotifications() {
+    List<String> x = [];
+    _notifications.forEach((key, value) {
+      x.add(key);
+    });
+    return x;
+  }
 }
