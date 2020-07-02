@@ -115,12 +115,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(
                   height: 25,
                 ),
-                Text("Obvestila",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "Montserrat",
-                        fontSize: 28,
-                        fontWeight: FontWeight.w300)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Obvestila",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Montserrat",
+                            fontSize: 28,
+                            fontWeight: FontWeight.w300)),
+                    IconButton(
+                        icon: Icon(Icons.info_outline, color: Colors.white),
+                        onPressed: _showAlertDialog)
+                  ],
+                ),
                 SizedBox(
                   height: 15,
                 ),
@@ -157,8 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   height: 10,
                 ),
                 pokaziOpozorila.isSwitched
-                    ? buttonRow("Najnižja stopnja opozorila",
-                        "Za katerega se pojavijo obvestila", () {
+                    ? buttonRow("Najnižja stopnja opozorila", minLevelWarning(),
+                        () {
                         _warningLevelDialog();
                       })
                     : Container(),
@@ -170,12 +178,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void toggleRowOnChange(Toggle toggle) {
+    setState(() {
+      toggle.switchToggle(_settings);
+      if (toggle.title == "Prikaži vremenska opozorila" && toggle.isSwitched)
+        _showAlertDialog();
+    });
+  }
+
   GestureDetector toggleSettingRow(Toggle toggle) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          toggle.switchToggle(_settings);
-        });
+        toggleRowOnChange(toggle);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -208,9 +222,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             flex: 2,
             child: Switch(
               onChanged: (value) {
-                setState(() {
-                  toggle.switchToggle(_settings);
-                });
+                toggleRowOnChange(toggle);
               },
               value: toggle.isSwitched,
               activeTrackColor: CustomColors.lightGrey,
@@ -220,6 +232,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
+  }
+
+  void _showAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              title: Text(
+                "Mobilna opozorila",
+                style: TextStyle(fontFamily: "Montserrat"),
+              ),
+              content: Text(
+                "Opozorila se zaradi omejitev sistema izvajajo zgolj, ko naprava ni v načinu varčevanja z energijo",
+                style: TextStyle(fontFamily: "Montserrat"),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Zapri",
+                    style: TextStyle(fontFamily: "Montserrat"),
+                  ),
+                )
+              ],
+            ));
   }
 
   GestureDetector buttonRow(String title, String description, void onTap()) {
@@ -267,7 +305,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () {
                 _settings.setStringSetting(
                     "settings_warnings_notify_level", "red");
-                Navigator.pop(context);
+                setState(() {
+                  Navigator.pop(context);
+                });
               },
               child: Text("Rdeče opozorilo - ukrepajte"),
             ),
@@ -275,7 +315,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () {
                 _settings.setStringSetting(
                     "settings_warnings_notify_level", "orange");
-                Navigator.pop(context);
+                setState(() {
+                  Navigator.pop(context);
+                });
               },
               child: Text("Oranžno opozorilo - bodite pripravljeni"),
             ),
@@ -283,7 +325,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () {
                 _settings.setStringSetting(
                     "settings_warnings_notify_level", "yellow");
-                Navigator.pop(context);
+                setState(() {
+                  Navigator.pop(context);
+                });
               },
               child: Text("Rumeno opozorilo - bodite pozorni"),
             )
@@ -301,19 +345,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text('Izbira pokrajin'),
-            /* content: CheckboxListTile(
-              title: Text("CheckBox Text"),
-              value: isChecked,
-              onChanged: (val) {
-                setState(() {
-                  if(isChecked != null)
-                    isChecked = !isChecked;
-                  else
-                    isChecked = true;
-                  
-                });
-              },
-            ), */
             content: Column(
               children: <Widget>[
                 for (Toggle t in regions)
@@ -342,6 +373,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           );
         });
+  }
+
+  String minLevelWarning() {
+    String level = _settings.getStringSetting("settings_warnings_notify_level");
+    switch (level) {
+      case "yellow":
+        return "Izbrano: rumeno opozorilo";
+      case "orange":
+        return "Izbrano: oranžno opozorilo";
+      case "red":
+        return "Izbrano: rdeče opozorilo";
+    }
   }
 }
 
