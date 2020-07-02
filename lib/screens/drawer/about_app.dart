@@ -72,7 +72,7 @@ class AboutApp extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  "1.0.0",
+                  "1.0.1",
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
