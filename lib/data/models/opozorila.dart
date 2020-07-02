@@ -99,8 +99,10 @@ class WarningRegion {
 
     for(Warning w in warnings)
       if(w.title == warning.title)
-        if(warning.level > w.level)
-          w = warning;
+        if(warning.level > w.level) {
+          warnings.remove(w);
+          break;
+        }
         else
           return;
     

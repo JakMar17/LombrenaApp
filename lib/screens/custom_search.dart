@@ -26,6 +26,7 @@ class _CustomSearchState extends State<CustomSearch> {
   List<MerilnoMestoVodotok> vodotoki;
   List<NapovedCategory> napoved5dnevna;
   List<NapovedCategory> napoved3dnevna;
+  List<NapovedCategory> napovedPoPokrajinah;
   List<ResultElement> show;
 
   @override
@@ -35,6 +36,7 @@ class _CustomSearchState extends State<CustomSearch> {
     vremenskePostaje = restApi.getAvtomatskePostaje();
     vodotoki = restApi.getVodotoki();
     napoved3dnevna = restApi.get3dnevnaNapoved();
+    napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
     List<NapovedCategory> t = [];
     t.add(RestApi.napoved5dnevna);
     napoved5dnevna = t;
@@ -212,6 +214,23 @@ class _CustomSearchState extends State<CustomSearch> {
       }
 
       for (NapovedCategory c in napoved3dnevna) {
+        if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(ResultElement(
+                categoryTitle: true, title: "Vremenske napovedi"));
+            first = false;
+          }
+          show.add(ResultElement(
+              title: c.napovedi[0].longTitle,
+              url: () {
+                Navigator.pushNamed(context, "/napoved",
+                    arguments: {"napoved": c});
+              },
+              id: c.categoryName));
+        }
+      }
+
+      for (NapovedCategory c in napovedPoPokrajinah) {
         if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(ResultElement(
