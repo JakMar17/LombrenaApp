@@ -563,16 +563,11 @@ class _HomeState extends State<Home> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        GestureDetector(
-                          onDoubleTap: () {
-                            Navigator.pushNamed(context, "/test/notifications");
-                          },
-                          child: CircleAvatar(
-                            //backgroundColor: Colors.black12,
-                            radius: 50,
-                            backgroundImage:
-                                AssetImage("assets/images/icon128.png"),
-                          ),
+                        CircleAvatar(
+                          //backgroundColor: Colors.black12,
+                          radius: 50,
+                          backgroundImage:
+                              AssetImage("assets/images/icon128.png"),
                         ),
                         SizedBox(
                           width: 20,

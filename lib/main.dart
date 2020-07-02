@@ -24,7 +24,6 @@ import 'package:vreme/screens/vremenska_napoved/napoved_detail.dart';
 import 'package:vreme/screens/vremenske_razmere/list_postaje.dart';
 import 'package:vreme/screens/vremenske_razmere/postaja.dart';
 import 'package:workmanager/workmanager.dart';
-import './screens/home/notification.dart';
 import 'package:vreme/data/notification_services/local_notifications.dart';
 
 void callbackDispatcher() {
@@ -112,7 +111,6 @@ void main() async {
         '/warning': (context) => WarningDetail(),
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
         '/settings/customization/notifications': (context) => ActiveNotificationsList(),
-        '/test/notifications': (context) => NotificationTest(),
       },
       debugShowCheckedModeBanner: false,
     ));
