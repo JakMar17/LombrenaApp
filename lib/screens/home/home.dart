@@ -12,7 +12,7 @@ import 'package:vreme/style/weather_icons2.dart';
 import 'package:vreme/data/location_services/location_services.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
-class Home extends StatefulWidget  {
+class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
@@ -52,7 +52,6 @@ class _HomeState extends State<Home> {
     x(locationServices);
     super.initState();
   }
-
 
   void x(LocationServices locationServices) async {
     var y = await locationServices.getLocation();
@@ -96,7 +95,7 @@ class _HomeState extends State<Home> {
                       colors: [CustomColors.darkBlue, CustomColors.darkBlue2],
                       begin: Alignment.bottomRight,
                       end: Alignment.topLeft)),
-              child: SafeArea(child: CustomDrawer()),
+              child: SafeArea(child: _drawer()),
             ),
           ),
           body: SmartRefresher(
@@ -255,8 +254,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget _cardRow(String rowName, List<dynamic> list, void onPress()) {
-    if(list == null)
-      return Container();
+    if (list == null) return Container();
 
     return Container(
         color: Colors.transparent,
@@ -509,19 +507,28 @@ class _HomeState extends State<Home> {
                 Stack(
                   alignment: Alignment.bottomLeft,
                   children: <Widget>[
-                    card.icon != null ? 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Icon(card.icon, color: Colors.white30, size: 96,),
-                            SizedBox(height: 48,)
-                          ],
-                        ),
-                        SizedBox(width: 45,)
-                      ],
-                    ) : Container(),
+                    card.icon != null
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Icon(
+                                    card.icon,
+                                    color: Colors.white30,
+                                    size: 96,
+                                  ),
+                                  SizedBox(
+                                    height: 48,
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                width: 45,
+                              )
+                            ],
+                          )
+                        : Container(),
                     Text(
                       card.title.toUpperCase(),
                       style: TextStyle(
@@ -535,6 +542,149 @@ class _HomeState extends State<Home> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _drawer() {
+    return Container(
+        color: Colors.transparent,
+        child: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (OverscrollIndicatorNotification overscroll) {
+            overscroll.disallowGlow();
+          },
+          child: ListView(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 40, left: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        GestureDetector(
+                          onDoubleTap: () {
+                            Navigator.pushNamed(context, "/test/notifications");
+                          },
+                          child: CircleAvatar(
+                            //backgroundColor: Colors.black12,
+                            radius: 50,
+                            backgroundImage:
+                                AssetImage("assets/images/icon128.png"),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "MarelaApp",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 24,
+                                  letterSpacing: 0.8,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            Text(
+                              "by MarelaTeam",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w200,
+                                  letterSpacing: 0.6),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  drawerRow(Icons.cloud, "Vremenska napoved", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/napovedi").then((value) {
+                      setState(() {});
+                    });
+                  }),
+                  drawerRow(Icons.wb_sunny, "Vremenske razmere", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/postaje").then((value) {
+                      setState(() {});
+                    });
+                  }),
+                  drawerRow(Icons.textsms, "Tekstovna napoved", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/napoved/tekst")
+                        .then((value) {
+                      setState(() {});
+                    });
+                  }),
+                  drawerRow(WeatherIcons.water, "Vodotoki", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/vodotoki").then((value) {
+                      setState(() {});
+                    });
+                  }),
+                  drawerRow(Icons.warning, "Opozorila", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/warnings").then((value) {
+                      setState(() {});
+                    });
+                  })
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.22),
+              Column(
+                children: <Widget>[
+                  drawerRow(Icons.settings, "Nastavitve", () {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/settings", (r) => false);
+                    /* Navigator.pop(context);
+                    Navigator.pushNamed(context, "/settings"); */
+                  }),
+                  drawerRow(Icons.library_books, "O aplikaciji", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, ("/about"));
+                  }),
+                  SizedBox(
+                    height: 20,
+                  )
+                ],
+              )
+            ],
+          ),
+        ));
+  }
+
+  Widget drawerRow(IconData icon, String title, void onPress()) {
+    return FlatButton(
+      onPressed: onPress,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              icon,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w300),
+            )
+          ],
         ),
       ),
     );
