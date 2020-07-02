@@ -734,7 +734,7 @@ class RestApi {
           sOnset: element.findElements("onset").first.text,
           sExpires: element.findElements("expires").first.text
         );
-        wr.addWarning(w);
+        wr.warnings.add(w);
       }
 
       opozorilaPoRegijah.add(wr);

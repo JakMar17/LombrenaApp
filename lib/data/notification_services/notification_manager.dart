@@ -8,26 +8,26 @@ class NotificationManager {
   static SettingsPreferences sp;
 
   NotificationManager() {
-    if(sp == null) sp = SettingsPreferences();
+    if (sp == null) sp = SettingsPreferences();
     if (_notifications == null) {
       List<String> p = sp.getStringListSetting("active_notifications");
       _notifications = HashMap<String, int>();
-      if(p != null)
-        for(String s in p)
-          _notifications[s] = computeHash(s);
+      if (p != null) for (String s in p) _notifications[s] = computeHash(s);
     }
   }
 
-  bool addNotification(String id, String type, Map<String, dynamic> inputdata, bool periodic, Duration period) {
+  bool addNotification(String id, String type, Map<String, dynamic> inputdata,
+      bool periodic, Duration period) {
     int calculatedHash = computeHash(id);
     _notifications[id] = calculatedHash;
     inputdata["notificationID"] = calculatedHash.toString();
     try {
-      if(periodic)
-      Workmanager.registerPeriodicTask(calculatedHash.toString(), type,
-          inputData: inputdata, frequency: period);
+      if (periodic)
+        Workmanager.registerPeriodicTask(calculatedHash.toString(), type,
+            inputData: inputdata, frequency: period);
       else
-        Workmanager.registerOneOffTask(calculatedHash.toString(), type, inputData: inputdata);
+        Workmanager.registerOneOffTask(calculatedHash.toString(), type,
+            inputData: inputdata);
       _saveToPreferences();
       return true;
     } catch (_) {
@@ -45,7 +45,7 @@ class NotificationManager {
 
   bool isEnabled(String id) {
     int h = _notifications[id];
-    if(h != null)
+    if (h != null)
       return true;
     else
       return false;
@@ -65,8 +65,7 @@ class NotificationManager {
     for (int i = 0; i < id.length; i++) {
       int t = id.codeUnitAt(i);
       cal = cal * 3 + t;
-      if(cal > 2000000000)
-        cal = (cal / 7).round();
+      if (cal > 2000000000) cal = (cal / 7).round();
     }
     return cal;
   }

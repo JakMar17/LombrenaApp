@@ -16,7 +16,14 @@ class _ListOfWarningsState extends State<ListOfWarnings> {
 
   @override
   void initState() {
-    regions = _restApi.getWarnings();
+    List<WarningRegion> _r = _restApi.getWarnings();
+    regions = [];
+    for(WarningRegion r in _r) {
+      WarningRegion t = WarningRegion(id: r.id, date: r.date, region: r.region);
+      for(Warning w in r.warnings)
+        t.addWarning(w);
+      regions.add(t);
+    }
     super.initState();
   }
 

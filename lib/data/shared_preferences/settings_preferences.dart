@@ -11,6 +11,7 @@ class SettingsPreferences {
   final String notifyWarningsLevel = "settings_warnings_notify_level";
   final String notifyWarningRegions = "settings_warnings_notify_regions";
   final String notifications = "active_notifications";
+  final String notifyWarningType = "settings_warnings_notify_type";
 
   SettingsPreferences() {
     Preferences p = Preferences();
@@ -18,10 +19,13 @@ class SettingsPreferences {
   }
 
   bool getSetting(String name) {
+    print(name);
     try{
-      bool x = _sharedPreferences.getBool(name);
+      var x = _sharedPreferences.get(name);
+      print("zakaj " + x.toString());
       return x == null ? true : x;
       } catch(Exception) {
+        print(Exception);
         return false;
       }
   }
@@ -29,7 +33,9 @@ class SettingsPreferences {
   void setSetting(String name, bool value) {
     try{
         _sharedPreferences.setBool(name, value);
-      } catch(Exception) {}
+      } catch(Exception) {
+        print("error");
+      }
   }
 
   String getStringSetting(String name) {

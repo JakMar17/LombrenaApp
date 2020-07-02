@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vreme/data/notification_services/notification_manager.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
@@ -30,11 +31,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         description: "Vidnost menuja s kategorijami",
         isSwitched: _settings.getSetting("settings_visible_categories"),
         id: "settings_visible_categories");
-    pokaziOpozorila = Toggle(
-        title: "Prikaži vremenska opozorila",
-        description: "Obvestilo, ko ARSO izda vremensko opozorilo",
-        isSwitched: _settings.getSetting("settings_warnings_notify"),
-        id: "settings_warnings_notify");
     warningRegions = [
       Toggle(title: "osrednja Slovenija"),
       Toggle(title: "jugovzhodna Slovenija"),
@@ -150,26 +146,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 SizedBox(
                   height: 15,
                 ),
-                toggleSettingRow(pokaziOpozorila),
-                SizedBox(
-                  height: 10,
-                ),
-                pokaziOpozorila.isSwitched
-                    ? buttonRow("Izbira pokrajin",
-                        "Za katere naj se pojavijo obvestila", () {
-                        Navigator.pushNamed(
-                            context, '/settings/warnings/regions');
-                      })
-                    : Container(),
-                SizedBox(
-                  height: 10,
-                ),
-                pokaziOpozorila.isSwitched
-                    ? buttonRow("Najnižja stopnja opozorila", minLevelWarning(),
-                        () {
-                        _warningLevelDialog();
-                      })
-                    : Container(),
+                buttonRow("Prikaži vremenska opozorila",
+                    "Obvestilo, ko ARSO izda opozorilo", () {
+                  Navigator.pushNamed(context, '/settings/warnings/regions');
+                }),
               ],
             ),
           ),
@@ -294,50 +274,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Future<void> _warningLevelDialog() async {
-    switch (await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text("Najnižja stopnja opozorila"),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                _settings.setStringSetting(
-                    "settings_warnings_notify_level", "red");
-                setState(() {
-                  Navigator.pop(context);
-                });
-              },
-              child: Text("Rdeče opozorilo - ukrepajte"),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                _settings.setStringSetting(
-                    "settings_warnings_notify_level", "orange");
-                setState(() {
-                  Navigator.pop(context);
-                });
-              },
-              child: Text("Oranžno opozorilo - bodite pripravljeni"),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                _settings.setStringSetting(
-                    "settings_warnings_notify_level", "yellow");
-                setState(() {
-                  Navigator.pop(context);
-                });
-              },
-              child: Text("Rumeno opozorilo - bodite pozorni"),
-            )
-          ],
-        );
-      },
-    )) {
-    }
-  }
-
   bool isChecked = false;
   Future<void> _displayDialog(List<Toggle> regions) async {
     return showDialog(
@@ -373,18 +309,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           );
         });
-  }
-
-  String minLevelWarning() {
-    String level = _settings.getStringSetting("settings_warnings_notify_level");
-    switch (level) {
-      case "yellow":
-        return "Izbrano: rumeno opozorilo";
-      case "orange":
-        return "Izbrano: oranžno opozorilo";
-      case "red":
-        return "Izbrano: rdeče opozorilo";
-    }
   }
 }
 
