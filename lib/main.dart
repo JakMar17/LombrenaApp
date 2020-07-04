@@ -48,6 +48,10 @@ void main() async {
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
       },
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return MediaQuery(child: child, data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),);
+
+      },
     ));
   });
 }
