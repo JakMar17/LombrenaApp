@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:package_info/package_info.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutApp extends StatelessWidget {
+class AboutApp extends StatefulWidget {
   const AboutApp({Key key}) : super(key: key);
+
+  @override
+  _AboutAppState createState() => _AboutAppState();
+}
+
+class _AboutAppState extends State<AboutApp> {
+  String appVersion = "";
+
+  @override
+  void initState() {
+    super.initState();
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      setState(() {
+        appVersion = packageInfo.version;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +90,7 @@ class AboutApp extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  "1.0.1",
+                  appVersion,
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: "Montserrat",
