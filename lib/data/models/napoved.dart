@@ -8,6 +8,7 @@ class Napoved {
   String title;
   String shortTitle;
   String longTitle;
+  String typeOfData;
 
   /* geo lat and lon */
   double geoLat;
@@ -41,6 +42,7 @@ class Napoved {
 
   Napoved(
       {this.id,
+      this.typeOfData,
       this.url,
       this.temperature,
       this.title,

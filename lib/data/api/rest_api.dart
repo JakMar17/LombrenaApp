@@ -1,15 +1,17 @@
 import 'package:http/http.dart';
+import 'package:vreme/data/api/fetching_data.dart';
 import 'package:vreme/data/models/opozorila.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:xml/xml.dart' as xml;
 import 'dart:convert';
 
-class RestApi {
+class RestApi extends FetchingData {
   static List<Postaja> postaje;
   static List<MerilnoMestoVodotok> vodotoki;
   static NapovedCategory napoved5dnevna;
@@ -21,11 +23,16 @@ class RestApi {
   Favorites f = Favorites();
 
   List<Postaja> getAvtomatskePostaje() {
+    if (postaje == null)
+      fetchPostajeData();
     return postaje;
   }
 
   List<MerilnoMestoVodotok> getVodotoki() {
-    if (vodotoki == null) fetchVodotoki();
+    if (vodotoki == null)  {
+      fetchVodotoki();
+      return null;
+    }
     return vodotoki;
   }
 
@@ -45,12 +52,12 @@ class RestApi {
   }
 
   TextNapoved getTekstovnaNapoved() {
-    if(textNapoved == null) fetchTextNapoved();
+    if (textNapoved == null) fetchTextNapoved();
     return textNapoved;
   }
 
   Future<bool> fetchPostajeData() async {
-    Response resp = null;
+    Response resp;
     try {
       resp = await get(
           "http://www.meteo.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.xml");
@@ -115,25 +122,18 @@ class RestApi {
     return true;
   }
 
-  double parseDouble(String txt) {
-    if (txt == null || txt == "")
-      return null;
-    else
-      return double.parse(txt);
-  }
-
   Postaja getPostaja(String id) {
     for (Postaja p in postaje) if (p.id == id) return p;
     return null;
   }
 
-  Future<bool> fetchVodotoki() async {
+  Future<List<MerilnoMestoVodotok>> fetchVodotoki() async {
     Response resp = null;
     try {
       resp =
           await get("http://www.arso.gov.si/xml/vode/hidro_podatki_zadnji.xml");
     } on Exception catch (_) {
-      return false;
+      return null;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -230,27 +230,28 @@ class RestApi {
     vodotoki.sort(byVodotok);
 
     f.setFavorites(vodotoki);
-    return true;
+    return vodotoki;
   }
 
   Future<bool> fetchAllData() async {
-    bool postaje = await fetchPostajeData();
-    bool vodotoki = await fetchVodotoki();
-    if (postaje && vodotoki) return true;
+    var postaje = await fetchPostajeData();
+    var vodotoki = await fetchVodotoki();
+    if (postaje && vodotoki != null) return true;
   }
 
   MerilnoMestoVodotok getVodotok(String id) {
+    if(vodotoki == null) return null;
     for (MerilnoMestoVodotok v in vodotoki) if (v.id == id) return v;
     return null;
   }
 
-  Future<bool> fetch5DnevnaNapoved() async {
+  Future<NapovedCategory> fetch5DnevnaNapoved() async {
     Response resp = null;
     try {
       resp = await get(
           "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml");
     } on Exception catch (_) {
-      return false;
+      return null;
     }
 
     dynamic rawData = utf8.decode(resp.bodyBytes);
@@ -264,7 +265,9 @@ class RestApi {
     for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
       Napoved n = Napoved(
-          url: "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml",
+          typeOfData: TypeOfData.napoved5Dnevna,
+          url:
+              "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml",
           id: element.findElements("domain_id").isEmpty
               ? null
               : element.findElements("domain_id").first.text,
@@ -346,7 +349,7 @@ class RestApi {
     List<NapovedCategory> t = [];
     t.add(napoved5dnevna);
     f.setFavorites(t);
-    return true;
+    return napoved5dnevna;
   }
 
   Future<bool> fetch3DnevnaNapoved() async {
@@ -382,7 +385,8 @@ class RestApi {
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
         Napoved n = Napoved(
-            url: baseUrl + urls[i], 
+            typeOfData: TypeOfData.napoved3Dnevna,
+            url: baseUrl + urls[i],
             id: element.findElements("domain_id").isEmpty
                 ? null
                 : element.findElements("domain_id").first.text,
@@ -509,6 +513,7 @@ class RestApi {
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
         Napoved n = Napoved(
+          typeOfData: TypeOfData.pokrajinskaNapoved,
           url: baseUrl + urls[i],
           id: element.findElements("domain_id").isEmpty
               ? null
@@ -665,7 +670,7 @@ class RestApi {
   }
 
   List<WarningRegion> getWarnings() {
-    if(opozorilaPoRegijah == null) fecthWarnings();
+    if (opozorilaPoRegijah == null) fecthWarnings();
     return opozorilaPoRegijah;
   }
 
@@ -705,20 +710,21 @@ class RestApi {
 
       var elements = rawData.toList();
 
-      WarningRegion wr = WarningRegion(
-        region: names[i]
-      );
+      WarningRegion wr = WarningRegion(region: names[i]);
 
-      for(int j = 0; j < elements.length; j++) {
+      for (int j = 0; j < elements.length; j++) {
         var element = elements[j];
-        if(element.findElements("language").first.text != "sl")
-          continue;
+        if (element.findElements("language").first.text != "sl") continue;
         Warning w = Warning(
-          event: element.findElements("event").first.text,
-          parameterValue: element.findElements("parameter").first.findElements("value").first.text,
-          sOnset: element.findElements("onset").first.text,
-          sExpires: element.findElements("expires").first.text
-        );
+            event: element.findElements("event").first.text,
+            parameterValue: element
+                .findElements("parameter")
+                .first
+                .findElements("value")
+                .first
+                .text,
+            sOnset: element.findElements("onset").first.text,
+            sExpires: element.findElements("expires").first.text);
         wr.addWarning(w);
       }
 

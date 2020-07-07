@@ -1,8 +1,9 @@
 import 'package:intl/intl.dart';
+import 'package:vreme/data/type_of_data.dart';
 
 class Postaja {
 
-  final String type = "avtomatskaPostaja";
+  final String typeOfData = TypeOfData.postaja;
   String url;
 
   bool isFavourite = false;

@@ -16,7 +16,7 @@ class DataModel {
         this.geoLon,
         this.favorite,
         this.url,
-        this.type
+        this.typeOfData
     });
 
     String id;
@@ -25,7 +25,7 @@ class DataModel {
     String geoLon;
     bool favorite;
     String url;
-    String type;
+    String typeOfData;
 
     factory DataModel.fromMap(Map<String, dynamic> json) => DataModel(
         id: json["id"],
@@ -34,7 +34,7 @@ class DataModel {
         geoLon: json["geoLon"],
         favorite: json["favorite"] == 0 ? false : true,
         url: json["url"],
-        type: json["type"]
+        typeOfData: json["typeOfData"]
     );
 
     Map<String, dynamic> toMap() => {
@@ -44,6 +44,6 @@ class DataModel {
         "geoLon": geoLon,
         "favorite": favorite ? 1 : 0,
         "url": url,
-        "type": type
+        "typeOfData": typeOfData
     };
 }

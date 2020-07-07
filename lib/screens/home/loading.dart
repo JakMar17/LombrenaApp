@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vreme/data/database/database.dart';
 import 'package:vreme/data/database/models/data_model.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
@@ -26,15 +27,15 @@ class _LoadingState extends State<Loading> {
   Favorites favorites = Favorites();
 
   Future<bool> loadData() async {
-    bool postaje = await restApi.fetchPostajeData();
-    bool vodotoki = await restApi.fetchVodotoki();
-    bool napoved = await restApi.fetch5DnevnaNapoved();
-    bool napoved3 = await restApi.fetch3DnevnaNapoved();
-    bool napovedPokrajine = await restApi.fetchPokrajinskaNapoved();
+    var postaje = await restApi.fetchPostajeData();
+    var vodotoki = await restApi.fetchVodotoki();
+    var napoved = await restApi.fetch5DnevnaNapoved();
+    var napoved3 = await restApi.fetch3DnevnaNapoved();
+    var napovedPokrajine = await restApi.fetchPokrajinskaNapoved();
     restApi.fetchTextNapoved();
     restApi.fecthWarnings();
 
-    if (postaje && vodotoki && napoved && napoved3 && napovedPokrajine)
+    if (postaje != null && vodotoki != null && napoved != null && napoved3 != null && napovedPokrajine != null)
       return true;
     else
       return false;
@@ -77,7 +78,7 @@ class _LoadingState extends State<Loading> {
               url: p.url,
               geoLat: p.geoLat.toString(),
               geoLon: p.geoLon.toString(),
-              type: TypeOfData.postaja,
+              typeOfData: TypeOfData.postaja,
               favorite: false);
             DBProvider.db.insert(d);
             print(d.url);
@@ -90,7 +91,7 @@ class _LoadingState extends State<Loading> {
               url: "",
               geoLat: v.geoLat.toString(),
               geoLon: v.geoLon.toString(),
-              type: TypeOfData.vodotok,
+              typeOfData: TypeOfData.vodotok,
               favorite: false);
           DBProvider.db.insert(d);
         }
@@ -102,7 +103,7 @@ class _LoadingState extends State<Loading> {
               url: n.napovedi[0].url,
               geoLat: n.geoLat.toString(),
               geoLon: n.geoLon.toString(),
-              type: TypeOfData.napoved5Dnevna,
+              typeOfData: TypeOfData.napoved5Dnevna,
               favorite: false);
           DBProvider.db.insert(d);
         }
@@ -114,7 +115,7 @@ class _LoadingState extends State<Loading> {
               url: n.napovedi[0].url,
               geoLat: n.geoLat.toString(),
               geoLon: n.geoLon.toString(),
-              type: TypeOfData.napoved3Dnevna,
+              typeOfData: TypeOfData.napoved3Dnevna,
               favorite: false);
           DBProvider.db.insert(d);
         }
@@ -126,20 +127,26 @@ class _LoadingState extends State<Loading> {
               url: n.napovedi[0].url,
               geoLat: n.geoLat.toString(),
               geoLon: n.geoLon.toString(),
-              type: TypeOfData.napoved3Dnevna,
+              typeOfData: TypeOfData.napoved3Dnevna,
               favorite: false);
           DBProvider.db.insert(d);
         }
 
-        //sp.setSetting(sp.loadedData, true);
+        
+        sp.setSetting(sp.loadedData, true);
 
       } else {
         checkConnection();
       }
     } else {
       // load favorites
+      FavoritesDatabase f = FavoritesDatabase();
+      await f.getFavorites();
       // load closests
     }
+    FavoritesDatabase f = FavoritesDatabase();
+      await f.getFavorites();
+    Navigator.pushReplacementNamed(context, "/");
   }
 
   void checkConnection() async {

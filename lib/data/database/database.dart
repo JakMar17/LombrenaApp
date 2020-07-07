@@ -27,7 +27,7 @@ class DBProvider {
     }, onCreate: (Database db, int version) async {
       await db.execute("CREATE TABLE data ("
           "id TEXT PRIMARY KEY ON CONFLICT REPLACE,"
-          "type TEXT,"
+          "typeOfData TEXT,"
           "title TEXT,"
           "url TEXT,"
           "geoLat TEXT,"
@@ -67,7 +67,7 @@ class DBProvider {
 
   getFavorites() async {
     final db = await database;
-    var res = await db.rawQuery("SELECT * FROM Client WHERE favorite=1");
+    var res = await db.rawQuery("SELECT * FROM data WHERE favorite=1");
     List<DataModel> list =
         res.isNotEmpty ? res.map((c) => DataModel.fromMap(c)).toList() : [];
     return list;
@@ -75,7 +75,7 @@ class DBProvider {
 
   updateData(DataModel data) async {
     final db = await database;
-    var res = await db.update("Client", data.toMap(),
+    var res = await db.update("data", data.toMap(),
         where: "id = ?", whereArgs: [data.id]);
     return res;
   }

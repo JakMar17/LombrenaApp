@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -36,6 +38,7 @@ class _HomeState extends State<Home> {
   ];
 
   Favorites favorites;
+  FavoritesDatabase fd;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -48,6 +51,7 @@ class _HomeState extends State<Home> {
   LocationServices locationServices = LocationServices();
   @override
   void initState() {
+    
     x(locationServices);
     super.initState();
   }
@@ -59,6 +63,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     favorites = Favorites();
+    fd = FavoritesDatabase();
     List<dynamic> list = locationServices.getClosestData();
     return Container(
       decoration: BoxDecoration(
@@ -103,10 +108,10 @@ class _HomeState extends State<Home> {
             onRefresh: onRefresh,
             child: CustomScrollView(
               slivers: <Widget>[
-                favorites.getFavorites().length != 0
+                FavoritesDatabase.favorites != null
                     ? SliverToBoxAdapter(
                         child: _cardRow(
-                            "Priljubljene", favorites.getFavorites(), () {
+                            "Priljubljene", FavoritesDatabase.favorites, () {
                           Navigator.pushNamed(context, "/reorder/favorites");
                         }),
                         /* child: Container(
@@ -306,7 +311,7 @@ class _HomeState extends State<Home> {
                           dynamic temp = list[index];
                           double leftPadding = 0;
                           if (index == 0) leftPadding = 20;
-                          if (temp.type == "avtomatskaPostaja" &&
+                          if (temp.typeOfData == "avtomatskaPostaja" &&
                               temp.titleShort == null) return Container();
                           return Padding(
                               padding: EdgeInsets.only(left: leftPadding),
@@ -321,6 +326,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCardList(List<dynamic> list) {
+    print(list);
     //List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,
@@ -329,7 +335,7 @@ class _HomeState extends State<Home> {
         dynamic temp = list[index];
         double leftPadding = 0;
         if (index == 0) leftPadding = 20;
-        if (temp.type == "avtomatskaPostaja" && temp.titleShort == null)
+        if (temp.typeOfData == "avtomatskaPostaja" && temp.titleShort == null)
           return Container();
         return Padding(
             padding: EdgeInsets.only(left: leftPadding),
@@ -339,8 +345,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget _createCard(var temp) {
-    switch (temp.type) {
-      case "avtomatskaPostaja":
+    switch (temp.typeOfData) {
+      case "vremenska postaja":
         return _card(new Card(
             url: '/postaja',
             urlArgumentName: "postaja",
