@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/map_marker.dart';
 import 'package:vreme/data/models/napoved.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons2.dart';
 
@@ -17,12 +19,44 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   List<NapovedCategory> napoved3dnevna;
   List<NapovedCategory> napovedPoPokrajinah;
 
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+  void _onRefresh() async{
+    await loadData();
+    _refreshController.refreshCompleted();
+  }
+
+  bool ready = false;
+
+  void loadData() async {
+    var n = restApi.get5dnevnaNapoved();
+    if (napoved5dnevna == null) {
+      await restApi.fetch5DnevnaNapoved();
+      n = restApi.get5dnevnaNapoved();
+    }
+    napoved5dnevna = [];
+    napoved5dnevna.add(n);
+
+    napoved3dnevna = restApi.get3dnevnaNapoved();
+    if (napoved3dnevna == null) {
+      await restApi.fetch3DnevnaNapoved();
+      napoved3dnevna = restApi.get3dnevnaNapoved();
+    }
+
+    napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
+    if (napovedPoPokrajinah == null) {
+      await restApi.fetchPokrajinskaNapoved();
+      napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
+    }
+
+    setState(() {
+      ready = true;
+    });
+  }
+
   @override
   void initState() {
-    napoved5dnevna = [];
-    napoved5dnevna.add(restApi.get5dnevnaNapoved());
-    napoved3dnevna = restApi.get3dnevnaNapoved();
-    napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
+    loadData();
     super.initState();
   }
 
@@ -36,43 +70,48 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
               end: Alignment.topLeft)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 300,
-              backgroundColor: CustomColors.blue,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  "Vremenska napoved",
-                  style: TextStyle(
-                      fontFamily: "Montserrat",
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.only(top: 30),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                  _buildList("Napoved po pokrajinah", napovedPoPokrajinah)),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                  _buildList("3 dnevna napoved", napoved3dnevna)),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                  _buildList("5 dnevna napoved", napoved5dnevna)),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.only(bottom: 30),
-            )
-          ],
-        ),
+        body: ready ? SmartRefresher(controller: _refreshController,
+        onRefresh: _onRefresh ,child: _buildWithData()) : LoadingData(),
       ),
+    );
+  }
+
+  CustomScrollView _buildWithData() {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          pinned: true,
+          expandedHeight: 300,
+          backgroundColor: CustomColors.blue,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              "Vremenska napoved",
+              style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(top: 30),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+              _buildList("Napoved po pokrajinah", napovedPoPokrajinah)),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+              _buildList("3 dnevna napoved", napoved3dnevna)),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+              _buildList("5 dnevna napoved", napoved5dnevna)),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(bottom: 30),
+        )
+      ],
     );
   }
 
@@ -119,11 +158,19 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                           object: n,
                           leading: Column(
                             children: <Widget>[
-                              Icon(n.weatherIcon, color: Colors.white, size: 40,),
-                              SizedBox(height: 12,)
+                              Icon(
+                                n.weatherIcon,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                              SizedBox(
+                                height: 12,
+                              )
                             ],
                           ),
-                          mark: setMarker(n.temperature == null ? ((n.tempMax - n.tempMin) /2) : n.temperature),
+                          mark: setMarker(n.temperature == null
+                              ? ((n.tempMax - n.tempMin) / 2)
+                              : n.temperature),
                           onPress: () {
                             Navigator.pushNamed(context, "/napoved",
                                 arguments: {"napoved": c});
@@ -181,21 +228,21 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
 
   String setMarker(double temp) {
     String base = "assets/images/temperature/";
-    if(temp < -10)
+    if (temp < -10)
       return "${base}temp001.png";
-    else if(temp < 0)
+    else if (temp < 0)
       return "${base}temp002.png";
-    else if(temp < 5)
+    else if (temp < 5)
       return "${base}temp003.png";
-    else if(temp < 10)
+    else if (temp < 10)
       return "${base}temp004.png";
-    else if(temp < 15)
+    else if (temp < 15)
       return "${base}temp005.png";
-    else if(temp < 20)
+    else if (temp < 20)
       return "${base}temp006.png";
-    else if(temp < 28)
+    else if (temp < 28)
       return "${base}temp007.png";
-    else if(temp < 32)
+    else if (temp < 32)
       return "${base}temp008.png";
     else
       return "${base}temp009.png";

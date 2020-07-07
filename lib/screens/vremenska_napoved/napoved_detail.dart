@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -76,10 +77,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
               builder: (context) => IconButton(
                 onPressed: () {
                   setState(() {
-                    /* vodotok.isFavourite = !vodotok.isFavourite;
-                    favorites.addToFavorites(vodotok); */
+                    FavoritesDatabase fd = FavoritesDatabase();
+                    if(napoved.isFavourite)
+                      fd.removeFromFavorite(napoved);
+                    else
+                      fd.addToFavorite(napoved);
                     napoved.isFavourite = !napoved.isFavourite;
-                    _favorites.addToFavorites(napoved);
 
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(

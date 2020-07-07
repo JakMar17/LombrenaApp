@@ -227,13 +227,15 @@ class NapovedCategory {
   bool isFavourite = false;
   final String type = "napoved";
   String id;
+  String typeOfData;
 
   double geoLat;
   double geoLon;
 
   NapovedCategory({
     this.categoryName,
-    this.napovedi
+    this.napovedi,
+    this.typeOfData
   }){
     id = categoryName;
     geoLat = napovedi[0].geoLat;

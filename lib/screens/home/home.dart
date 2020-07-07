@@ -345,9 +345,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget _createCard(var temp) {
-    switch (temp.typeOfData) {
-      case "vremenska postaja":
-        return _card(new Card(
+    if(temp.typeOfData == TypeOfData.postaja) {
+      return _card(new Card(
             url: '/postaja',
             urlArgumentName: "postaja",
             title: temp.titleShort,
@@ -363,8 +362,8 @@ class _HomeState extends State<Home> {
             secondDataIcon: WeatherIcons.wind_1,
             //secondDataIcon: WeatherIcons2.daySunny,
             thirdDataIcon: WeatherIcons.water_drop));
-      case "vodotok":
-        return _card(new Card(
+    } else if (temp.typeOfData == TypeOfData.vodotok) {
+      return _card(new Card(
             url: '/vodotok',
             urlArgumentName: 'vodotok',
             object: temp,
@@ -379,8 +378,8 @@ class _HomeState extends State<Home> {
             thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : "",
             secondDataIcon: WeatherIcons.water,
             thirdDataIcon: WeatherIcons.temperatire));
-      case "napoved":
-        return _card(new Card(
+    } else if (temp.typeOfData == TypeOfData.napoved5Dnevna || temp.typeOfData == TypeOfData.napoved3Dnevna || temp.typeOfData == TypeOfData.pokrajinskaNapoved) {
+      return _card(new Card(
             url: '/napoved',
             urlArgumentName: 'napoved',
             object: temp,
@@ -396,9 +395,9 @@ class _HomeState extends State<Home> {
                     : "do ${temp.napovedi[0].maxWind.toInt()} km/h"
                 : "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
             secondDataIcon: WeatherIcons.wind_1));
-      default:
-        return Container();
-    }
+    } else
+      return Container();
+  
   }
 
   Widget _card(Card card) {

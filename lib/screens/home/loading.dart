@@ -144,8 +144,6 @@ class _LoadingState extends State<Loading> {
       await f.getFavorites();
       // load closests
     }
-    FavoritesDatabase f = FavoritesDatabase();
-      await f.getFavorites();
     Navigator.pushReplacementNamed(context, "/");
   }
 

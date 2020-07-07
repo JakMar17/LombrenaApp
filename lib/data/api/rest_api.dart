@@ -23,13 +23,12 @@ class RestApi extends FetchingData {
   Favorites f = Favorites();
 
   List<Postaja> getAvtomatskePostaje() {
-    if (postaje == null)
-      fetchPostajeData();
+    if (postaje == null) fetchPostajeData();
     return postaje;
   }
 
   List<MerilnoMestoVodotok> getVodotoki() {
-    if (vodotoki == null)  {
+    if (vodotoki == null) {
       fetchVodotoki();
       return null;
     }
@@ -240,7 +239,7 @@ class RestApi extends FetchingData {
   }
 
   MerilnoMestoVodotok getVodotok(String id) {
-    if(vodotoki == null) return null;
+    if (vodotoki == null) return null;
     for (MerilnoMestoVodotok v in vodotoki) if (v.id == id) return v;
     return null;
   }
@@ -344,7 +343,10 @@ class RestApi extends FetchingData {
       l.add(n);
     }
 
-    napoved5dnevna = NapovedCategory(categoryName: "Slovenija", napovedi: l);
+    napoved5dnevna = NapovedCategory(
+        categoryName: "Slovenija",
+        napovedi: l,
+        typeOfData: TypeOfData.napoved5Dnevna);
 
     List<NapovedCategory> t = [];
     t.add(napoved5dnevna);
@@ -462,8 +464,10 @@ class RestApi extends FetchingData {
 
         l.add(n);
       }
-      napoved3dnevna
-          .add(NapovedCategory(categoryName: l[0].longTitle, napovedi: l));
+      napoved3dnevna.add(NapovedCategory(
+          categoryName: l[0].longTitle,
+          napovedi: l,
+          typeOfData: TypeOfData.napoved3Dnevna));
     }
 
     f.setFavorites(napoved3dnevna);
@@ -597,8 +601,10 @@ class RestApi extends FetchingData {
 
         l.add(n);
       }
-      napovedPoPokrajinah
-          .add(NapovedCategory(categoryName: l[0].longTitle, napovedi: l));
+      napovedPoPokrajinah.add(NapovedCategory(
+          categoryName: l[0].longTitle,
+          napovedi: l,
+          typeOfData: TypeOfData.pokrajinskaNapoved));
     }
 
     f.setFavorites(napovedPoPokrajinah);

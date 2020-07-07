@@ -90,7 +90,7 @@ class FavoritesDatabase {
           url: x.napovedi[0].url,
           geoLat: x.geoLat.toString(),
           geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved5Dnevna,
+          typeOfData: TypeOfData.napoved3Dnevna,
           favorite: true);
       DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.pokrajinskaNapoved) {
@@ -100,7 +100,7 @@ class FavoritesDatabase {
           url: x.napovedi[0].url,
           geoLat: x.geoLat.toString(),
           geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved5Dnevna,
+          typeOfData: TypeOfData.pokrajinskaNapoved,
           favorite: true);
       DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.vodotok) {

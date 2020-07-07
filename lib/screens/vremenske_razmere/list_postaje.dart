@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/data/models/map_marker.dart';
 
@@ -41,33 +42,7 @@ class _ListOfPostajeState extends State<ListOfPostaje> {
               end: Alignment.topLeft)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: postaje == null ? _loadingData() : _buildData(),
-      ),
-    );
-  }
-
-  Center _loadingData() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            backgroundColor: Colors.transparent,
-            semanticsLabel: "bla bla bla",
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Nalaganje podatkov",
-            style: TextStyle(
-                color: Colors.white,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w300,
-                fontSize: 24),
-          )
-        ],
+        body: postaje == null ? LoadingData() : _buildData(),
       ),
     );
   }
