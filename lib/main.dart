@@ -18,7 +18,6 @@ import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:vreme/screens/vremenska_napoved/napoved_detail.dart';
 import 'package:vreme/screens/vremenske_razmere/list_postaje.dart';
 import 'package:vreme/screens/vremenske_razmere/postaja.dart';
-import './screens/home/notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +46,6 @@ void main() async {
         '/warnings': (context) => ListOfWarnings(),
         '/warning': (context) => WarningDetail(),
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
-        '/test/notifications': (context) => NotificationTest(),
       },
       debugShowCheckedModeBanner: false,
       builder: (context, child) {
