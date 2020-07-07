@@ -4,6 +4,7 @@ import 'package:vreme/style/weather_icons2.dart';
 
 class Napoved {
   String id;
+  String url;
   String title;
   String shortTitle;
   String longTitle;
@@ -40,6 +41,7 @@ class Napoved {
 
   Napoved(
       {this.id,
+      this.url,
       this.temperature,
       this.title,
       this.shortTitle,

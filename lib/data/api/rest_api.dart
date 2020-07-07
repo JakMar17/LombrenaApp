@@ -69,6 +69,7 @@ class RestApi {
     for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
       Postaja p = Postaja(
+          id: element.findElements("domain_meteosiId").first.text,
           title: element.findElements("domain_title").first.text,
           titleLong: element.findElements("domain_longTitle").first.text,
           titleShort: element.findElements("domain_shortTitle").first.text,
@@ -263,6 +264,7 @@ class RestApi {
     for (int i = 0; i < elements.length; i++) {
       var element = elements[i];
       Napoved n = Napoved(
+          url: "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml",
           id: element.findElements("domain_id").isEmpty
               ? null
               : element.findElements("domain_id").first.text,
@@ -380,6 +382,7 @@ class RestApi {
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
         Napoved n = Napoved(
+            url: baseUrl + urls[i], 
             id: element.findElements("domain_id").isEmpty
                 ? null
                 : element.findElements("domain_id").first.text,
@@ -506,6 +509,7 @@ class RestApi {
       for (int i = 0; i < elements.length; i++) {
         var element = elements[i];
         Napoved n = Napoved(
+          url: baseUrl + urls[i],
           id: element.findElements("domain_id").isEmpty
               ? null
               : element.findElements("domain_id").first.text,

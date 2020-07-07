@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 class Postaja {
 
   final String type = "avtomatskaPostaja";
+  String url;
 
   bool isFavourite = false;
   String id;
@@ -60,6 +61,7 @@ class Postaja {
   double vidnost;
 
   Postaja({
+    this.id,
     this.title,
     this.titleLong,
     this.titleShort,
@@ -95,6 +97,8 @@ class Postaja {
     this.obsevanje,
     this.vidnost,
   }) {
+    print(id);
+    url = "https://meteo.arso.gov.si/uploads/probase/www/observ/surface/text/sl/observationAms_${id}latest.xml";
     if(sunrise != null)
       sunrise = getTimeString(sunrise);
     if(sunset != null)
