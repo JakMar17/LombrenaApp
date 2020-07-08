@@ -20,7 +20,7 @@ class SettingsPreferences {
   bool getSetting(String name) {
     try{
       bool x = _sharedPreferences.getBool(name);
-      return x == null ? false : x;
+      return x;
       } catch(Exception) {
         return false;
       }

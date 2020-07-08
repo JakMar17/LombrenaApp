@@ -23,35 +23,35 @@ class RestApi extends FetchingData {
   Favorites f = Favorites();
 
   List<Postaja> getAvtomatskePostaje() {
-    if (postaje == null) fetchPostajeData();
+    //if (postaje == null) fetchPostajeData();
     return postaje;
   }
 
   List<MerilnoMestoVodotok> getVodotoki() {
-    if (vodotoki == null) {
+    /*if (vodotoki == null) {
       fetchVodotoki();
       return null;
-    }
+    }*/
     return vodotoki;
   }
 
   NapovedCategory get5dnevnaNapoved() {
-    if (napoved5dnevna == null) fetch5DnevnaNapoved();
+    //if (napoved5dnevna == null) fetch5DnevnaNapoved();
     return napoved5dnevna;
   }
 
   List<NapovedCategory> get3dnevnaNapoved() {
-    if (napoved3dnevna == null) fetch3DnevnaNapoved();
+    //if (napoved3dnevna == null) fetch3DnevnaNapoved();
     return napoved3dnevna;
   }
 
   List<NapovedCategory> getPokrajinskaNapoved() {
-    if (napovedPoPokrajinah == null) fetchPokrajinskaNapoved();
+    //if (napovedPoPokrajinah == null) fetchPokrajinskaNapoved();
     return napovedPoPokrajinah;
   }
 
   TextNapoved getTekstovnaNapoved() {
-    if (textNapoved == null) fetchTextNapoved();
+    //if (textNapoved == null) fetchTextNapoved();
     return textNapoved;
   }
 
@@ -344,6 +344,7 @@ class RestApi extends FetchingData {
     }
 
     napoved5dnevna = NapovedCategory(
+        id: l[0].id,
         categoryName: "Slovenija",
         napovedi: l,
         typeOfData: TypeOfData.napoved5Dnevna);
@@ -465,6 +466,7 @@ class RestApi extends FetchingData {
         l.add(n);
       }
       napoved3dnevna.add(NapovedCategory(
+          id: l[0].id,
           categoryName: l[0].longTitle,
           napovedi: l,
           typeOfData: TypeOfData.napoved3Dnevna));
@@ -602,6 +604,7 @@ class RestApi extends FetchingData {
         l.add(n);
       }
       napovedPoPokrajinah.add(NapovedCategory(
+          id: l[0].id,
           categoryName: l[0].longTitle,
           napovedi: l,
           typeOfData: TypeOfData.pokrajinskaNapoved));

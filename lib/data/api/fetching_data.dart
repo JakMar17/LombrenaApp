@@ -174,7 +174,11 @@ class FetchingData {
       l.add(n);
     }
 
-    return NapovedCategory(categoryName: l[0].title, napovedi: l, typeOfData: TypeOfData.napoved3Dnevna);
+    return NapovedCategory(
+        id: l[0].id,
+        categoryName: l[0].longTitle,
+        napovedi: l,
+        typeOfData: TypeOfData.napoved3Dnevna);
   }
 
   Future<NapovedCategory> fetchNapovedPokrajina(String url) async {
@@ -280,6 +284,10 @@ class FetchingData {
       l.add(n);
     }
 
-    return NapovedCategory(categoryName: l[0].title, napovedi: l, typeOfData: TypeOfData.pokrajinskaNapoved);
+    return NapovedCategory(
+        id:l[0].id,
+        categoryName: l[0].longTitle,
+        napovedi: l,
+        typeOfData: TypeOfData.pokrajinskaNapoved);
   }
 }

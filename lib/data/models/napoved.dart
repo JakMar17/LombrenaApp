@@ -233,11 +233,11 @@ class NapovedCategory {
   double geoLon;
 
   NapovedCategory({
+    this.id,
     this.categoryName,
     this.napovedi,
     this.typeOfData
   }){
-    id = categoryName;
     geoLat = napovedi[0].geoLat;
     geoLon = napovedi[0].geoLon;
   }

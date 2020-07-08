@@ -21,7 +21,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  void _onRefresh() async{
+  void _onRefresh() async {
     await loadData();
     _refreshController.refreshCompleted();
   }
@@ -49,6 +49,13 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
       napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
     }
 
+    /* await restApi.fetch5DnevnaNapoved();
+    napoved5dnevna = [restApi.get5dnevnaNapoved()];
+    await restApi.fetch3DnevnaNapoved();
+    napoved3dnevna = restApi.get3dnevnaNapoved();
+    await restApi.fetchPokrajinskaNapoved();
+    napovedPoPokrajinah = restApi.getPokrajinskaNapoved(); */
+
     setState(() {
       ready = true;
     });
@@ -70,8 +77,12 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
               end: Alignment.topLeft)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: ready ? SmartRefresher(controller: _refreshController,
-        onRefresh: _onRefresh ,child: _buildWithData()) : LoadingData(),
+        body: ready
+            ? SmartRefresher(
+                controller: _refreshController,
+                onRefresh: _onRefresh,
+                child: _buildWithData())
+            : LoadingData(),
       ),
     );
   }

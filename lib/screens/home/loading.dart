@@ -60,7 +60,8 @@ class _LoadingState extends State<Loading> {
 
   void doingSomething() async {
     SettingsPreferences sp = SettingsPreferences();
-    bool data = sp.getSetting(sp.loadedData);
+    bool data = sp.getSetting(sp.loadedData) == null ? false : sp.getSetting(sp.loadedData);
+    //bool data = false;
     print(data);
     //checkConnection();
 
@@ -140,10 +141,10 @@ class _LoadingState extends State<Loading> {
       }
     } else {
       // load favorites
-      FavoritesDatabase f = FavoritesDatabase();
-      await f.getFavorites();
       // load closests
     }
+      FavoritesDatabase f = FavoritesDatabase();
+      await f.getFavorites();
     Navigator.pushReplacementNamed(context, "/");
   }
 

@@ -72,7 +72,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.postaja,
           favorite: true);
-      DBProvider.db.updateData(d);
+      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.napoved5Dnevna) {
       DataModel d = DataModel(
           id: x.id,
@@ -82,7 +82,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.napoved5Dnevna,
           favorite: true);
-      DBProvider.db.updateData(d);
+      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.napoved3Dnevna) {
       DataModel d = DataModel(
           id: x.id,
@@ -92,7 +92,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.napoved3Dnevna,
           favorite: true);
-      DBProvider.db.updateData(d);
+      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.pokrajinskaNapoved) {
       DataModel d = DataModel(
           id: x.id,
@@ -102,7 +102,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.pokrajinskaNapoved,
           favorite: true);
-      DBProvider.db.updateData(d);
+      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.vodotok) {
       DataModel d = DataModel(
           id: x.id,
@@ -112,7 +112,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.vodotok,
           favorite: true);
-      DBProvider.db.updateData(d);
+      await DBProvider.db.updateData(d);
     }
 
     if(favorites == null)
@@ -130,7 +130,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.postaja,
           favorite: false);
-      DBProvider.db.insert(d);
+      await DBProvider.db.insert(d);
     } else if (x.typeOfData == TypeOfData.napoved5Dnevna) {
       DataModel d = DataModel(
           id: x.id,
@@ -140,7 +140,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.napoved5Dnevna,
           favorite: false);
-      DBProvider.db.insert(d);
+      await DBProvider.db.insert(d);
     } else if (x.typeOfData == TypeOfData.napoved3Dnevna) {
       DataModel d = DataModel(
           id: x.id,
@@ -148,9 +148,9 @@ class FavoritesDatabase {
           url: x.napovedi[0].url,
           geoLat: x.geoLat.toString(),
           geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved5Dnevna,
+          typeOfData: TypeOfData.napoved3Dnevna,
           favorite: false);
-      DBProvider.db.insert(d);
+      await DBProvider.db.insert(d);
     } else if (x.typeOfData == TypeOfData.pokrajinskaNapoved) {
       DataModel d = DataModel(
           id: x.id,
@@ -158,9 +158,9 @@ class FavoritesDatabase {
           url: x.napovedi[0].url,
           geoLat: x.geoLat.toString(),
           geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved5Dnevna,
+          typeOfData: TypeOfData.pokrajinskaNapoved,
           favorite: false);
-      DBProvider.db.insert(d);
+      await DBProvider.db.insert(d);
     } else if (x.typeOfData == TypeOfData.vodotok) {
       DataModel d = DataModel(
           id: x.id,
@@ -170,7 +170,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.vodotok,
           favorite: false);
-      DBProvider.db.insert(d);
+      await DBProvider.db.insert(d);
     }
     favorites.remove(x);
   }

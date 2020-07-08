@@ -6,6 +6,7 @@ import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/type_of_data.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -39,6 +40,10 @@ class _HomeState extends State<Home> {
 
   Favorites favorites;
   FavoritesDatabase fd;
+  List<dynamic> closestData;
+  bool loadedClosestData = false;
+  bool showClosestLocations;
+  bool showCategories;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -51,20 +56,32 @@ class _HomeState extends State<Home> {
   LocationServices locationServices = LocationServices();
   @override
   void initState() {
-    
+    showClosestLocations =
+        _settings.getSetting("settings_bliznje_lokacije") == null
+            ? true
+            : _settings.getSetting("settings_bliznje_lokacije");
+    showCategories = _settings.getSetting("settings_visible_categories") == null
+        ? true
+        : _settings.getSetting("settings_visible_categories");
     x(locationServices);
     super.initState();
   }
 
   void x(LocationServices locationServices) async {
     var y = await locationServices.getLocation();
+    if (showClosestLocations) {
+      closestData = await locationServices.getClosestData();
+      setState(() {
+        loadedClosestData = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     favorites = Favorites();
     fd = FavoritesDatabase();
-    List<dynamic> list = locationServices.getClosestData();
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -108,70 +125,20 @@ class _HomeState extends State<Home> {
             onRefresh: onRefresh,
             child: CustomScrollView(
               slivers: <Widget>[
-                FavoritesDatabase.favorites != null
+                FavoritesDatabase.favorites != null &&
+                        FavoritesDatabase.favorites.length != 0
                     ? SliverToBoxAdapter(
                         child: _cardRow(
                             "Priljubljene", FavoritesDatabase.favorites, () {
                           Navigator.pushNamed(context, "/reorder/favorites");
                         }),
-                        /* child: Container(
-                            color: Colors.transparent,
-                            child: Padding(
-                                padding: EdgeInsets.only(top: 30),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 10, right: 15, bottom: 15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            'Priljubljeno',
-                                            style: TextStyle(
-                                                fontSize: 36,
-                                                letterSpacing: 1,
-                                                color: Colors.white,
-                                                fontFamily: "Montserrat",
-                                                fontWeight: FontWeight.w500),
-                                          ),
-
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 15),
-                                            child: IconButton(
-                                              onPressed: () {
-                                                Navigator.pushNamed(context,
-                                                    "/reorder/favorites");
-                                              },
-                                              icon: Icon(
-                                                CustomIcons.option,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 300,
-                                      child: Expanded(child: buildCardList(favorites.getFavorites())),
-                                    ),
-                                    SizedBox(
-                                      height: 30,
-                                    ),
-                                  ],
-                                ))), */
                       )
                     : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
-                    child: _settings.getSetting("settings_bliznje_lokacije")
-                        ? _cardRow("V bližini",
-                            locationServices.getClosestData(), null)
+                    child: showClosestLocations
+                        ? loadedClosestData
+                            ? _cardRow("V bližini", closestData, null)
+                            : LoadingData()
                         : Container()),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -179,7 +146,7 @@ class _HomeState extends State<Home> {
                   ),
                 ),
                 SliverToBoxAdapter(
-                    child: _settings.getSetting("settings_visible_categories")
+                    child: showCategories
                         ? Container(
                             color: Colors.transparent,
                             child:
@@ -207,7 +174,7 @@ class _HomeState extends State<Home> {
                             ),
                           )
                         : Container()),
-                _settings.getSetting("settings_visible_categories")
+                showCategories
                     ? SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
@@ -345,59 +312,60 @@ class _HomeState extends State<Home> {
   }
 
   Widget _createCard(var temp) {
-    if(temp.typeOfData == TypeOfData.postaja) {
+    if (temp.typeOfData == TypeOfData.postaja) {
       return _card(new Card(
-            url: '/postaja',
-            urlArgumentName: "postaja",
-            title: temp.titleShort,
-            object: temp,
-            mainData: temp.temperature.toString(),
-            unit: "°C",
-            secondData: temp.averageWind != null
-                ? "${temp.averageWind} km/h"
-                : temp.windSpeed != null ? "${temp.windSpeed} km/h" : "0 km/h",
-            thirdData: temp.averageHum != null
-                ? "${temp.averageHum} %"
-                : "${temp.humidity} %",
-            secondDataIcon: WeatherIcons.wind_1,
-            //secondDataIcon: WeatherIcons2.daySunny,
-            thirdDataIcon: WeatherIcons.water_drop));
+          url: '/postaja',
+          urlArgumentName: "postaja",
+          title: temp.titleShort,
+          object: temp,
+          mainData: temp.temperature.toString(),
+          unit: "°C",
+          secondData: temp.averageWind != null
+              ? "${temp.averageWind} km/h"
+              : temp.windSpeed != null ? "${temp.windSpeed} km/h" : "0 km/h",
+          thirdData: temp.averageHum != null
+              ? "${temp.averageHum} %"
+              : "${temp.humidity} %",
+          secondDataIcon: WeatherIcons.wind_1,
+          //secondDataIcon: WeatherIcons2.daySunny,
+          thirdDataIcon: WeatherIcons.water_drop));
     } else if (temp.typeOfData == TypeOfData.vodotok) {
       return _card(new Card(
-            url: '/vodotok',
-            urlArgumentName: 'vodotok',
-            object: temp,
-            title: temp.merilnoMesto,
-            mainData: temp.pretok != null
-                ? temp.pretok.round().toString()
-                : temp.vodostaj.round().toString(),
-            unit: temp.pretok != null ? "m3/s" : "cm",
-            secondData: temp.pretokZnacilni != null
-                ? temp.pretokZnacilni
-                : temp.vodostajZnacilni != null ? temp.vodostajZnacilni : "",
-            thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : "",
-            secondDataIcon: WeatherIcons.water,
-            thirdDataIcon: WeatherIcons.temperatire));
-    } else if (temp.typeOfData == TypeOfData.napoved5Dnevna || temp.typeOfData == TypeOfData.napoved3Dnevna || temp.typeOfData == TypeOfData.pokrajinskaNapoved) {
+          url: '/vodotok',
+          urlArgumentName: 'vodotok',
+          object: temp,
+          title: temp.merilnoMesto,
+          mainData: temp.pretok != null
+              ? temp.pretok.round().toString()
+              : temp.vodostaj.round().toString(),
+          unit: temp.pretok != null ? "m3/s" : "cm",
+          secondData: temp.pretokZnacilni != null
+              ? temp.pretokZnacilni
+              : temp.vodostajZnacilni != null ? temp.vodostajZnacilni : "",
+          thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : "",
+          secondDataIcon: WeatherIcons.water,
+          thirdDataIcon: WeatherIcons.temperatire));
+    } else if (temp.typeOfData == TypeOfData.napoved5Dnevna ||
+        temp.typeOfData == TypeOfData.napoved3Dnevna ||
+        temp.typeOfData == TypeOfData.pokrajinskaNapoved) {
       return _card(new Card(
-            url: '/napoved',
-            urlArgumentName: 'napoved',
-            object: temp,
-            title: temp.napovedi[0].longTitle,
-            unit: "°C",
-            icon: temp.napovedi[0].weatherIcon,
-            mainData: temp.napovedi[0].temperature != null
-                ? temp.napovedi[0].temperature.toString()
-                : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt()) / 2}",
-            secondData: temp.napovedi[0].minWind.toInt() == 0
-                ? temp.napovedi[0].maxWind.toInt() == 0
-                    ? "0 km/h"
-                    : "do ${temp.napovedi[0].maxWind.toInt()} km/h"
-                : "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
-            secondDataIcon: WeatherIcons.wind_1));
+          url: '/napoved',
+          urlArgumentName: 'napoved',
+          object: temp,
+          title: temp.napovedi[0].longTitle,
+          unit: "°C",
+          icon: temp.napovedi[0].weatherIcon,
+          mainData: temp.napovedi[0].temperature != null
+              ? temp.napovedi[0].temperature.toString()
+              : "${(temp.napovedi[0].tempMin.toInt() + temp.napovedi[0].tempMax.toInt()) / 2}",
+          secondData: temp.napovedi[0].minWind.toInt() == 0
+              ? temp.napovedi[0].maxWind.toInt() == 0
+                  ? "0 km/h"
+                  : "do ${temp.napovedi[0].maxWind.toInt()} km/h"
+              : "${temp.napovedi[0].minWind.toInt()} - ${temp.napovedi[0].maxWind.toInt()} km/h",
+          secondDataIcon: WeatherIcons.wind_1));
     } else
       return Container();
-  
   }
 
   Widget _card(Card card) {

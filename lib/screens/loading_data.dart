@@ -11,10 +11,9 @@ class LoadingData extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          CircularProgressIndicator(
+          LinearProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             backgroundColor: Colors.transparent,
-            semanticsLabel: "bla bla bla",
           ),
           SizedBox(
             height: 10,

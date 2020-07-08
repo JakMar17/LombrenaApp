@@ -7,6 +7,7 @@ class MerilnoMestoVodotok {
   final String type = TypeOfData.vodotok;
   bool isFavourite = false;
   String url;
+  String typeOfData = TypeOfData.vodotok;
   
   String sifra;
   String id;
