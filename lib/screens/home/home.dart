@@ -40,8 +40,8 @@ class _HomeState extends State<Home> {
 
   Favorites favorites;
   FavoritesDatabase fd;
-  List<dynamic> closestData;
-  bool loadedClosestData = false;
+  static List<dynamic> closestData;
+  static bool loadedClosestData = false;
   bool showClosestLocations;
   bool showCategories;
 

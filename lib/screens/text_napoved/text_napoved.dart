@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/napoved_text.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:sliver_fab/sliver_fab.dart';
 import 'package:http/http.dart';
@@ -20,6 +21,7 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
   RestApi restApi = RestApi();
   dynamic playButton;
   bool playing = false;
+  bool loadedData = false;
   final String url =
       "https://meteo.arso.gov.si/uploads/probase/www/fproduct/media/sl/fcast_si_audio_hbr.mp3";
   AudioPlayer player = AudioPlayer();
@@ -33,9 +35,20 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
     setState(() {});
   }
 
+  void getData() async {
+    napoved = restApi.getTekstovnaNapoved();
+    if(napoved == null) {
+      await restApi.fetchTextNapoved();
+      napoved = restApi.getTekstovnaNapoved();
+    }
+      setState(() {
+        loadedData = true;
+      });
+  }
+
   @override
   void initState() {
-    napoved = restApi.getTekstovnaNapoved();
+    getData();
     playButton = Icon(Icons.play_arrow);
     super.initState();
   }
@@ -93,56 +106,60 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
                 end: Alignment.topLeft)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: SmartRefresher(
-            enablePullDown: true,
-            controller: _refreshController,
-            onRefresh: onRefresh,
-            child: Builder(
-              builder: (context) => SliverFab(
-                floatingWidget: FloatingActionButton(
-                  onPressed: playTrack,
-                  child: playButton,
-                  backgroundColor: CustomColors.darkGrey,
-                ),
-                floatingPosition: FloatingPosition(right: 10),
-                expandedHeight: 300,
-                slivers: <Widget>[
-                  SliverAppBar(
-                    backgroundColor: CustomColors.blue,
-                    pinned: true,
-                    expandedHeight: 300,
-                    flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      title: Text(
-                        "Tekstovna napoved",
-                        style: TextStyle(fontFamily: "Montserrat"),
-                      ),
+          body: loadedData ?  _buildWithData(): LoadingData(),
+        ));
+  }
+
+  SmartRefresher _buildWithData() {
+    return SmartRefresher(
+          enablePullDown: true,
+          controller: _refreshController,
+          onRefresh: onRefresh,
+          child: Builder(
+            builder: (context) => SliverFab(
+              floatingWidget: FloatingActionButton(
+                onPressed: playTrack,
+                child: playButton,
+                backgroundColor: CustomColors.darkGrey,
+              ),
+              floatingPosition: FloatingPosition(right: 10),
+              expandedHeight: 300,
+              slivers: <Widget>[
+                SliverAppBar(
+                  backgroundColor: CustomColors.blue,
+                  pinned: true,
+                  expandedHeight: 300,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(
+                      "Tekstovna napoved",
+                      style: TextStyle(fontFamily: "Montserrat"),
                     ),
                   ),
-                  _buildTitle("Napoved za Slovenijo"),
-                  _buildParagraph(napoved.napovedSlo1),
-                  _buildParagraph(napoved.napovedSlo2),
-                  _emptySpace(20, 0),
-                  _buildTitle("Napoved za sosednje pokrajine"),
-                  _buildParagraph(napoved.napovedSos1),
-                  napoved.napovedSos2.length == 0 ? SliverToBoxAdapter() : _buildParagraph(napoved.napovedSos2),
-                  //napoved.napovedSos2.length != 0 ? _buildParagraph(napoved.napovedSos2) : Container(),
-                  _emptySpace(20, 0),
-                  _buildTitle("Vremenska slika"),
-                  _buildParagraph(napoved.slikaEu1),
-                  _buildParagraph(napoved.slikaEu2),
-                  _emptySpace(20, 0),
-                  _buildTitle("Obeti"),
-                  _buildParagraph(napoved.obeti),
-                  _emptySpace(20, 0),
-                  _buildTitle("Opozorilo"),
-                  _buildParagraph(napoved.opozorilo),
-                  _emptySpace(100, 0),
-                ],
-              ),
+                ),
+                _buildTitle("Napoved za Slovenijo"),
+                _buildParagraph(napoved.napovedSlo1),
+                _buildParagraph(napoved.napovedSlo2),
+                _emptySpace(20, 0),
+                _buildTitle("Napoved za sosednje pokrajine"),
+                _buildParagraph(napoved.napovedSos1),
+                napoved.napovedSos2.length == 0 ? SliverToBoxAdapter() : _buildParagraph(napoved.napovedSos2),
+                //napoved.napovedSos2.length != 0 ? _buildParagraph(napoved.napovedSos2) : Container(),
+                _emptySpace(20, 0),
+                _buildTitle("Vremenska slika"),
+                _buildParagraph(napoved.slikaEu1),
+                _buildParagraph(napoved.slikaEu2),
+                _emptySpace(20, 0),
+                _buildTitle("Obeti"),
+                _buildParagraph(napoved.obeti),
+                _emptySpace(20, 0),
+                _buildTitle("Opozorilo"),
+                _buildParagraph(napoved.opozorilo),
+                _emptySpace(100, 0),
+              ],
             ),
           ),
-        ));
+        );
   }
 
   Widget _buildTitle(String title) {

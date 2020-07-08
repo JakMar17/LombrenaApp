@@ -26,7 +26,7 @@ class _LoadingState extends State<Loading> {
   RestApi restApi = new RestApi();
   Favorites favorites = Favorites();
 
-  Future<bool> loadData() async {
+  Future<bool> loadDataFirstTime() async {
     var postaje = await restApi.fetchPostajeData();
     var vodotoki = await restApi.fetchVodotoki();
     var napoved = await restApi.fetch5DnevnaNapoved();
@@ -39,23 +39,16 @@ class _LoadingState extends State<Loading> {
       return true;
     else
       return false;
+  }
 
-    /* if (postaje && vodotoki && napoved && napoved3 && napovedPokrajine)
-      Navigator.pushReplacementNamed(context, "/");
-    else {
-      String errorMessage;
-      //check for internet connection
-      try {
-        final result = await InternetAddress.lookup(StaticData.BASE_URL);
-        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty)
-          //internet is availbale, unknown error
-          errorMessage = "Neznana napaka, poskusite resetirati aplikacijo";
-      } on SocketException catch (_) {
-        //internet is not available, network error
-        errorMessage = "Preverite povezavo z internetom in poskusite znova";
-      }
-      showErrorDialog(errorMessage);
-    } */
+  void loadingData() {
+    restApi.fetchPostajeData();
+    restApi.fetchVodotoki();
+    restApi.fetch5DnevnaNapoved();
+    restApi.fetch3DnevnaNapoved();
+    restApi.fetchPokrajinskaNapoved();
+    restApi.fetchTextNapoved();
+    restApi.fecthWarnings();
   }
 
   void doingSomething() async {
@@ -68,7 +61,7 @@ class _LoadingState extends State<Loading> {
     if (!data) {
       print("loading data");
       //load all data
-      bool loaded = await loadData();
+      bool loaded = await loadDataFirstTime();
       if (loaded) {
         //store data
         List<Postaja> postaje = restApi.getAvtomatskePostaje();
@@ -140,6 +133,7 @@ class _LoadingState extends State<Loading> {
         checkConnection();
       }
     } else {
+      loadingData();
       // load favorites
       // load closests
     }
