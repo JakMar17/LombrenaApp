@@ -1,10 +1,13 @@
 
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/type_of_data.dart';
 
 class MerilnoMestoVodotok {
 
-  final String type = "vodotok";
+  final String type = TypeOfData.vodotok;
   bool isFavourite = false;
+  String url;
+  String typeOfData = TypeOfData.vodotok;
   
   String sifra;
   String id;

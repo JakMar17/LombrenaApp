@@ -10,6 +10,7 @@ class SettingsPreferences {
   final String notifyWarnings = "settings_warnings_notify";
   final String notifyWarningsLevel = "settings_warnings_notify_level";
   final String notifyWarningRegions = "settings_warnings_notify_regions";
+  final String loadedData = "data_loaded_to_sql";
 
   SettingsPreferences() {
     Preferences p = Preferences();
@@ -19,7 +20,7 @@ class SettingsPreferences {
   bool getSetting(String name) {
     try{
       bool x = _sharedPreferences.getBool(name);
-      return x == null ? true : x;
+      return x;
       } catch(Exception) {
         return false;
       }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -88,8 +89,13 @@ class _VodotokDetailState extends State<VodotokDetail> {
               builder: (context) => IconButton(
                 onPressed: () {
                   setState(() {
+                    FavoritesDatabase db = FavoritesDatabase();
+                    if(vodotok.isFavourite)
+                      db.removeFromFavorite(vodotok);
+                    else
+                      db.addToFavorite(vodotok);
                     vodotok.isFavourite = !vodotok.isFavourite;
-                    favorites.addToFavorites(vodotok);
+                    
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

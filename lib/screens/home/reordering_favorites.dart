@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
+import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class ReorderingFavorites extends StatefulWidget {
@@ -9,7 +11,8 @@ class ReorderingFavorites extends StatefulWidget {
 }
 
 class _ReorderingFavoritesState extends State<ReorderingFavorites> {
-  Favorites _fav = Favorites();
+  //Favorites _fav = Favorites();
+  FavoritesDatabase fd = FavoritesDatabase();
   List<dynamic> _favorites;
 
   void _onReorder(int oldIndex, int newIndex) {
@@ -27,7 +30,7 @@ class _ReorderingFavoritesState extends State<ReorderingFavorites> {
 
   @override
   void initState() {
-    _favorites = _fav.getFavorites();
+    _favorites = FavoritesDatabase.favorites;
     super.initState();
   }
 
@@ -49,8 +52,12 @@ class _ReorderingFavoritesState extends State<ReorderingFavorites> {
               style: TextStyle(fontFamily: "Montserrat"),
             ),
             actions: <Widget>[
-              IconButton(icon: Icon(Icons.done), onPressed: (){
-                _fav.setFav(_favorites);
+              IconButton(icon: Icon(Icons.done), onPressed: () async{
+                //_fav.setFav(_favorites);
+                var x = _favorites;
+                for (var f in x) {
+                  await fd.addToFavorite(f);
+                }
                 Navigator.pushNamedAndRemoveUntil(context, "/", (r) => false);
               },
               color: Colors.white,)
@@ -72,9 +79,9 @@ class _ReorderingFavoritesState extends State<ReorderingFavorites> {
                     child: Row(
                       children: <Widget>[
                         Text(
-                          temp.type == "vodotok"
+                          temp.typeOfData == TypeOfData.vodotok
                               ? "${temp.merilnoMesto.toUpperCase()} (${temp.reka.toUpperCase()})"
-                              : "${temp.id.toUpperCase()}",
+                              : temp.typeOfData == TypeOfData.postaja ? temp.titleLong : temp.categoryName,
                           style: TextStyle(
                               color: Colors.white,
                               fontFamily: "Montserrat",

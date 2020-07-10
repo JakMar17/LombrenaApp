@@ -4,9 +4,11 @@ import 'package:vreme/style/weather_icons2.dart';
 
 class Napoved {
   String id;
+  String url;
   String title;
   String shortTitle;
   String longTitle;
+  String typeOfData;
 
   /* geo lat and lon */
   double geoLat;
@@ -40,6 +42,8 @@ class Napoved {
 
   Napoved(
       {this.id,
+      this.typeOfData,
+      this.url,
       this.temperature,
       this.title,
       this.shortTitle,
@@ -223,15 +227,17 @@ class NapovedCategory {
   bool isFavourite = false;
   final String type = "napoved";
   String id;
+  String typeOfData;
 
   double geoLat;
   double geoLon;
 
   NapovedCategory({
+    this.id,
     this.categoryName,
-    this.napovedi
+    this.napovedi,
+    this.typeOfData
   }){
-    id = categoryName;
     geoLat = napovedi[0].geoLat;
     geoLon = napovedi[0].geoLon;
   }

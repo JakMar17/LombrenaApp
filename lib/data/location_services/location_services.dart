@@ -30,15 +30,39 @@ class LocationServices {
     return _locationData;
   }
 
-  List<dynamic> getClosestData() {
+  Future<List<dynamic>> getClosestData() async {
     if (_locationData == null) return null;
 
     List<dynamic> list = [];
 
-    list.add(closestElement(_restApi.getAvtomatskePostaje()));
-    list.add(closestElement(_restApi.getPokrajinskaNapoved()));
-    list.add(closestElement(_restApi.get3dnevnaNapoved()));
-    list.add(closestElement(_restApi.getVodotoki()));
+    var postaje = _restApi.getAvtomatskePostaje();
+    if(postaje == null) {
+      await _restApi.fetchPostajeData();
+      postaje = _restApi.getAvtomatskePostaje();
+    }
+
+    var pNapoved = _restApi.getPokrajinskaNapoved();
+    if(pNapoved == null) {
+      await _restApi.fetchPokrajinskaNapoved();
+      pNapoved = _restApi.getPokrajinskaNapoved();
+    }
+
+    var napoved3 = _restApi.get3dnevnaNapoved();
+    if(napoved3 == null) {
+      await _restApi.fetch3DnevnaNapoved();
+      napoved3 = _restApi.get3dnevnaNapoved();
+    }
+
+    var vodotoki = _restApi.getVodotoki();
+    if(vodotoki == null) {
+      await _restApi.fetchVodotoki();
+      vodotoki = _restApi.getVodotoki();
+    }
+
+    list.add(closestElement(postaje));
+    list.add(closestElement(pNapoved));
+    list.add(closestElement(napoved3));
+    list.add(closestElement(vodotoki));
     
     return list;
   }
@@ -46,7 +70,7 @@ class LocationServices {
   dynamic closestElement(List<dynamic> list) {
 
     if(list == null)
-      return null;
+      return;
 
     var closest;
     double rad;

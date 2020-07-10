@@ -30,19 +30,34 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
 
     setState(() {
       for (MapMarker m in dataToShow) {
-        Marker marker = Marker(
-          markerId: MarkerId(m.title),
-          position: LatLng(m.lat, m.lon),
-          /* infoWindow:
+        Marker marker;
+        if (m.pin.pin != null)
+          marker = Marker(
+            markerId: MarkerId(m.title),
+            position: LatLng(m.lat, m.lon),
+            /* infoWindow:
               InfoWindow(title: m.title, snippet: m.showData, onTap: m.onPress), */
-          onTap: () {
-            setState(() {
-              selectedPin = m;
-              pinPillPosition = 0;
-            });
-          },
-          icon: /* BitmapDescriptor.fromAsset(m.mark), */ m.pin.pin,
-        );
+            onTap: () {
+              setState(() {
+                selectedPin = m;
+                pinPillPosition = 0;
+              });
+            },
+            icon: m.pin.pin,
+          );
+        else
+          marker = Marker(
+            markerId: MarkerId(m.title),
+            position: LatLng(m.lat, m.lon),
+            /* infoWindow:
+              InfoWindow(title: m.title, snippet: m.showData, onTap: m.onPress), */
+            onTap: () {
+              setState(() {
+                selectedPin = m;
+                pinPillPosition = 0;
+              });
+            },
+          );
         _mapMarkers[marker.markerId.toString()] = marker;
       }
     });
@@ -137,7 +152,6 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
           onTap: selectedPin.onPress,
           child: Container(
             margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
-            
             decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: [CustomColors.blue2, CustomColors.blue],
@@ -159,10 +173,9 @@ class _MapOfSloveniaState extends State<MapOfSlovenia> {
                     flex: 7,
                     child: Row(
                       children: <Widget>[
-                        selectedPin.leading == null ? Container(): Flexible(
-                          flex: 2,
-                          child: selectedPin.leading
-                        ),
+                        selectedPin.leading == null
+                            ? Container()
+                            : Flexible(flex: 2, child: selectedPin.leading),
                         Flexible(
                           flex: 1,
                           child: Container(),
@@ -251,10 +264,14 @@ class CustomMarker {
   String asset;
 
   CustomMarker({this.asset}) {
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(devicePixelRatio: 2.5), asset)
-        .then((onValue) {
-      pin = onValue;
-    });
+    try {
+      BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(devicePixelRatio: 2.5), asset)
+          .then((onValue) {
+        pin = onValue;
+      });
+    } catch (_) {
+      print("NAPAKA: $asset");
+    }
   }
 }

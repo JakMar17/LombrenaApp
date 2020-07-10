@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/opozorila.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class ListOfWarnings extends StatefulWidget {
@@ -13,10 +14,22 @@ class ListOfWarnings extends StatefulWidget {
 class _ListOfWarningsState extends State<ListOfWarnings> {
   RestApi _restApi = RestApi();
   List<WarningRegion> regions;
+  bool loadedData = false;
+
+  void loadData() async {
+    regions = _restApi.getWarnings();
+    if(regions == null || regions.length == 0) {
+      await _restApi.fecthWarnings();
+      regions = _restApi.getWarnings();
+    }
+    setState(() {
+      loadedData = true;
+    });
+  }
 
   @override
   void initState() {
-    regions = _restApi.getWarnings();
+    loadData();
     super.initState();
   }
 
@@ -30,35 +43,39 @@ class _ListOfWarningsState extends State<ListOfWarnings> {
               end: Alignment.topLeft)),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 300,
-              backgroundColor: CustomColors.blue,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  "Izdana vremenska opozorila",
-                  style: TextStyle(
-                      fontFamily: "Montserrat",
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.only(top: 30),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(_buildList()),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.only(bottom: 30),
-            )
-          ],
-        ),
+        body: loadedData ? _buildWithData() : LoadingData(),
       ),
     );
+  }
+
+  CustomScrollView _buildWithData() {
+    return CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 300,
+            backgroundColor: CustomColors.blue,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                "Izdana vremenska opozorila",
+                style: TextStyle(
+                    fontFamily: "Montserrat",
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.only(top: 30),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(_buildList()),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.only(bottom: 30),
+          )
+        ],
+      );
   }
 
   List _buildList() {

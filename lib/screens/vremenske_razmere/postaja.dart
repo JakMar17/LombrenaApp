@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -115,8 +116,13 @@ class _PostajaDetailState extends State<PostajaDetail> {
               builder: (context) => IconButton(
                 onPressed: () {
                   setState(() {
+                    FavoritesDatabase fd = FavoritesDatabase();
+                    if(postaja.isFavourite)
+                      fd.removeFromFavorite(postaja);
+                    else
+                      fd.addToFavorite(postaja);
                     postaja.isFavourite = !postaja.isFavourite;
-                    favorites.addToFavorites(postaja);
+                    //favorites.addToFavorites(postaja);
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
