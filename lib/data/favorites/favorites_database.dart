@@ -54,6 +54,8 @@ class FavoritesDatabase {
       favorites = temp;
     else
       favorites = null;
+    
+    return favorites;
   }
 
   getFavorites() async {

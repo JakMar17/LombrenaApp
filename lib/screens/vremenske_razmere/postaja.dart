@@ -24,10 +24,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void onRefresh() async {
-    await restApi.fetchPostajeData();
-    postaja = restApi.getPostaja(postaja.id);
+    postaja = await restApi.fetchPostaja(postaja.url);
+    print(postaja.temperature.toString());
     _refreshController.refreshCompleted();
-    setState(() {});
+    setState(() {
+
+    });
   }
 
   @override
@@ -93,7 +95,8 @@ class _PostajaDetailState extends State<PostajaDetail> {
 
     Map data = {};
     data = ModalRoute.of(context).settings.arguments;
-    postaja = data['postaja'];
+    if(postaja == null)
+      postaja = data['postaja'];
     initCards();
 
     double screenHeight = MediaQuery.of(context).size.height;

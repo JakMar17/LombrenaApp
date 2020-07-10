@@ -49,9 +49,9 @@ class _HomeState extends State<Home> {
     fd = FavoritesDatabase();
     await fd.getFavoritesFromDB();
     await loadClosestData(locationServices);
-    
-    _refreshController.refreshCompleted();
-    setState(() {});
+    setState(() {
+      _refreshController.refreshCompleted();
+    });
   }
 
   LocationServices locationServices = LocationServices();
