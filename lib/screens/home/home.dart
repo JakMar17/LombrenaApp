@@ -32,10 +32,8 @@ class _HomeState extends State<Home> {
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
     MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
     MenuItem(menuName: "Izdana opozorila", url: "/warnings")
-    //MenuItem(menuName: "Zemljevid", url: "/map")
     /* MenuItem(menuName: "Sistem Burja"),
-  MenuItem(menuName: "Kakovost zraka"),
-  MenuItem(menuName: "Vremenska napoved"), */
+  MenuItem(menuName: "Kakovost zraka"),*/
   ];
 
   Favorites favorites;
@@ -48,8 +46,10 @@ class _HomeState extends State<Home> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void onRefresh() async {
-    await restApi.fetchPostajeData();
-    x(locationServices);
+    fd = FavoritesDatabase();
+    await fd.getFavorites();
+    await loadClosestData(locationServices);
+    
     _refreshController.refreshCompleted();
     setState(() {});
   }
@@ -64,11 +64,11 @@ class _HomeState extends State<Home> {
     showCategories = _settings.getSetting("settings_visible_categories") == null
         ? true
         : _settings.getSetting("settings_visible_categories");
-    x(locationServices);
+    loadClosestData(locationServices);
     super.initState();
   }
 
-  void x(LocationServices locationServices) async {
+  void loadClosestData(LocationServices locationServices) async {
     var y = await locationServices.getLocation();
     if (showClosestLocations) {
       closestData = await locationServices.getClosestData();
@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void loadingData() {
+  Future<void> loadingData() {
     restApi.fetchPostajeData();
     restApi.fetchVodotoki();
     restApi.fetch5DnevnaNapoved();
@@ -110,8 +110,6 @@ class _HomeState extends State<Home> {
             actions: <Widget>[
               IconButton(
                   onPressed: () {
-                    //showSearch(context: context, delegate: Search());
-
                     Navigator.pushReplacementNamed(context, '/search');
                   },
                   icon: Icon(
