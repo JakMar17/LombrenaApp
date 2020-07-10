@@ -141,9 +141,12 @@ class _HomeState extends State<Home> {
                         FavoritesDatabase.favorites.length != 0
                     ? SliverToBoxAdapter(
                         child: _cardRow(
-                            "Priljubljene", FavoritesDatabase.favorites, () {
+                            "Priljubljene",
+                            FavoritesDatabase.favorites,
+                            /* () {
                           Navigator.pushNamed(context, "/reorder/favorites");
-                        }),
+                        } */
+                            null),
                       )
                     : SliverToBoxAdapter(),
                 SliverToBoxAdapter(
@@ -166,7 +169,8 @@ class _HomeState extends State<Home> {
                                           fontWeight: FontWeight.w300),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
                                       child: LoadingData(),
                                     ),
                                   ],

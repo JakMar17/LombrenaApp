@@ -34,31 +34,31 @@ class _CustomSearchState extends State<CustomSearch> {
 
   void loadData() async {
     vremenskePostaje = restApi.getAvtomatskePostaje();
-    if(vremenskePostaje == null) {
+    if (vremenskePostaje == null) {
       await restApi.fetchPostajeData();
       vremenskePostaje = restApi.getAvtomatskePostaje();
     }
 
     vodotoki = restApi.getVodotoki();
-    if(vodotoki == null) {
+    if (vodotoki == null) {
       await restApi.fetchVodotoki();
       vodotoki = restApi.getVodotoki();
     }
 
     napoved3dnevna = restApi.get3dnevnaNapoved();
-    if(napoved3dnevna == null) {
+    if (napoved3dnevna == null) {
       await restApi.fetch3DnevnaNapoved();
       napoved3dnevna = restApi.get3dnevnaNapoved();
     }
 
     napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
-    if(napovedPoPokrajinah == null) {
+    if (napovedPoPokrajinah == null) {
       await restApi.fetchPokrajinskaNapoved();
       napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
     }
 
     napoved5dnevna = [restApi.get5dnevnaNapoved()];
-    if(napoved5dnevna == null) {
+    if (napoved5dnevna == null) {
       await restApi.fetch5DnevnaNapoved();
       napoved5dnevna = [restApi.get5dnevnaNapoved()];
     }
@@ -91,108 +91,101 @@ class _CustomSearchState extends State<CustomSearch> {
                   end: Alignment.topLeft)),
           child: Scaffold(
               backgroundColor: Colors.transparent,
-              body: dataLoaded ? _buildWithData(context) : LoadingData()
-              )),
+              body: dataLoaded ? _buildWithData(context) : LoadingData())),
     );
   }
 
   SafeArea _buildWithData(BuildContext context) {
     return SafeArea(
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: CustomColors.lightGrey),
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: CustomColors.lightGrey),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, "/");
+                        },
+                      ),
+                    ),
+                    Flexible(
+                      flex: 10,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: <Widget>[
-                            Flexible(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  Navigator.pushReplacementNamed(
-                                      context, "/");
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              flex: 10,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: TextField(
-                                  style: TextStyle(color: Colors.white),
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Išči in najdi",
-                                    hintStyle: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: "Montserrat"),
-                                    labelStyle:
-                                        TextStyle(color: Colors.white),
-                                    counterStyle:
-                                        TextStyle(color: Colors.white),
-                                  ),
-                                  controller: _textController,
-                                  onChanged: (String value) {
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              flex: 1,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.clear,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  _textController.clear();
-                                },
-                              ),
-                            ),
-                          ],
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TextField(
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Išči in najdi",
+                            hintStyle: TextStyle(
+                                color: Colors.white, fontFamily: "Montserrat"),
+                            labelStyle: TextStyle(color: Colors.white),
+                            counterStyle: TextStyle(color: Colors.white),
+                          ),
+                          controller: _textController,
+                          onChanged: (String value) {
+                            setState(() {});
+                          },
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          double paddingLeft = 0;
-                          if (index == 0) paddingLeft = 10;
-                          return Padding(
-                            padding: EdgeInsets.only(left: paddingLeft),
-                            child: _buildInputChip(categories[index]),
-                          );
-                        }),
-                  ),
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: Container(
-                        width: double.infinity,
-                        child: _buildSearchResultsList(show)),
-                  ))
-                ],
+                    Flexible(
+                      flex: 1,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.clear,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          _textController.clear();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            );
+            ),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Container(
+            width: double.infinity,
+            height: 50,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  double paddingLeft = 0;
+                  if (index == 0) paddingLeft = 10;
+                  return Padding(
+                    padding: EdgeInsets.only(left: paddingLeft),
+                    child: _buildInputChip(categories[index]),
+                  );
+                }),
+          ),
+          Expanded(
+              child: Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+            child: Container(
+                width: double.infinity, child: _buildSearchResultsList(show)),
+          ))
+        ],
+      ),
+    );
   }
 
   Widget _buildInputChip(SearchCategory cat) {
