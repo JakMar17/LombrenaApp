@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
       RefreshController(initialRefresh: false);
   void onRefresh() async {
     fd = FavoritesDatabase();
-    await fd.getFavorites();
+    await fd.getFavoritesFromDB();
     await loadClosestData(locationServices);
     
     _refreshController.refreshCompleted();
@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-  void loadClosestData(LocationServices locationServices) async {
+  Future<void> loadClosestData(LocationServices locationServices) async {
     var y = await locationServices.getLocation();
     if (showClosestLocations) {
       closestData = await locationServices.getClosestData();
