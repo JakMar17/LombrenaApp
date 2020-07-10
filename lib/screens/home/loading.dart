@@ -41,25 +41,12 @@ class _LoadingState extends State<Loading> {
       return false;
   }
 
-  void loadingData() {
-    restApi.fetchPostajeData();
-    restApi.fetchVodotoki();
-    restApi.fetch5DnevnaNapoved();
-    restApi.fetch3DnevnaNapoved();
-    restApi.fetchPokrajinskaNapoved();
-    restApi.fetchTextNapoved();
-    restApi.fecthWarnings();
-  }
-
   void doingSomething() async {
     SettingsPreferences sp = SettingsPreferences();
     bool data = sp.getSetting(sp.loadedData) == null ? false : sp.getSetting(sp.loadedData);
-    //bool data = false;
-    print(data);
-    //checkConnection();
 
     if (!data) {
-      print("loading data");
+      print("loading data from internet");
       //load all data
       bool loaded = await loadDataFirstTime();
       if (loaded) {
@@ -75,7 +62,6 @@ class _LoadingState extends State<Loading> {
               typeOfData: TypeOfData.postaja,
               favorite: false);
             DBProvider.db.insert(d);
-            print(d.url);
         }
 
         List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
@@ -133,7 +119,7 @@ class _LoadingState extends State<Loading> {
         checkConnection();
       }
     } else {
-      loadingData();
+      print("loading data from database");
       // load favorites
       // load closests
     }

@@ -50,7 +50,6 @@ class FavoritesDatabase {
       }
     }
 
-    print(temp.length);
     if(temp.length != 0)
       favorites = temp;
     else

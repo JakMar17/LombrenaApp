@@ -70,7 +70,7 @@ class LocationServices {
   dynamic closestElement(List<dynamic> list) {
 
     if(list == null)
-      return null;
+      return;
 
     var closest;
     double rad;

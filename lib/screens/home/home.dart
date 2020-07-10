@@ -49,6 +49,7 @@ class _HomeState extends State<Home> {
       RefreshController(initialRefresh: false);
   void onRefresh() async {
     await restApi.fetchPostajeData();
+    x(locationServices);
     _refreshController.refreshCompleted();
     setState(() {});
   }
@@ -73,8 +74,19 @@ class _HomeState extends State<Home> {
       closestData = await locationServices.getClosestData();
       setState(() {
         loadedClosestData = true;
+        loadingData();
       });
     }
+  }
+
+  void loadingData() {
+    restApi.fetchPostajeData();
+    restApi.fetchVodotoki();
+    restApi.fetch5DnevnaNapoved();
+    restApi.fetch3DnevnaNapoved();
+    restApi.fetchPokrajinskaNapoved();
+    restApi.fetchTextNapoved();
+    restApi.fecthWarnings();
   }
 
   @override
@@ -138,7 +150,28 @@ class _HomeState extends State<Home> {
                     child: showClosestLocations
                         ? loadedClosestData
                             ? _cardRow("V bližini", closestData, null)
-                            : LoadingData()
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      "V bližini",
+                                      style: TextStyle(
+                                          fontSize: 36,
+                                          letterSpacing: 1,
+                                          color: Colors.white,
+                                          fontFamily: "Montserrat",
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      child: LoadingData(),
+                                    ),
+                                  ],
+                                ),
+                              )
                         : Container()),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -293,7 +326,6 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCardList(List<dynamic> list) {
-    print(list);
     //List<dynamic> priljubljene = favorites.getFavorites();
     return ListView.builder(
       scrollDirection: Axis.horizontal,

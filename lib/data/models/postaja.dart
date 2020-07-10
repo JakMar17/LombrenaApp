@@ -98,7 +98,6 @@ class Postaja {
     this.obsevanje,
     this.vidnost,
   }) {
-    print(id);
     url = "https://meteo.arso.gov.si/uploads/probase/www/observ/surface/text/sl/observationAms_${id}latest.xml";
     if(sunrise != null)
       sunrise = getTimeString(sunrise);
