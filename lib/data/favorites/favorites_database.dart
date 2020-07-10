@@ -11,7 +11,7 @@ class FavoritesDatabase {
   static dynamic favorites;
   RestApi r = RestApi();
 
-  _getFavoritesFromDB() async {
+  getFavoritesFromDB() async {
     favorites = await DBProvider.db.getFavorites();
 
     List<dynamic> temp = [];
@@ -54,10 +54,12 @@ class FavoritesDatabase {
       favorites = temp;
     else
       favorites = null;
+    
+    return favorites;
   }
 
   getFavorites() async {
-    if (favorites == null) await _getFavoritesFromDB();
+    if (favorites == null) await getFavoritesFromDB();
     return favorites;
   }
 

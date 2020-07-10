@@ -61,14 +61,16 @@ class _ListOfVodotokiState extends State<ListOfVodotoki> {
                                   arguments: {"vodotok": m});
                             },
                             mainData: m.pretok == null
-                                ? "${m.vodostaj}"
+                                ? m.vodostaj == null ? "" : "${m.vodostaj}"
                                 : "${m.pretok}",
-                            mainDataUnit: m.pretok == null ? "cm" : "m3/s",
+                            mainDataUnit: m.pretok == null
+                                ? m.vodostaj == null ? "" : "cm"
+                                : "m3/s",
                             leading: _setImage(m),
                             object: m,
                             lat: m.geoLat,
                             lon: m.geoLon,
-                            mark: _setUrl(m)));
+                            mark: null));
 
                     Navigator.pushNamed(context, "/map",
                         arguments: {"markers": markers});
