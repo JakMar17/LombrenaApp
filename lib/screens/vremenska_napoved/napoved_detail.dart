@@ -27,7 +27,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void onRefresh() async {
-    if(napoved.typeOfData == TypeOfData.pokrajinskaNapoved)
+    if (napoved.typeOfData == TypeOfData.pokrajinskaNapoved)
       napoved = await restApi.fetchNapovedPokrajina(napoved.napovedi[0].url);
     else if (napoved.typeOfData == TypeOfData.napoved3Dnevna)
       napoved = await restApi.fetchNapoved3(napoved.napovedi[0].url);
@@ -41,6 +41,12 @@ class _NapovedDetailState extends State<NapovedDetail> {
   void initCards() {
     _cards = [];
     for (Napoved n in napoved.napovedi) {
+      if (n.minWind == null) {
+        n.minWind = 0;
+        n.maxWind = n.maxWind == null
+            ? n.windSpeed == null ? 0 : n.windSpeed
+            : n.maxWind;
+      }
       var t = n.validDay.split(" ");
       String partOfDay = n.validDayPart != null ? n.validDayPart : "";
       String main = n.tempMin == null
@@ -84,7 +90,7 @@ class _NapovedDetailState extends State<NapovedDetail> {
                 onPressed: () {
                   setState(() {
                     FavoritesDatabase fd = FavoritesDatabase();
-                    if(napoved.isFavourite)
+                    if (napoved.isFavourite)
                       fd.removeFromFavorite(napoved);
                     else
                       fd.addToFavorite(napoved);

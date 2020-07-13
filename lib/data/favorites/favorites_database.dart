@@ -13,7 +13,7 @@ class FavoritesDatabase {
 
   getFavoritesFromDB() async {
     favorites = await DBProvider.db.getFavorites();
-
+    var x = await DBProvider.db.getAllData();
     List<dynamic> temp = [];
 
     for (dynamic x in favorites) {
@@ -21,13 +21,13 @@ class FavoritesDatabase {
         Postaja p = await r.fetchPostaja(x.url);
         p.isFavourite = true;
         temp.add(p);
-      } else if (x.typeOfData == TypeOfData.napoved5Dnevna) {
-        var t = await r.fetch5DnevnaNapoved();
+      } else if (x.typeOfData.toLowerCase().contains("napoved")) {
+        var t = await r.fetchNapoved(x.url, x.typeOfData);
         if (t != null) {
           t.isFavourite = true;
           temp.add(t);
         }
-      } else if (x.typeOfData == TypeOfData.napoved3Dnevna) {
+      } /* else if (x.typeOfData == TypeOfData.napoved3Dnevna) {
         var t = await r.fetchNapoved3(x.url);
         if (t != null) {
           t.isFavourite = true;
@@ -39,7 +39,7 @@ class FavoritesDatabase {
           t.isFavourite = true;
           temp.add(t);
         }
-      } else if (x.typeOfData == TypeOfData.vodotok) {
+      }  */else if (x.typeOfData == TypeOfData.vodotok) {
         MerilnoMestoVodotok m = r.getVodotok(x.id);
         if (m == null) {
           await r.fetchVodotoki();
@@ -114,6 +114,16 @@ class FavoritesDatabase {
           typeOfData: TypeOfData.vodotok,
           favorite: true);
       await DBProvider.db.updateData(d);
+    } else {
+      DataModel d = DataModel(
+          id: x.id,
+          title: x.categoryName,
+          url: x.napovedi[0].url,
+          geoLat: x.geoLat.toString(),
+          geoLon: x.geoLon.toString(),
+          typeOfData: x.typeOfData,
+          favorite: true);
+          await DBProvider.db.insert(d);
     }
 
     if(favorites == null)

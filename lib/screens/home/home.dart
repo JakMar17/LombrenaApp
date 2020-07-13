@@ -381,7 +381,7 @@ class _HomeState extends State<Home> {
           thirdDataIcon: WeatherIcons.temperatire));
     } else if (temp.typeOfData == TypeOfData.napoved5Dnevna ||
         temp.typeOfData == TypeOfData.napoved3Dnevna ||
-        temp.typeOfData == TypeOfData.pokrajinskaNapoved) {
+        temp.typeOfData == TypeOfData.pokrajinskaNapoved || temp.typeOfData.toLowerCase().contains("napoved")) {
       return _card(new Card(
           url: '/napoved',
           urlArgumentName: 'napoved',

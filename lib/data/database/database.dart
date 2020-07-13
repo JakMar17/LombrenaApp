@@ -43,7 +43,7 @@ class DBProvider {
     return res;
   }
 
-  getDataById(int id) async {
+  getDataById(String id) async {
     final db = await database;
     var res = await db.query("data", where: "id = ?", whereArgs: [id]);
     return res.isNotEmpty ? DataModel.fromMap(res.first) : Null;
@@ -59,7 +59,7 @@ class DBProvider {
 
   getAllDataOfType(String type) async {
     final db = await database;
-    var res = await db.query("data", where: "type = ?", whereArgs: [type]);
+    var res = await db.query("data", where: "typeOfData = ?", whereArgs: [type]);
     List<DataModel> list =
         res.isNotEmpty ? res.map((c) => DataModel.fromMap(c)).toList() : [];
     return list;
@@ -75,7 +75,9 @@ class DBProvider {
 
   updateData(DataModel data) async {
     final db = await database;
-    var res = await db.update("data", data.toMap(),
+    await getDataById(data.id);
+    var t = data.toMap();
+    var res = await db.update("data", t,
         where: "id = ?", whereArgs: [data.id]);
     return res;
   }

@@ -30,6 +30,7 @@ class Napoved {
   /* wind */
   double minWind;
   double maxWind;
+  double windSpeed;
   String wind;
 
   /* vremenski pojav */
@@ -59,6 +60,7 @@ class Napoved {
       this.validDayPart,
       this.tempMin,
       this.tempMax,
+      this.windSpeed,
       this.minWind,
       this.maxWind,
       this.wind,
@@ -67,6 +69,14 @@ class Napoved {
       this.thunderstorm}) {
     weather = _setWeather(weatherID);
     weatherIcon = _setWeatherIcon();
+
+    if(windSpeed != null) {
+      windSpeed *= 3.6;
+      if(minWind == null && maxWind == null) {
+        minWind = 0;
+        maxWind = windSpeed;
+      }
+    }
   }
 
   String _setWeather(String x) {

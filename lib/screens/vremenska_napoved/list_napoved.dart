@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:vreme/data/api/fetching_data.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/database/database.dart';
+import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/models/map_marker.dart';
 import 'package:vreme/data/models/napoved.dart';
+import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons2.dart';
@@ -19,6 +23,11 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   List<NapovedCategory> napoved3dnevna;
   List<NapovedCategory> napovedPoPokrajinah;
 
+  List<DataModel> napovedSlo5Dnevna;
+  List<DataModel> napovedSlo3Dnevna;
+  List<DataModel> napovedSloPokrajine;
+  List<DataModel> napovedEvropa;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void _onRefresh() async {
@@ -29,32 +38,15 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   bool ready = false;
 
   void loadData() async {
-    var n = restApi.get5dnevnaNapoved();
-    if (napoved5dnevna == null) {
-      await restApi.fetch5DnevnaNapoved();
-      n = restApi.get5dnevnaNapoved();
-    }
-    napoved5dnevna = [];
-    napoved5dnevna.add(n);
 
-    napoved3dnevna = restApi.get3dnevnaNapoved();
-    if (napoved3dnevna == null) {
-      await restApi.fetch3DnevnaNapoved();
-      napoved3dnevna = restApi.get3dnevnaNapoved();
-    }
+    napovedSlo5Dnevna = await DBProvider.db.getAllDataOfType(TypeOfData.napoved5Dnevna);
+    napovedSlo3Dnevna = await DBProvider.db.getAllDataOfType(TypeOfData.napoved3Dnevna);
+    napovedSloPokrajine = await DBProvider.db.getAllDataOfType(TypeOfData.pokrajinskaNapoved);
+    napovedEvropa = await DBProvider.db.getAllDataOfType(TypeOfData.napovedJadran); 
+    var t = await DBProvider.db.getAllDataOfType(TypeOfData.napovedEvropa);
+    napovedEvropa.addAll(t);
 
-    napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
-    if (napovedPoPokrajinah == null) {
-      await restApi.fetchPokrajinskaNapoved();
-      napovedPoPokrajinah = restApi.getPokrajinskaNapoved();
-    }
-
-    /* await restApi.fetch5DnevnaNapoved();
-    napoved5dnevna = [restApi.get5dnevnaNapoved()];
-    await restApi.fetch3DnevnaNapoved();
-    napoved3dnevna = restApi.get3dnevnaNapoved();
-    await restApi.fetchPokrajinskaNapoved();
-    napovedPoPokrajinah = restApi.getPokrajinskaNapoved(); */
+    napovedEvropa.sort((a, b) => a.title.compareTo(b.title));
 
     setState(() {
       ready = true;
@@ -109,15 +101,19 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
         ),
         SliverList(
           delegate: SliverChildListDelegate(
-              _buildList("Napoved po pokrajinah", napovedPoPokrajinah)),
+              _buildList("Napoved po pokrajinah", napovedSloPokrajine)),
         ),
         SliverList(
           delegate: SliverChildListDelegate(
-              _buildList("3 dnevna napoved", napoved3dnevna)),
+              _buildList("3 dnevna napoved", napovedSlo3Dnevna)),
         ),
         SliverList(
           delegate: SliverChildListDelegate(
-              _buildList("5 dnevna napoved", napoved5dnevna)),
+              _buildList("5 dnevna napoved", napovedSlo5Dnevna)),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+              _buildList("Evropa & Sredozemlje", napovedEvropa)),
         ),
         SliverPadding(
           padding: EdgeInsets.only(bottom: 30),
@@ -126,7 +122,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
     );
   }
 
-  List _buildList(String title, List<NapovedCategory> cat) {
+  List _buildList(String title, List<DataModel> cat) {
     List<Widget> list = [];
     List<MapMarker> markers = [];
 
@@ -148,7 +144,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                 ),
               ),
             ),
-            Flexible(
+            /* Flexible(
                 flex: 2,
                 child: IconButton(
                   icon: Icon(
@@ -191,7 +187,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                     Navigator.pushNamed(context, "/map",
                         arguments: {"markers": markers});
                   },
-                ))
+                )) */
           ],
         ),
       ),
@@ -206,8 +202,11 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
         padding: const EdgeInsets.only(left: 25, right: 25, bottom: 5),
         child: RaisedButton(
           onPressed: () {
+            FetchingData fd = FetchingData();
+            fd.fetchNapoved(cat[i].url, cat[i].typeOfData).then((value) => 
             Navigator.pushNamed(context, "/napoved",
-                arguments: {"napoved": cat[i]});
+                arguments: {"napoved": value}));
+            
           },
           color: Colors.transparent,
           child: Container(
@@ -218,7 +217,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: Text(
-                    cat[i].categoryName,
+                    cat[i].title,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.white,

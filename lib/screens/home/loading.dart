@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vreme/data/api/rest_to_database.dart';
 import 'package:vreme/data/database/database.dart';
 import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
@@ -45,6 +46,10 @@ class _LoadingState extends State<Loading> {
     SettingsPreferences sp = SettingsPreferences();
     bool data = sp.getSetting(sp.loadedData) == null ? false : sp.getSetting(sp.loadedData);
 
+    /* RestToDatabase rtd = RestToDatabase();
+    await rtd.savingNapovediToDatabase(); */
+
+
     if (!data) {
       print("loading data from internet");
       //load all data
@@ -76,7 +81,7 @@ class _LoadingState extends State<Loading> {
           DBProvider.db.insert(d);
         }
 
-        List<NapovedCategory> napoved5 = [restApi.get5dnevnaNapoved()];
+        /* List<NapovedCategory> napoved5 = [restApi.get5dnevnaNapoved()];
         for(NapovedCategory n in napoved5) {
           DataModel d = DataModel(id: n.id,
               title: n.categoryName,
@@ -110,7 +115,7 @@ class _LoadingState extends State<Loading> {
               typeOfData: TypeOfData.napoved3Dnevna,
               favorite: false);
           DBProvider.db.insert(d);
-        }
+        } */
 
         
         sp.setSetting(sp.loadedData, true);

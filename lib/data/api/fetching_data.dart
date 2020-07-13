@@ -285,9 +285,122 @@ class FetchingData {
     }
 
     return NapovedCategory(
-        id:l[0].id,
+        id: l[0].id,
         categoryName: l[0].longTitle,
         napovedi: l,
         typeOfData: TypeOfData.pokrajinskaNapoved);
+  }
+
+  Future<NapovedCategory> fetchNapoved(String url, String typeOfData) async {
+    Response resp = null;
+    try {
+      resp = await get(url);
+    } on Exception catch (_) {
+      return null;
+    }
+
+    dynamic rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("metData");
+
+    var elements = rawData.toList();
+
+    List<Napoved> l = [];
+
+    for (int i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      Napoved n = Napoved(
+          typeOfData: TypeOfData.napoved3Dnevna,
+          url: url,
+          id: element.findElements("domain_meteosiId").isEmpty
+              ? null
+              : element.findElements("domain_meteosiId").first.text,
+          title: element.findElements("domain_title").isEmpty
+              ? null
+              : element.findElements("domain_title").first.text,
+          shortTitle: element.findElements("domain_shortTitle").isEmpty
+              ? null
+              : element.findElements("domain_shortTitle").first.text,
+          longTitle: element.findElements("domain_longTitle").isEmpty
+              ? null
+              : element.findElements("domain_longTitle").first.text,
+          geoLat: element.findElements("domain_lat").isEmpty
+              ? null
+              : parseDouble(element.findElements("domain_lat").first.text),
+          geoLon: element.findElements("domain_lon").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("domain_lon").first.text,
+                ),
+          altitude: element.findElements("domain_lon").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("domain_altitude").first.text,
+                ),
+          sunrise: element.findElements("sunrise").isEmpty
+              ? null
+              : element.findElements("sunrise").first.text,
+          sunset: element.findElements("sunrise").isEmpty
+              ? null
+              : element.findElements("sunset").first.text,
+          date: element.findElements("tsValid_issued").isEmpty
+              ? null
+              : element.findElements("tsValid_issued").first.text,
+          validDate: element.findElements("valid").isEmpty
+              ? null
+              : element.findElements("valid").first.text,
+          validDay: element.findElements("valid_day").isEmpty
+              ? null
+              : element.findElements("valid_day").first.text,
+          tempMin: element.findElements("tn").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("tn").first.text,
+                ),
+          tempMax: element.findElements("tx").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("tx").first.text,
+                ),
+          temperature: element.findElements("t").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("t").first.text,
+                ),
+          windSpeed: element.findElements("ff_val").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("ff_val").first.text,
+                ),
+          minWind: element.findElements("ff_minimum_kmh").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("ff_minimum_kmh").first.text,
+                ),
+          maxWind: element.findElements("ff_maximum_kmh").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("ff_maximum_kmh").first.text,
+                ),
+          wind: element.findElements("dd_shortText").isEmpty
+              ? null
+              : element.findElements("dd_shortText").first.text,
+          weatherID: element.findElements("wwsyn_icon").isEmpty
+              ? null
+              : element.findElements("wwsyn_icon").first.text,
+          cloudiness: element.findElements("nn_shortText").isEmpty
+              ? null
+              : element.findElements("nn_shortText").first.text,
+          thunderstorm: element.findElements("ts_icon").isEmpty
+              ? null
+              : element.findElements("ts_icon").first.text);
+      l.add(n);
+    }
+
+    return NapovedCategory(
+        id: l[0].id,
+        categoryName: l[0].longTitle,
+        napovedi: l,
+        typeOfData: typeOfData);
   }
 }
