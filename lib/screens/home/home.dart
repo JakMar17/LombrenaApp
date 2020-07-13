@@ -313,8 +313,6 @@ class _HomeState extends State<Home> {
                           dynamic temp = list[index];
                           double leftPadding = 0;
                           if (index == 0) leftPadding = 20;
-                          if (temp.typeOfData == "avtomatskaPostaja" &&
-                              temp.titleShort == null) return Container();
                           return Padding(
                               padding: EdgeInsets.only(left: leftPadding),
                               child: _createCard(temp));
@@ -336,8 +334,6 @@ class _HomeState extends State<Home> {
         dynamic temp = list[index];
         double leftPadding = 0;
         if (index == 0) leftPadding = 20;
-        if (temp.typeOfData == "avtomatskaPostaja" && temp.titleShort == null)
-          return Container();
         return Padding(
             padding: EdgeInsets.only(left: leftPadding),
             child: _createCard(temp));
@@ -346,6 +342,8 @@ class _HomeState extends State<Home> {
   }
 
   Widget _createCard(var temp) {
+    if(temp.typeOfData == null)
+      return Container();
     if (temp.typeOfData == TypeOfData.postaja) {
       return _card(new Card(
           url: '/postaja',

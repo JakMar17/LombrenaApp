@@ -5,6 +5,7 @@ import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 
 class VodotokDetail extends StatefulWidget {
@@ -18,6 +19,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
   double _screenHeight;
   List<DetailCard> cards;
   Favorites favorites = Favorites();
+  bool dataLoaded = false;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -45,17 +47,23 @@ class _VodotokDetailState extends State<VodotokDetail> {
           unit: "m3/s"),
       new DetailCard(
           title: "Visokovodni pretok",
-          mainMeasure: vodotok.prviPretok == null ? null : vodotok.prviPretok.toInt(),
+          mainMeasure:
+              vodotok.prviPretok == null ? null : vodotok.prviPretok.toInt(),
           unit: "m3/s",
-          secondData: "${vodotok.drugiPretok == null ? null : vodotok.drugiPretok.toInt()} m3/s",
-          thirdData: "${vodotok.tretjiPretok == null ? null : vodotok.tretjiPretok.toInt()} m3/s"),
+          secondData:
+              "${vodotok.drugiPretok == null ? null : vodotok.drugiPretok.toInt()} m3/s",
+          thirdData:
+              "${vodotok.tretjiPretok == null ? null : vodotok.tretjiPretok.toInt()} m3/s"),
       new DetailCard(
           title: "Visokovodni vodostaj",
-          mainMeasure:
-              vodotok.prviVodostaj == null ? null : vodotok.prviVodostaj.toInt(),
+          mainMeasure: vodotok.prviVodostaj == null
+              ? null
+              : vodotok.prviVodostaj.toInt(),
           unit: "cm",
-          secondData: "${vodotok.drugiVodostaj == null ? null: vodotok.drugiVodostaj.toInt()} cm",
-          thirdData: "${vodotok.tretjiVodostaj == null ? null : vodotok.tretjiVodostaj.toInt()} cm")
+          secondData:
+              "${vodotok.drugiVodostaj == null ? null : vodotok.drugiVodostaj.toInt()} cm",
+          thirdData:
+              "${vodotok.tretjiVodostaj == null ? null : vodotok.tretjiVodostaj.toInt()} cm")
     ];
   }
 
@@ -64,11 +72,32 @@ class _VodotokDetailState extends State<VodotokDetail> {
     super.initState();
   }
 
+  void loadData(String id) async {
+    vodotok = restApi.getVodotok(id);
+    if (vodotok == null) {
+      await restApi.fetchVodotoki();
+      vodotok = restApi.getVodotok(id);
+    } else
+      setState(() {
+        dataLoaded = true;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
-    Map data = {};
-    data = ModalRoute.of(context).settings.arguments;
-    vodotok = data['vodotok'];
+    if (!dataLoaded) {
+      Map data = {};
+      data = ModalRoute.of(context).settings.arguments;
+      vodotok = data['vodotok'];
+
+      if (vodotok == null)
+        loadData(data['vodotokID']);
+      else
+        setState(() {
+          dataLoaded = true;
+        });
+    }
+
     initCards();
     _screenHeight = MediaQuery.of(context).size.height;
     return Container(
@@ -77,151 +106,156 @@ class _VodotokDetailState extends State<VodotokDetail> {
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
               end: Alignment.topLeft)),
-      child: Scaffold(
+      child: dataLoaded ? _buildWithData(context) : LoadingData(),
+    );
+  }
+
+  Scaffold _buildWithData(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(vodotok.merilnoMesto.toUpperCase()),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(vodotok.merilnoMesto.toUpperCase()),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          actions: <Widget>[
-            Builder(
-              builder: (context) => IconButton(
-                onPressed: () {
-                  setState(() {
-                    FavoritesDatabase db = FavoritesDatabase();
-                    if(vodotok.isFavourite)
-                      db.removeFromFavorite(vodotok);
-                    else
-                      db.addToFavorite(vodotok);
-                    vodotok.isFavourite = !vodotok.isFavourite;
-                    
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            flex: 9,
-                            child: Text(
-                              vodotok.isFavourite
-                                  ? "Vodotok je dodan med priljubljene"
-                                  : "Vodotok je odstranjen izmed priljubljenih",
-                              style: TextStyle(
-                                fontFamily: "Montserrat",
-                              ),
+        actions: <Widget>[
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                setState(() {
+                  FavoritesDatabase db = FavoritesDatabase();
+                  if (vodotok.isFavourite)
+                    db.removeFromFavorite(vodotok);
+                  else
+                    db.addToFavorite(vodotok);
+                  vodotok.isFavourite = !vodotok.isFavourite;
+
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 9,
+                          child: Text(
+                            vodotok.isFavourite
+                                ? "Vodotok je dodan med priljubljene"
+                                : "Vodotok je odstranjen izmed priljubljenih",
+                            style: TextStyle(
+                              fontFamily: "Montserrat",
                             ),
                           ),
-                          Flexible(
-                            flex: 3,
-                            child: FlatButton(
-                              child: Text("OK",
-                                  style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                  )),
-                              onPressed: () {
-                                Scaffold.of(context).hideCurrentSnackBar();
-                              },
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: FlatButton(
+                            child: Text("OK",
+                                style: TextStyle(
+                                  fontFamily: "Montserrat",
+                                )),
+                            onPressed: () {
+                              Scaffold.of(context).hideCurrentSnackBar();
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ));
+                });
+              },
+              icon:
+                  Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
+            ),
+          )
+        ],
+      ),
+      body: SmartRefresher(
+        enablePullDown: true,
+        controller: _refreshController,
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+              child: SizedBox(height: 40),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                padding: EdgeInsets.only(left: 20, right: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            width:
+                                MediaQuery.of(context).size.width - 50 - 120,
+                            child: Text(
+                              vodotok.reka,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontFamily: "Montserrat",
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.white),
                             ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            vodotok.pretokZnacilni != null
+                                ? vodotok.pretokZnacilni
+                                : vodotok.vodostajZnacilni != null
+                                    ? vodotok.vodostajZnacilni
+                                    : "",
+                            style: TextStyle(
+                                fontFamily: "Montserrat",
+                                fontSize: 24,
+                                fontWeight: FontWeight.w200,
+                                color: Colors.white),
                           )
                         ],
                       ),
-                    ));
-                  });
-                },
-                icon:
-                    Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: _setImage(vodotok),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            /* SliverToBoxAdapter(
+            child: FlatButton(
+              child: Text("klik"),
+              onPressed: () async {
+                String url =
+                  "https://www.google.com/maps/search/?api=1&query=${vodotok.geoLat},${vodotok.geoLon}";
+                if (await canLaunch(url)) {
+                  await launch(url);
+                }
+              },
+            ),
+          ), */
+            SliverToBoxAdapter(
+              child: SizedBox(height: _screenHeight * 0.15),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                height: _screenHeight * 0.32,
+                margin: EdgeInsets.only(bottom: 60, left: 0),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: detailCard(),
+                    ),
+                  ],
+                ),
               ),
             )
           ],
-        ),
-        body: SmartRefresher(
-          enablePullDown: true,
-          controller: _refreshController,
-          onRefresh: onRefresh,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: SizedBox(height: 40),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: EdgeInsets.only(left: 20, right: 30),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.55,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width - 50 - 120,
-                              child: Text(
-                                vodotok.reka,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.w300,
-                                    color: Colors.white),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              vodotok.pretokZnacilni != null
-                                  ? vodotok.pretokZnacilni
-                                  : vodotok.vodostajZnacilni != null
-                                      ? vodotok.vodostajZnacilni
-                                      : "",
-                              style: TextStyle(
-                                  fontFamily: "Montserrat",
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w200,
-                                  color: Colors.white),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: _setImage(vodotok),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              /* SliverToBoxAdapter(
-                child: FlatButton(
-                  child: Text("klik"),
-                  onPressed: () async {
-                    String url =
-                      "https://www.google.com/maps/search/?api=1&query=${vodotok.geoLat},${vodotok.geoLon}";
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    }
-                  },
-                ),
-              ), */
-              SliverToBoxAdapter(
-                child: SizedBox(height: _screenHeight * 0.15),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: _screenHeight * 0.32,
-                  margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: detailCard(),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
         ),
       ),
     );

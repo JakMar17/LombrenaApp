@@ -45,7 +45,7 @@ class _LoadingState extends State<Loading> {
   void doingSomething() async {
     SettingsPreferences sp = SettingsPreferences();
     bool data = sp.getSetting(sp.loadedData) == null ? false : sp.getSetting(sp.loadedData);
-
+    //bool data = false;
     /* RestToDatabase rtd = RestToDatabase();
     await rtd.savingNapovediToDatabase(); */
 
@@ -72,7 +72,7 @@ class _LoadingState extends State<Loading> {
         List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
         for(MerilnoMestoVodotok v in vodotoki) {
           DataModel d = DataModel(id: v.id,
-              title: v.reka,
+              title: "${v.reka} (${v.merilnoMesto})",
               url: "",
               geoLat: v.geoLat.toString(),
               geoLon: v.geoLon.toString(),

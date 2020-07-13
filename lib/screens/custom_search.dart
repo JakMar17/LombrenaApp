@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/database/database.dart';
+import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 
@@ -23,17 +26,38 @@ class _CustomSearchState extends State<CustomSearch> {
   ];
 
   RestApi restApi = RestApi();
-  List<Postaja> vremenskePostaje;
+  /* List<Postaja> vremenskePostaje;
   List<MerilnoMestoVodotok> vodotoki;
   List<NapovedCategory> napoved5dnevna;
   List<NapovedCategory> napoved3dnevna;
-  List<NapovedCategory> napovedPoPokrajinah;
+  List<NapovedCategory> napovedPoPokrajinah; */
+
+  List<DataModel> postaje;
+  List<DataModel> vodotoki;
+  List<DataModel> napovedi;
+
   List<ResultElement> show;
 
   bool dataLoaded = false;
 
   void loadData() async {
-    vremenskePostaje = restApi.getAvtomatskePostaje();
+    postaje = await DBProvider.db.getAllDataOfType(TypeOfData.postaja);
+    vodotoki = await DBProvider.db.getAllDataOfType(TypeOfData.vodotok);
+    var nSlo5 = await DBProvider.db.getAllDataOfType(TypeOfData.napoved5Dnevna);
+    var nSlo3 = await DBProvider.db.getAllDataOfType(TypeOfData.napoved3Dnevna);
+    var nSloP =
+        await DBProvider.db.getAllDataOfType(TypeOfData.pokrajinskaNapoved);
+    var nJad = await DBProvider.db.getAllDataOfType(TypeOfData.napovedJadran);
+    var nEur = await DBProvider.db.getAllDataOfType(TypeOfData.napovedEvropa);
+
+    napovedi = [];
+    napovedi.addAll(nSlo5);
+    napovedi.addAll(nSlo3);
+    napovedi.addAll(nSloP);
+    napovedi.addAll(nJad);
+    napovedi.addAll(nEur);
+
+    /* vremenskePostaje = restApi.getAvtomatskePostaje();
     if (vremenskePostaje == null) {
       await restApi.fetchPostajeData();
       vremenskePostaje = restApi.getAvtomatskePostaje();
@@ -61,7 +85,7 @@ class _CustomSearchState extends State<CustomSearch> {
     if (napoved5dnevna == null) {
       await restApi.fetch5DnevnaNapoved();
       napoved5dnevna = [restApi.get5dnevnaNapoved()];
-    }
+    } */
 
     setState(() {
       dataLoaded = true;
@@ -227,24 +251,24 @@ class _CustomSearchState extends State<CustomSearch> {
     bool first = true;
 
     if (showNapovedi) {
-      for (NapovedCategory c in napoved5dnevna) {
-        if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
+      for (DataModel c in napovedi) {
+        if (c.title.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(ResultElement(
                 categoryTitle: true, title: "Vremenske napovedi"));
             first = false;
           }
           show.add(ResultElement(
-              title: c.napovedi[0].longTitle,
+              title: c.title,
               url: () {
                 Navigator.pushNamed(context, "/napoved",
-                    arguments: {"napoved": c});
+                    arguments: {"data_model": c});
               },
-              id: c.categoryName));
+              id: c.title));
         }
       }
 
-      for (NapovedCategory c in napoved3dnevna) {
+      /* for (NapovedCategory c in napoved3dnevna) {
         if (c.napovedi[0].longTitle.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(ResultElement(
@@ -276,13 +300,13 @@ class _CustomSearchState extends State<CustomSearch> {
               },
               id: c.categoryName));
         }
-      }
+      } */
     }
 
     first = true;
     if (showPostaje)
-      for (Postaja p in vremenskePostaje) {
-        if (p.titleLong.toUpperCase().contains(searchString)) {
+      for (DataModel p in postaje) {
+        if (p.title.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(
                 ResultElement(categoryTitle: true, title: "Vremenske postaje"));
@@ -290,7 +314,7 @@ class _CustomSearchState extends State<CustomSearch> {
           }
 
           show.add(ResultElement(
-              title: p.titleLong,
+              title: p.title,
               url: () {
                 Navigator.pushNamed(context, '/postaja',
                     arguments: {"postaja": p});
@@ -301,9 +325,9 @@ class _CustomSearchState extends State<CustomSearch> {
     first = true;
 
     if (showVodotoki)
-      for (MerilnoMestoVodotok v in vodotoki) {
-        if (v.reka.toUpperCase().contains(searchString) ||
-            v.merilnoMesto.toUpperCase().contains(searchString)) {
+      for (DataModel v in vodotoki) {
+        if (v.title.toUpperCase().contains(searchString) ||
+            v.title.toUpperCase().contains(searchString)) {
           if (first) {
             show.add(ResultElement(categoryTitle: true, title: "Vodotoki"));
             first = false;
@@ -311,10 +335,10 @@ class _CustomSearchState extends State<CustomSearch> {
 
           show.add(ResultElement(
               categoryTitle: false,
-              title: "${v.merilnoMesto} - ${v.reka}",
+              title: "${v.title}",
               url: () {
                 Navigator.pushNamed(context, '/vodotok',
-                    arguments: {"vodotok": v});
+                    arguments: {"vodotokID": v.id});
               },
               id: v.id));
         }
