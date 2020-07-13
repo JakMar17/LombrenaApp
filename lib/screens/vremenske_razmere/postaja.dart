@@ -93,10 +93,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
 
   void loadData(Map data) async {
     postaja = data['postaja'];
-    if (postaja == null) {
-      DataModel d = data['data_model'];
+    DataModel d = data['data_model'];
+
+    postaja = await restApi.getPostaja(d.id);
+
+    if (postaja == null)
       postaja = await restApi.fetchPostaja(d.url);
-    }
 
     initCards();
     try {

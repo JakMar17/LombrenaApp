@@ -71,9 +71,8 @@ class _NapovedDetailState extends State<NapovedDetail> {
     napoved = data['napoved'];
 
     if (napoved == null) {
-      FetchingData fd = FetchingData();
       DataModel d = data["data_model"];
-      napoved = await fd.fetchNapoved(d.url, d.typeOfData);
+      napoved = await restApi.fetchNapoved(d.url, d.typeOfData);
     }
 
     trenutna = napoved.napovedi[0];
