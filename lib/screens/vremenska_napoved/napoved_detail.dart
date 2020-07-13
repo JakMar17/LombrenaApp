@@ -97,198 +97,202 @@ class _NapovedDetailState extends State<NapovedDetail> {
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
               end: Alignment.topLeft)),
-      child: dataLoaded ? _loadWithData() : LoadingData(),
+      child: dataLoaded
+          ? _loadWithData()
+          : Scaffold(
+              backgroundColor: Colors.transparent,
+              body: LoadingData(),
+            ),
     );
   }
 
   Scaffold _loadWithData() {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(napoved.categoryName.toUpperCase()),
-        centerTitle: true,
         backgroundColor: Colors.transparent,
-        actions: <Widget>[
-          Builder(
-            builder: (context) => IconButton(
-              onPressed: () {
-                setState(() {
-                  FavoritesDatabase fd = FavoritesDatabase();
-                  if (napoved.isFavourite)
-                    fd.removeFromFavorite(napoved);
-                  else
-                    fd.addToFavorite(napoved);
-                  napoved.isFavourite = !napoved.isFavourite;
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(napoved.categoryName.toUpperCase()),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          actions: <Widget>[
+            Builder(
+              builder: (context) => IconButton(
+                onPressed: () {
+                  setState(() {
+                    FavoritesDatabase fd = FavoritesDatabase();
+                    if (napoved.isFavourite)
+                      fd.removeFromFavorite(napoved);
+                    else
+                      fd.addToFavorite(napoved);
+                    napoved.isFavourite = !napoved.isFavourite;
 
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    content: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 9,
-                          child: Text(
-                            napoved.isFavourite
-                                ? "Napoved je dodana med priljubljene"
-                                : "Napoved je odstranjena izmed priljubljenih",
-                            style: TextStyle(
-                              fontFamily: "Montserrat",
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            flex: 9,
+                            child: Text(
+                              napoved.isFavourite
+                                  ? "Napoved je dodana med priljubljene"
+                                  : "Napoved je odstranjena izmed priljubljenih",
+                              style: TextStyle(
+                                fontFamily: "Montserrat",
+                              ),
                             ),
                           ),
+                          Flexible(
+                            flex: 3,
+                            child: FlatButton(
+                              child: Text("OK",
+                                  style: TextStyle(
+                                    fontFamily: "Montserrat",
+                                  )),
+                              onPressed: () {
+                                Scaffold.of(context).hideCurrentSnackBar();
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+                  });
+                },
+                icon:
+                    Icon(napoved.isFavourite ? Icons.star : Icons.star_border),
+              ),
+            )
+          ],
+        ),
+        body: SmartRefresher(
+          enablePullDown: true,
+          controller: _refreshController,
+          onRefresh: onRefresh,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: SizedBox(height: 40),
+              ),
+              SliverToBoxAdapter(
+                  child: Icon(
+                trenutna.weatherIcon,
+                color: Colors.white,
+                size: 84,
+              )),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 60,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: trenutna.tempMin == null
+                    ? Center(
+                        child: Text(
+                          "${trenutna.temperature} °C",
+                          style: TextStyle(
+                              fontSize: 28,
+                              color: Colors.white,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w300),
                         ),
-                        Flexible(
-                          flex: 3,
-                          child: FlatButton(
-                            child: Text("OK",
-                                style: TextStyle(
-                                  fontFamily: "Montserrat",
-                                )),
-                            onPressed: () {
-                              Scaffold.of(context).hideCurrentSnackBar();
-                            },
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "${trenutna.tempMin} °C",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w300),
                           ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.arrow_downward,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Icon(
+                            Icons.arrow_upward,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "${trenutna.tempMax} °C",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w300),
+                          ),
+                        ],
+                      ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 20,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Icon(
+                          WeatherIcons2.wind,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
                         )
                       ],
                     ),
-                  ));
-                });
-              },
-              icon:
-                  Icon(napoved.isFavourite ? Icons.star : Icons.star_border),
-            ),
-          )
-        ],
-      ),
-      body: SmartRefresher(
-      enablePullDown: true,
-      controller: _refreshController,
-      onRefresh: onRefresh,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-            child: SizedBox(height: 40),
-          ),
-          SliverToBoxAdapter(
-              child: Icon(
-            trenutna.weatherIcon,
-            color: Colors.white,
-            size: 84,
-          )),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 60,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: trenutna.tempMin == null
-                ? Center(
-                    child: Text(
-                      "${trenutna.temperature} °C",
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      trenutna.minWind == 0
+                          ? trenutna.maxWind == 0
+                              ? "0 km/h"
+                              : "do ${trenutna.maxWind.toInt()} km/h"
+                          : "${trenutna.minWind.toInt()} - ${trenutna.maxWind.toInt()} km/h",
                       style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 20,
                           color: Colors.white,
                           fontFamily: "Montserrat",
                           fontWeight: FontWeight.w300),
                     ),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ],
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: SizedBox(height: _screenHeight * 0.1),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: _screenHeight * 0.32,
+                  margin: EdgeInsets.only(bottom: 0, left: 0),
+                  child: Row(
                     children: <Widget>[
-                      Text(
-                        "${trenutna.tempMin} °C",
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w300),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Icon(
-                        Icons.arrow_downward,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Icon(
-                        Icons.arrow_upward,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "${trenutna.tempMax} °C",
-                        style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w300),
+                      Expanded(
+                        child: _buildCards(),
                       ),
                     ],
                   ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 20,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    Icon(
-                      WeatherIcons2.wind,
-                      color: Colors.white,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    )
-                  ],
                 ),
-                SizedBox(
-                  width: 20,
-                ),
-                Text(
-                  trenutna.minWind == 0
-                      ? trenutna.maxWind == 0
-                          ? "0 km/h"
-                          : "do ${trenutna.maxWind.toInt()} km/h"
-                      : "${trenutna.minWind.toInt()} - ${trenutna.maxWind.toInt()} km/h",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
+              )
+            ],
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(height: _screenHeight * 0.1),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              height: _screenHeight * 0.32,
-              margin: EdgeInsets.only(bottom: 0, left: 0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: _buildCards(),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    )
-    );
+        ));
   }
 
   Widget _buildCards() {

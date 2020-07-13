@@ -12,6 +12,8 @@ class SettingsPreferences {
   final String notifyWarningRegions = "settings_warnings_notify_regions";
   final String loadedData = "data_loaded_to_sql";
 
+  final String loadingVersion = "loading_data_version";
+
   SettingsPreferences() {
     Preferences p = Preferences();
     _sharedPreferences = p.getPreferences();
@@ -60,6 +62,20 @@ class SettingsPreferences {
     try{
         _sharedPreferences.setStringList(name, values);
       } catch(Exception) {}
+  }
+
+  void setIntSetting(String name, int value) {
+    try {
+      _sharedPreferences.setInt(name, value);
+    } catch(Exception) {}
+  }
+
+  int getIntSetting(String name) {
+    try {
+      return _sharedPreferences.getInt(name);
+    } catch(Exception) {
+      return -1;
+    }
   }
 }
 

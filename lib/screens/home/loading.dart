@@ -36,7 +36,11 @@ class _LoadingState extends State<Loading> {
     restApi.fetchTextNapoved();
     restApi.fecthWarnings();
 
-    if (postaje != null && vodotoki != null && napoved != null && napoved3 != null && napovedPokrajine != null)
+    if (postaje != null &&
+        vodotoki != null &&
+        napoved != null &&
+        napoved3 != null &&
+        napovedPokrajine != null)
       return true;
     else
       return false;
@@ -44,11 +48,16 @@ class _LoadingState extends State<Loading> {
 
   void doingSomething() async {
     SettingsPreferences sp = SettingsPreferences();
-    bool data = sp.getSetting(sp.loadedData) == null ? false : sp.getSetting(sp.loadedData);
-    //bool data = false;
-    /* RestToDatabase rtd = RestToDatabase();
-    await rtd.savingNapovediToDatabase(); */
+    bool data = sp.getSetting(sp.loadedData) == null
+        ? false
+        : sp.getSetting(sp.loadedData);
+    int loadingVersion = sp.getIntSetting(sp.loadingVersion);
 
+    if (loadingVersion == null) {
+      RestToDatabase rtd = RestToDatabase();
+      await rtd.savingNapovediToDatabase();
+      sp.setIntSetting(sp.loadingVersion, 0);
+    }
 
     if (!data) {
       print("loading data from internet");
@@ -66,12 +75,13 @@ class _LoadingState extends State<Loading> {
               geoLon: p.geoLon.toString(),
               typeOfData: TypeOfData.postaja,
               favorite: false);
-            DBProvider.db.insert(d);
+          DBProvider.db.insert(d);
         }
 
         List<MerilnoMestoVodotok> vodotoki = restApi.getVodotoki();
-        for(MerilnoMestoVodotok v in vodotoki) {
-          DataModel d = DataModel(id: v.id,
+        for (MerilnoMestoVodotok v in vodotoki) {
+          DataModel d = DataModel(
+              id: v.id,
               title: "${v.reka} (${v.merilnoMesto})",
               url: "",
               geoLat: v.geoLat.toString(),
@@ -117,9 +127,7 @@ class _LoadingState extends State<Loading> {
           DBProvider.db.insert(d);
         } */
 
-        
         sp.setSetting(sp.loadedData, true);
-
       } else {
         checkConnection();
       }
@@ -128,8 +136,8 @@ class _LoadingState extends State<Loading> {
       // load favorites
       // load closests
     }
-      FavoritesDatabase f = FavoritesDatabase();
-      await f.getFavorites();
+    FavoritesDatabase f = FavoritesDatabase();
+    await f.getFavorites();
     Navigator.pushReplacementNamed(context, "/");
   }
 

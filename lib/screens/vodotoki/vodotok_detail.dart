@@ -106,7 +106,12 @@ class _VodotokDetailState extends State<VodotokDetail> {
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
               end: Alignment.topLeft)),
-      child: dataLoaded ? _buildWithData(context) : LoadingData(),
+      child: dataLoaded
+          ? _buildWithData(context)
+          : Scaffold(
+              backgroundColor: Colors.transparent,
+              body: LoadingData(),
+            ),
     );
   }
 
@@ -162,8 +167,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
                   ));
                 });
               },
-              icon:
-                  Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
+              icon: Icon(vodotok.isFavourite ? Icons.star : Icons.star_border),
             ),
           )
         ],
@@ -191,8 +195,7 @@ class _VodotokDetailState extends State<VodotokDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Container(
-                            width:
-                                MediaQuery.of(context).size.width - 50 - 120,
+                            width: MediaQuery.of(context).size.width - 50 - 120,
                             child: Text(
                               vodotok.reka,
                               textAlign: TextAlign.left,

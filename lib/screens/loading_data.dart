@@ -7,9 +7,7 @@ class LoadingData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-          body: Center(
+    return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -30,7 +28,6 @@ class LoadingData extends StatelessWidget {
             )
           ],
         ),
-      ),
     );
   }
 }

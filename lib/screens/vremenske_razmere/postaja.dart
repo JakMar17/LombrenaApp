@@ -95,10 +95,10 @@ class _PostajaDetailState extends State<PostajaDetail> {
     postaja = data['postaja'];
     DataModel d = data['data_model'];
 
-    postaja = await restApi.getPostaja(d.id);
-
-    if (postaja == null)
-      postaja = await restApi.fetchPostaja(d.url);
+    if (postaja == null) {
+      postaja = restApi.getPostaja(d.id);
+      if (postaja == null) postaja = await restApi.fetchPostaja(d.url);
+    }
 
     initCards();
     try {
@@ -128,7 +128,12 @@ class _PostajaDetailState extends State<PostajaDetail> {
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
               end: Alignment.topLeft)),
-      child: dataLoaded ? _loadWithData(screenHeight) : LoadingData(),
+      child: dataLoaded
+          ? _loadWithData(screenHeight)
+          : Scaffold(
+              backgroundColor: Colors.transparent,
+              body: LoadingData(),
+            ),
     );
   }
 
