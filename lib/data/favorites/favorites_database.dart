@@ -74,36 +74,6 @@ class FavoritesDatabase {
           typeOfData: TypeOfData.postaja,
           favorite: true);
       await DBProvider.db.updateData(d);
-    } else if (x.typeOfData == TypeOfData.napoved5Dnevna) {
-      DataModel d = DataModel(
-          id: x.id,
-          title: x.categoryName,
-          url: x.napovedi[0].url,
-          geoLat: x.geoLat.toString(),
-          geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved5Dnevna,
-          favorite: true);
-      await DBProvider.db.updateData(d);
-    } else if (x.typeOfData == TypeOfData.napoved3Dnevna) {
-      DataModel d = DataModel(
-          id: x.id,
-          title: x.categoryName,
-          url: x.napovedi[0].url,
-          geoLat: x.geoLat.toString(),
-          geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.napoved3Dnevna,
-          favorite: true);
-      await DBProvider.db.updateData(d);
-    } else if (x.typeOfData == TypeOfData.pokrajinskaNapoved) {
-      DataModel d = DataModel(
-          id: x.id,
-          title: x.categoryName,
-          url: x.napovedi[0].url,
-          geoLat: x.geoLat.toString(),
-          geoLon: x.geoLon.toString(),
-          typeOfData: TypeOfData.pokrajinskaNapoved,
-          favorite: true);
-      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.vodotok) {
       DataModel d = DataModel(
           id: x.id,
@@ -114,7 +84,7 @@ class FavoritesDatabase {
           typeOfData: TypeOfData.vodotok,
           favorite: true);
       await DBProvider.db.updateData(d);
-    } else {
+    } else if (x.typeOfData.toLowerCase().contains("napoved")){
       DataModel d = DataModel(
           id: x.id,
           title: x.categoryName,
@@ -123,7 +93,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: x.typeOfData,
           favorite: true);
-          await DBProvider.db.insert(d);
+          await DBProvider.db.updateData(d);
     }
 
     if(favorites == null)
