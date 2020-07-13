@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/screens/detail_card.dart';
+import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -21,15 +23,15 @@ class _PostajaDetailState extends State<PostajaDetail> {
   static RestApi restApi = RestApi();
   List<DetailCard> cards;
 
+  bool dataLoaded = false;
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void onRefresh() async {
     postaja = await restApi.fetchPostaja(postaja.url);
     print(postaja.temperature.toString());
     _refreshController.refreshCompleted();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -89,15 +91,32 @@ class _PostajaDetailState extends State<PostajaDetail> {
     ];
   }
 
+  void loadData(Map data) async {
+    postaja = data['postaja'];
+    if (postaja == null) {
+      DataModel d = data['data_model'];
+      postaja = await restApi.fetchPostaja(d.url);
+    }
+
+    initCards();
+    try {
+      setState(() {
+        dataLoaded = true;
+      });
+    } catch (_) {
+      print("err");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Favorites favorites = Favorites();
 
-    Map data = {};
-    data = ModalRoute.of(context).settings.arguments;
-    if(postaja == null)
-      postaja = data['postaja'];
-    initCards();
+    if (!dataLoaded) {
+      Map data = {};
+      data = ModalRoute.of(context).settings.arguments;
+      loadData(data);
+    }
 
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -107,138 +126,141 @@ class _PostajaDetailState extends State<PostajaDetail> {
               colors: [CustomColors.blue, CustomColors.blue2],
               begin: Alignment.bottomRight,
               end: Alignment.topLeft)),
-      child: Scaffold(
+      child: dataLoaded ? _loadWithData(screenHeight) : LoadingData(),
+    );
+  }
+
+  Scaffold _loadWithData(double screenHeight) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(postaja.titleLong.toUpperCase()),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(postaja.titleLong.toUpperCase()),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          actions: <Widget>[
-            Builder(
-              builder: (context) => IconButton(
-                onPressed: () {
-                  setState(() {
-                    FavoritesDatabase fd = FavoritesDatabase();
-                    if(postaja.isFavourite)
-                      fd.removeFromFavorite(postaja);
-                    else
-                      fd.addToFavorite(postaja);
-                    postaja.isFavourite = !postaja.isFavourite;
-                    //favorites.addToFavorites(postaja);
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Flexible(
-                            flex: 9,
-                            child: Text(
-                                postaja.isFavourite
-                                    ? "Vremenska postaja je dodana med priljubljene"
-                                    : "Vremenska postaja je odstranjena izmed priljubljenih",
+        actions: <Widget>[
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                setState(() {
+                  FavoritesDatabase fd = FavoritesDatabase();
+                  if (postaja.isFavourite)
+                    fd.removeFromFavorite(postaja);
+                  else
+                    fd.addToFavorite(postaja);
+                  postaja.isFavourite = !postaja.isFavourite;
+                  //favorites.addToFavorites(postaja);
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Flexible(
+                          flex: 9,
+                          child: Text(
+                              postaja.isFavourite
+                                  ? "Vremenska postaja je dodana med priljubljene"
+                                  : "Vremenska postaja je odstranjena izmed priljubljenih",
+                              style: TextStyle(
+                                fontFamily: "Montserrat",
+                              )),
+                        ),
+                        Flexible(
+                          flex: 3,
+                          child: FlatButton(
+                            child: Text("OK",
                                 style: TextStyle(
                                   fontFamily: "Montserrat",
                                 )),
+                            onPressed: () {
+                              Scaffold.of(context).hideCurrentSnackBar();
+                            },
                           ),
-                          Flexible(
-                            flex: 3,
-                            child: FlatButton(
-                              child: Text("OK",
-                                  style: TextStyle(
-                                    fontFamily: "Montserrat",
-                                  )),
-                              onPressed: () {
-                                Scaffold.of(context).hideCurrentSnackBar();
-                              },
+                        )
+                      ],
+                    ),
+                  ));
+                });
+              },
+              icon: Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
+            ),
+          ),
+          //IconButton(icon: Icon(Icons.notifications, color: Colors.white), color: Colors.white ,)
+        ],
+      ),
+      body: SmartRefresher(
+        enablePullDown: true,
+        controller: _refreshController,
+        onRefresh: onRefresh,
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+              child: SizedBox(height: 40),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            postaja.temperature.toString(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 100,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w200,
+                                letterSpacing: 2),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              "°C",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 48,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w100,
+                                  letterSpacing: 2),
                             ),
                           )
                         ],
                       ),
-                    ));
-                  });
-                },
-                icon:
-                    Icon(postaja.isFavourite ? Icons.star : Icons.star_border),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    minMaxTemp(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    altitudeRow()
+                  ],
+                ),
               ),
             ),
-            //IconButton(icon: Icon(Icons.notifications, color: Colors.white), color: Colors.white ,)
+            SliverToBoxAdapter(
+              child: SizedBox(height: screenHeight * 0.10),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                height: screenHeight * 0.32,
+                margin: EdgeInsets.only(bottom: 60, left: 0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: detailCard(),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
-        ),
-        body: SmartRefresher(
-          enablePullDown: true,
-          controller: _refreshController,
-          onRefresh: onRefresh,
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverToBoxAdapter(
-                child: SizedBox(height: 40),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              postaja.temperature.toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 100,
-                                  fontFamily: "Montserrat",
-                                  fontWeight: FontWeight.w200,
-                                  letterSpacing: 2),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                "°C",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 48,
-                                    fontFamily: "Montserrat",
-                                    fontWeight: FontWeight.w100,
-                                    letterSpacing: 2),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      minMaxTemp(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      altitudeRow()
-                    ],
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: SizedBox(height: screenHeight * 0.10),
-              ),
-              SliverToBoxAdapter(
-                child: Container(
-                  height: screenHeight * 0.32,
-                  margin: EdgeInsets.only(bottom: 60, left: 0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: detailCard(),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
         ),
       ),
     );

@@ -317,7 +317,7 @@ class _CustomSearchState extends State<CustomSearch> {
               title: p.title,
               url: () {
                 Navigator.pushNamed(context, '/postaja',
-                    arguments: {"postaja": p});
+                    arguments: {"data_model": p});
               },
               id: p.id));
         }
