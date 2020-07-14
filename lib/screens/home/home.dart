@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
+import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
@@ -87,6 +88,24 @@ class _HomeState extends State<Home> {
     restApi.fecthWarnings();
   }
 
+  List<dynamic> sortFavorites() {
+    List<dynamic> beforeSorting = FavoritesDatabase.favorites;
+    if(beforeSorting == null)
+      return null;
+    List<dynamic> afterSorting = [];
+    SettingsPreferences sp = SettingsPreferences();
+    List<String> order = sp.getStringListSetting(sp.favoriteOrder);
+    for(String s in order) {
+      for(dynamic d in beforeSorting) {
+        if(d.id == s) {
+          afterSorting.add(d);
+        }
+      }
+    }
+
+    return afterSorting;
+  }
+
   @override
   Widget build(BuildContext context) {
     fd = FavoritesDatabase();
@@ -137,7 +156,7 @@ class _HomeState extends State<Home> {
                     ? SliverToBoxAdapter(
                         child: _cardRow(
                             "Priljubljene",
-                            FavoritesDatabase.favorites,
+                            sortFavorites(),
                             /* () {
                           Navigator.pushNamed(context, "/reorder/favorites");
                         } */
