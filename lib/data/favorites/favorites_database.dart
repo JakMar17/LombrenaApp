@@ -5,6 +5,7 @@ import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
+import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 import 'package:vreme/data/type_of_data.dart';
 
 class FavoritesDatabase {
@@ -39,7 +40,8 @@ class FavoritesDatabase {
           t.isFavourite = true;
           temp.add(t);
         }
-      }  */else if (x.typeOfData == TypeOfData.vodotok) {
+      }  */
+      else if (x.typeOfData == TypeOfData.vodotok) {
         MerilnoMestoVodotok m = r.getVodotok(x.id);
         if (m == null) {
           await r.fetchVodotoki();
@@ -50,11 +52,11 @@ class FavoritesDatabase {
       }
     }
 
-    if(temp.length != 0)
+    if (temp.length != 0)
       favorites = temp;
     else
       favorites = null;
-    
+
     return favorites;
   }
 
@@ -64,8 +66,9 @@ class FavoritesDatabase {
   }
 
   addToFavorite(var x) async {
+    DataModel d;
     if (x.typeOfData == TypeOfData.postaja) {
-      DataModel d = DataModel(
+      d = DataModel(
           id: x.id,
           title: x.titleLong,
           url: x.url,
@@ -73,9 +76,8 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.postaja,
           favorite: true);
-      await DBProvider.db.updateData(d);
     } else if (x.typeOfData == TypeOfData.vodotok) {
-      DataModel d = DataModel(
+      d = DataModel(
           id: x.id,
           title: x.reka,
           url: "",
@@ -83,9 +85,8 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.vodotok,
           favorite: true);
-      await DBProvider.db.updateData(d);
-    } else if (x.typeOfData.toLowerCase().contains("napoved")){
-      DataModel d = DataModel(
+    } else if (x.typeOfData.toLowerCase().contains("napoved")) {
+      d = DataModel(
           id: x.id,
           title: x.categoryName,
           url: x.napovedi[0].url,
@@ -93,12 +94,18 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: x.typeOfData,
           favorite: true);
-          await DBProvider.db.updateData(d);
     }
 
-    if(favorites == null)
-      favorites = [];
-    FavoritesDatabase.favorites.add(x);
+    if (d != null) {
+      await DBProvider.db.updateData(d);
+      if (favorites == null) favorites = [];
+      FavoritesDatabase.favorites.add(x);
+      SettingsPreferences sp = SettingsPreferences();
+      List<String> favNames = sp.getStringListSetting(sp.favoriteOrder);
+      if (favNames == null) favNames = [];
+      favNames.add(d.id);
+      sp.setStringListSetting(sp.favoriteOrder, favNames);
+    }
   }
 
   removeFromFavorite(var x) async {

@@ -51,7 +51,7 @@ class _LoadingState extends State<Loading> {
         : sp.getSetting(sp.loadedData);
     int loadingVersion = sp.getIntSetting(sp.loadingVersion);
 
-    if (loadingVersion == null) {
+    if (loadingVersion == -1) {
       RestToDatabase rtd = RestToDatabase();
       await rtd.savingNapovediToDatabase();
       sp.setIntSetting(sp.loadingVersion, 0);

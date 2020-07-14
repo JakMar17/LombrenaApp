@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vreme/data/shared_preferences/shared_preferences.dart';
 import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/drawer/about_app.dart';
 import 'package:vreme/screens/home/home.dart';
@@ -20,6 +22,9 @@ import 'package:vreme/screens/vremenske_razmere/postaja.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Preferences p = Preferences();
+  await p.setInstance();
+
 
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {

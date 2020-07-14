@@ -11,6 +11,7 @@ class SettingsPreferences {
   final String notifyWarningsLevel = "settings_warnings_notify_level";
   final String notifyWarningRegions = "settings_warnings_notify_regions";
   final String loadedData = "data_loaded_to_sql";
+  final String favoriteOrder = "favorites_order";
 
   final String loadingVersion = "loading_data_version";
 
