@@ -4,7 +4,6 @@ import 'package:vreme/data/api/fetching_data.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/screens/detail_card.dart';
@@ -25,18 +24,13 @@ class _NapovedDetailState extends State<NapovedDetail> {
   double _screenHeight;
   RestApi restApi = RestApi();
   List<DetailCard> _cards;
-  Favorites _favorites = Favorites();
   bool dataLoaded = false;
 
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void onRefresh() async {
-    if (napoved.typeOfData == TypeOfData.pokrajinskaNapoved)
-      napoved = await restApi.fetchNapovedPokrajina(napoved.napovedi[0].url);
-    else if (napoved.typeOfData == TypeOfData.napoved3Dnevna)
-      napoved = await restApi.fetchNapoved3(napoved.napovedi[0].url);
-    else
-      napoved = await restApi.fetch5DnevnaNapoved();
+    print(napoved.napovedi[0].url);
+    napoved = await restApi.fetchNapoved(napoved.napovedi[0].url, napoved.typeOfData);
 
     _refreshController.refreshCompleted();
     setState(() {});

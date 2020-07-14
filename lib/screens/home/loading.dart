@@ -12,7 +12,6 @@ import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 import 'package:vreme/data/shared_preferences/shared_preferences.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/static_data.dart';
 import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -25,7 +24,6 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   RestApi restApi = new RestApi();
-  Favorites favorites = Favorites();
 
   Future<bool> loadDataFirstTime() async {
     var postaje = await restApi.fetchPostajeData();

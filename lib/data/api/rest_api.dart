@@ -1,7 +1,6 @@
 import 'package:http/http.dart';
 import 'package:vreme/data/api/fetching_data.dart';
 import 'package:vreme/data/models/opozorila.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';
@@ -19,8 +18,6 @@ class RestApi extends FetchingData {
   static List<NapovedCategory> napovedPoPokrajinah;
   static TextNapoved textNapoved;
   static List<WarningRegion> opozorilaPoRegijah;
-
-  Favorites f = Favorites();
 
   List<Postaja> getAvtomatskePostaje() {
     //if (postaje == null) fetchPostajeData();
@@ -117,7 +114,6 @@ class RestApi extends FetchingData {
       postaje.add(p);
     }
 
-    f.setFavorites(postaje);
     return true;
   }
 
@@ -228,7 +224,6 @@ class RestApi extends FetchingData {
     vodotoki.sort(byMerilnoMesto);
     vodotoki.sort(byVodotok);
 
-    f.setFavorites(vodotoki);
     return vodotoki;
   }
 
@@ -351,7 +346,6 @@ class RestApi extends FetchingData {
 
     List<NapovedCategory> t = [];
     t.add(napoved5dnevna);
-    f.setFavorites(t);
     return napoved5dnevna;
   }
 
@@ -385,8 +379,8 @@ class RestApi extends FetchingData {
 
       List<Napoved> l = [];
 
-      for (int i = 0; i < elements.length; i++) {
-        var element = elements[i];
+      for (int j = 0; j < elements.length; j++) {
+        var element = elements[j];
         Napoved n = Napoved(
             typeOfData: TypeOfData.napoved3Dnevna,
             url: baseUrl + urls[i],
@@ -472,7 +466,6 @@ class RestApi extends FetchingData {
           typeOfData: TypeOfData.napoved3Dnevna));
     }
 
-    f.setFavorites(napoved3dnevna);
     return true;
   }
 
@@ -516,8 +509,8 @@ class RestApi extends FetchingData {
 
       List<Napoved> l = [];
 
-      for (int i = 0; i < elements.length; i++) {
-        var element = elements[i];
+      for (int j = 0; j < elements.length; j++) {
+        var element = elements[j];
         Napoved n = Napoved(
           typeOfData: TypeOfData.pokrajinskaNapoved,
           url: baseUrl + urls[i],
@@ -610,7 +603,6 @@ class RestApi extends FetchingData {
           typeOfData: TypeOfData.pokrajinskaNapoved));
     }
 
-    f.setFavorites(napovedPoPokrajinah);
     return true;
   }
 

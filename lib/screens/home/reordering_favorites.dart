@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 

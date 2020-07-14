@@ -202,10 +202,8 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
         padding: const EdgeInsets.only(left: 25, right: 25, bottom: 5),
         child: RaisedButton(
           onPressed: () {
-            FetchingData fd = FetchingData();
-            fd.fetchNapoved(cat[i].url, cat[i].typeOfData).then((value) => 
             Navigator.pushNamed(context, "/napoved",
-                arguments: {"napoved": value}));
+                arguments: {"data_model": cat[i]});
             
           },
           color: Colors.transparent,

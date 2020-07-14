@@ -3,7 +3,6 @@ import 'package:http/http.dart';
 import 'package:http/http.dart';
 import 'package:vreme/data/api/fetching_data.dart';
 import 'package:vreme/data/models/opozorila.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
 import 'package:vreme/data/models/postaja.dart';

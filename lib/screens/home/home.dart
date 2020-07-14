@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
-import 'package:vreme/data/shared_preferences/favorites.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
@@ -36,7 +35,6 @@ class _HomeState extends State<Home> {
   MenuItem(menuName: "Kakovost zraka"),*/
   ];
 
-  Favorites favorites;
   FavoritesDatabase fd;
   static List<dynamic> closestData;
   static bool loadedClosestData = false;
@@ -91,7 +89,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    favorites = Favorites();
     fd = FavoritesDatabase();
 
     return Container(
