@@ -156,39 +156,31 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
       scrollDirection: Axis.horizontal,
       itemCount: toggles.length,
       itemBuilder: (context, index) {
-        return Row(
-          children: <Widget>[
-            index == 0
-                ? SizedBox(
-                    width: 10,
-                  )
-                : Container(),
-            InputChip(
-              backgroundColor: CustomColors.lightGrey,
-              avatar: CircleAvatar(
-                backgroundColor: CustomColors.blue2,
-                child: toggles[index].checked
-                    ? Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      )
-                    : Container(),
+        return 
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: InputChip(
+                backgroundColor: CustomColors.lightGrey,
+                avatar: CircleAvatar(
+                  backgroundColor: CustomColors.blue2,
+                  child: toggles[index].checked
+                      ? Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        )
+                      : Container(),
+                ),
+                label: Text(
+                  toggles[index].title,
+                  style: TextStyle(color: Colors.white, fontFamily: "Montserrat"),
+                ),
+                onPressed: () {
+                  setState(() {
+                    toggles[index].toggleSwitch();
+                  });
+                },
               ),
-              label: Text(
-                toggles[index].title,
-                style: TextStyle(color: Colors.white, fontFamily: "Montserrat"),
-              ),
-              onPressed: () {
-                setState(() {
-                  toggles[index].toggleSwitch();
-                });
-              },
-            ),
-            SizedBox(
-              width: 10,
-            )
-          ],
-        );
+            );
       },
     );
   }
