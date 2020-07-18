@@ -120,22 +120,30 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
         SliverPadding(
           padding: EdgeInsets.only(top: 20),
         ),
-        toggles[0].checked ? SliverList(
-          delegate: SliverChildListDelegate(
-              _buildList("Napoved po pokrajinah", napovedSloPokrajine),)
-        ) : SliverToBoxAdapter(),
-        toggles[1].checked ? SliverList(
-          delegate: SliverChildListDelegate(
-              _buildList("3 dnevna napoved", napovedSlo3Dnevna)),
-        ) : SliverToBoxAdapter(),
-        toggles[2].checked ? SliverList(
-          delegate: SliverChildListDelegate(
-              _buildList("5 dnevna napoved", napovedSlo5Dnevna)),
-        ) : SliverToBoxAdapter(),
-        toggles[3].checked ? SliverList(
-          delegate: SliverChildListDelegate(
-              _buildList("Evropa & Sredozemlje", napovedEvropa)),
-        ) : SliverToBoxAdapter(),
+        toggles[0].checked
+            ? SliverList(
+                delegate: SliverChildListDelegate(
+                _buildList("Napoved po pokrajinah", napovedSloPokrajine),
+              ))
+            : SliverToBoxAdapter(),
+        toggles[1].checked
+            ? SliverList(
+                delegate: SliverChildListDelegate(
+                    _buildList("3 dnevna napoved", napovedSlo3Dnevna)),
+              )
+            : SliverToBoxAdapter(),
+        toggles[2].checked
+            ? SliverList(
+                delegate: SliverChildListDelegate(
+                    _buildList("5 dnevna napoved", napovedSlo5Dnevna)),
+              )
+            : SliverToBoxAdapter(),
+        toggles[3].checked
+            ? SliverList(
+                delegate: SliverChildListDelegate(
+                    _buildList("Evropa & Sredozemlje", napovedEvropa)),
+              )
+            : SliverToBoxAdapter(),
         SliverPadding(
           padding: EdgeInsets.only(bottom: 30),
         )
@@ -155,46 +163,26 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                     width: 10,
                   )
                 : Container(),
-            Container(
-              decoration: BoxDecoration(
-                  color: CustomColors.lightGrey,
-                  borderRadius: BorderRadius.circular(20)),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    toggles[index].toggleSwitch();
-                  });
-                },
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-                  child: Row(
-                    children: <Widget>[
-                      CircleAvatar(
-                        radius: 15,
-                        backgroundColor: CustomColors.blue2,
-                        child: toggles[index].checked
-                            ? Icon(
-                                Icons.check,
-                                color: Colors.white,
-                              )
-                            : Container(),
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        toggles[index].title,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: "Montserrat",
-                            fontSize: 18,
-                            fontWeight: FontWeight.w300),
+            InputChip(
+              backgroundColor: CustomColors.lightGrey,
+              avatar: CircleAvatar(
+                backgroundColor: CustomColors.blue2,
+                child: toggles[index].checked
+                    ? Icon(
+                        Icons.check,
+                        color: Colors.white,
                       )
-                    ],
-                  ),
-                ),
+                    : Container(),
               ),
+              label: Text(
+                toggles[index].title,
+                style: TextStyle(color: Colors.white, fontFamily: "Montserrat"),
+              ),
+              onPressed: () {
+                setState(() {
+                  toggles[index].toggleSwitch();
+                });
+              },
             ),
             SizedBox(
               width: 10,
