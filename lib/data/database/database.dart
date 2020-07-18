@@ -75,7 +75,7 @@ class DBProvider {
 
   updateData(DataModel data) async {
     final db = await database;
-    await getDataById(data.id);
+    //var x = await getDataById(data.id);
     var t = data.toMap();
     var res = await db.update("data", t,
         where: "id = ?", whereArgs: [data.id]);

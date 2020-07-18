@@ -30,31 +30,31 @@ class LocationServices {
     return _locationData;
   }
 
-  Future<List<dynamic>> getClosestData() async {
+  Future<List<dynamic>> getClosestData(bool loadAgain) async {
     if (_locationData == null) return null;
 
     List<dynamic> list = [];
 
     var postaje = _restApi.getAvtomatskePostaje();
-    if(postaje == null) {
+    if(postaje == null || loadAgain) {
       await _restApi.fetchPostajeData();
       postaje = _restApi.getAvtomatskePostaje();
     }
 
     var pNapoved = _restApi.getPokrajinskaNapoved();
-    if(pNapoved == null) {
+    if(pNapoved == null || loadAgain) {
       await _restApi.fetchPokrajinskaNapoved();
       pNapoved = _restApi.getPokrajinskaNapoved();
     }
 
     var napoved3 = _restApi.get3dnevnaNapoved();
-    if(napoved3 == null) {
+    if(napoved3 == null || loadAgain) {
       await _restApi.fetch3DnevnaNapoved();
       napoved3 = _restApi.get3dnevnaNapoved();
     }
 
     var vodotoki = _restApi.getVodotoki();
-    if(vodotoki == null) {
+    if(vodotoki == null || loadAgain) {
       await _restApi.fetchVodotoki();
       vodotoki = _restApi.getVodotoki();
     }

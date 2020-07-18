@@ -69,6 +69,9 @@ class _NapovedDetailState extends State<NapovedDetail> {
       napoved = await restApi.fetchNapoved(d.url, d.typeOfData);
     }
 
+    if(napoved == null)
+      return loadData(data);
+      
     trenutna = napoved.napovedi[0];
     initCards();
     setState(() {

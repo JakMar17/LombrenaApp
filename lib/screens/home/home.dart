@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
   void onRefresh() async {
     fd = FavoritesDatabase();
     await fd.getFavoritesFromDB();
-    await loadClosestData(locationServices);
+    await loadClosestData(locationServices, true);
     setState(() {
       _refreshController.refreshCompleted();
     });
@@ -63,17 +63,17 @@ class _HomeState extends State<Home> {
     showCategories = _settings.getSetting("settings_visible_categories") == null
         ? true
         : _settings.getSetting("settings_visible_categories");
-    loadClosestData(locationServices);
+    loadClosestData(locationServices, false);
     super.initState();
   }
 
-  Future<void> loadClosestData(LocationServices locationServices) async {
+  Future<void> loadClosestData(LocationServices locationServices, bool loadAgain) async {
     var y = await locationServices.getLocation();
     if (showClosestLocations) {
-      closestData = await locationServices.getClosestData();
+      closestData = await locationServices.getClosestData(loadAgain);
       setState(() {
-        loadedClosestData = true;
         loadingData();
+        loadedClosestData = true;
       });
     }
   }
@@ -358,7 +358,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget _createCard(var temp) {
-    if(temp.typeOfData == null)
+    if(temp == null || temp.typeOfData == null)
       return Container();
     if (temp.typeOfData == TypeOfData.postaja) {
       return _card(new Card(

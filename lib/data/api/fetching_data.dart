@@ -98,9 +98,9 @@ class FetchingData {
       Napoved n = Napoved(
           typeOfData: TypeOfData.napoved3Dnevna,
           url: url,
-          id: element.findElements("domain_id").isEmpty
+          id: element.findElements("domain_meteosiId").isEmpty
               ? null
-              : element.findElements("domain_id").first.text,
+              : element.findElements("domain_meteosiId").first.text,
           title: element.findElements("domain_title").isEmpty
               ? null
               : element.findElements("domain_title").first.text,
@@ -201,9 +201,9 @@ class FetchingData {
       Napoved n = Napoved(
         typeOfData: TypeOfData.pokrajinskaNapoved,
         url: url,
-        id: element.findElements("domain_id").isEmpty
+        id: element.findElements("domain_meteosiId").isEmpty
             ? null
-            : element.findElements("domain_id").first.text,
+            : element.findElements("domain_meteosiId").first.text,
         title: element.findElements("domain_title").isEmpty
             ? null
             : element.findElements("domain_title").first.text,

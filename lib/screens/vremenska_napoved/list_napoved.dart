@@ -6,6 +6,7 @@ import 'package:vreme/data/database/database.dart';
 import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/models/map_marker.dart';
 import 'package:vreme/data/models/napoved.dart';
+import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
@@ -28,6 +29,14 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   List<DataModel> napovedSloPokrajine;
   List<DataModel> napovedEvropa;
 
+  List<_Toggle> toggles = [
+    _Toggle(
+        title: "Pokrajinska napoved", id: "napoved_detail_toggle_pokrajinska"),
+    _Toggle(title: "3 dnevna", id: "napoved_detail_toggle_3dnevna"),
+    _Toggle(title: "5 dnevna", id: "napoved_detail_toggle_5dnevna"),
+    _Toggle(title: "Evropa & Sredozemlje", id: "napoved_detail_toggle_evropa"),
+  ];
+
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   void _onRefresh() async {
@@ -38,11 +47,14 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   bool ready = false;
 
   void loadData() async {
-
-    napovedSlo5Dnevna = await DBProvider.db.getAllDataOfType(TypeOfData.napoved5Dnevna);
-    napovedSlo3Dnevna = await DBProvider.db.getAllDataOfType(TypeOfData.napoved3Dnevna);
-    napovedSloPokrajine = await DBProvider.db.getAllDataOfType(TypeOfData.pokrajinskaNapoved);
-    napovedEvropa = await DBProvider.db.getAllDataOfType(TypeOfData.napovedJadran); 
+    napovedSlo5Dnevna =
+        await DBProvider.db.getAllDataOfType(TypeOfData.napoved5Dnevna);
+    napovedSlo3Dnevna =
+        await DBProvider.db.getAllDataOfType(TypeOfData.napoved3Dnevna);
+    napovedSloPokrajine =
+        await DBProvider.db.getAllDataOfType(TypeOfData.pokrajinskaNapoved);
+    napovedEvropa =
+        await DBProvider.db.getAllDataOfType(TypeOfData.napovedJadran);
     var t = await DBProvider.db.getAllDataOfType(TypeOfData.napovedEvropa);
     napovedEvropa.addAll(t);
 
@@ -97,28 +109,99 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
           ),
         ),
         SliverPadding(
-          padding: EdgeInsets.only(top: 30),
+          padding: EdgeInsets.only(top: 10),
         ),
-        SliverList(
+        SliverToBoxAdapter(
+            child: Container(
+          width: double.infinity,
+          height: 40,
+          child: _toggles(),
+        )),
+        SliverPadding(
+          padding: EdgeInsets.only(top: 20),
+        ),
+        toggles[0].checked ? SliverList(
           delegate: SliverChildListDelegate(
-              _buildList("Napoved po pokrajinah", napovedSloPokrajine)),
-        ),
-        SliverList(
+              _buildList("Napoved po pokrajinah", napovedSloPokrajine),)
+        ) : SliverToBoxAdapter(),
+        toggles[1].checked ? SliverList(
           delegate: SliverChildListDelegate(
               _buildList("3 dnevna napoved", napovedSlo3Dnevna)),
-        ),
-        SliverList(
+        ) : SliverToBoxAdapter(),
+        toggles[2].checked ? SliverList(
           delegate: SliverChildListDelegate(
               _buildList("5 dnevna napoved", napovedSlo5Dnevna)),
-        ),
-        SliverList(
+        ) : SliverToBoxAdapter(),
+        toggles[3].checked ? SliverList(
           delegate: SliverChildListDelegate(
               _buildList("Evropa & Sredozemlje", napovedEvropa)),
-        ),
+        ) : SliverToBoxAdapter(),
         SliverPadding(
           padding: EdgeInsets.only(bottom: 30),
         )
       ],
+    );
+  }
+
+  ListView _toggles() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: toggles.length,
+      itemBuilder: (context, index) {
+        return Row(
+          children: <Widget>[
+            index == 0
+                ? SizedBox(
+                    width: 10,
+                  )
+                : Container(),
+            Container(
+              decoration: BoxDecoration(
+                  color: CustomColors.lightGrey,
+                  borderRadius: BorderRadius.circular(20)),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    toggles[index].toggleSwitch();
+                  });
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
+                  child: Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 15,
+                        backgroundColor: CustomColors.blue2,
+                        child: toggles[index].checked
+                            ? Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              )
+                            : Container(),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        toggles[index].title,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Montserrat",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w300),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 10,
+            )
+          ],
+        );
+      },
     );
   }
 
@@ -144,50 +227,6 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
                 ),
               ),
             ),
-            /* Flexible(
-                flex: 2,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.map,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    for (NapovedCategory c in cat) {
-                      var n = c.napovedi[0];
-                      markers.add(MapMarker(
-                          title: n.longTitle,
-                          mainData: n.temperature != null
-                              ? "${n.temperature}"
-                              : "${(n.tempMax + n.tempMin) / 2}",
-                          mainDataUnit: "°C",
-                          lat: n.geoLat,
-                          lon: n.geoLon,
-                          object: n,
-                          leading: Column(
-                            children: <Widget>[
-                              Icon(
-                                n.weatherIcon,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                              SizedBox(
-                                height: 12,
-                              )
-                            ],
-                          ),
-                          mark: setMarker(n.temperature == null
-                              ? ((n.tempMax - n.tempMin) / 2)
-                              : n.temperature),
-                          onPress: () {
-                            Navigator.pushNamed(context, "/napoved",
-                                arguments: {"napoved": c});
-                          }));
-                    }
-
-                    Navigator.pushNamed(context, "/map",
-                        arguments: {"markers": markers});
-                  },
-                )) */
           ],
         ),
       ),
@@ -204,7 +243,6 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
           onPressed: () {
             Navigator.pushNamed(context, "/napoved",
                 arguments: {"data_model": cat[i]});
-            
           },
           color: Colors.transparent,
           child: Container(
@@ -254,7 +292,23 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
       return "${base}temp008.png";
     else
       return "${base}temp009.png";
+  }
+}
 
-    //return "";
+class _Toggle {
+  String title;
+  bool checked;
+  String id;
+
+  SettingsPreferences _sp = SettingsPreferences();
+
+  _Toggle({this.title, this.id}) {
+    bool t = _sp.getSetting(id);
+    checked = t == null ? true : t;
+  }
+
+  void toggleSwitch() {
+    checked = !checked;
+    _sp.setSetting(id, checked);
   }
 }

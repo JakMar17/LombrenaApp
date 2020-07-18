@@ -262,9 +262,9 @@ class RestApi extends FetchingData {
           typeOfData: TypeOfData.napoved5Dnevna,
           url:
               "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_latest.xml",
-          id: element.findElements("domain_id").isEmpty
+          id: element.findElements("domain_meteosiId").isEmpty
               ? null
-              : element.findElements("domain_id").first.text,
+              : element.findElements("domain_meteosiId").first.text,
           title: element.findElements("domain_title").isEmpty
               ? null
               : element.findElements("domain_title").first.text,
@@ -384,9 +384,9 @@ class RestApi extends FetchingData {
         Napoved n = Napoved(
             typeOfData: TypeOfData.napoved3Dnevna,
             url: baseUrl + urls[i],
-            id: element.findElements("domain_id").isEmpty
+            id: element.findElements("domain_meteosiId").isEmpty
                 ? null
-                : element.findElements("domain_id").first.text,
+                : element.findElements("domain_meteosiId").first.text,
             title: element.findElements("domain_title").isEmpty
                 ? null
                 : element.findElements("domain_title").first.text,
@@ -514,9 +514,9 @@ class RestApi extends FetchingData {
         Napoved n = Napoved(
           typeOfData: TypeOfData.pokrajinskaNapoved,
           url: baseUrl + urls[i],
-          id: element.findElements("domain_id").isEmpty
+          id: element.findElements("domain_meteosiId").isEmpty
               ? null
-              : element.findElements("domain_id").first.text,
+              : element.findElements("domain_meteosiId").first.text,
           title: element.findElements("domain_title").isEmpty
               ? null
               : element.findElements("domain_title").first.text,
