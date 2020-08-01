@@ -51,10 +51,16 @@ class _LoadingState extends State<Loading> {
         : sp.getSetting(sp.loadedData);
     int loadingVersion = sp.getIntSetting(sp.loadingVersion);
 
-    if (loadingVersion == -1 || loadingVersion == null) {
+    if (loadingVersion <= 0 || loadingVersion == null) {
       RestToDatabase rtd = RestToDatabase();
-      await rtd.savingNapovediToDatabase();
-      sp.setIntSetting(sp.loadingVersion, 0);
+      if(loadingVersion == -1 || loadingVersion == null) {
+        await rtd.savingNapovediToDatabase();
+      }
+
+      //dodaj napoved gore v database
+      await rtd.savingNapovedGoreToDatabase();
+
+      sp.setIntSetting(sp.loadingVersion, 1);
     }
 
     if (!data) {

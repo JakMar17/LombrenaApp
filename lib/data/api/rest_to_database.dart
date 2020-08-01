@@ -49,7 +49,8 @@ class RestToDatabase {
 
       //set detail url
       String detailURL;
-      if (types[i] == TypeOfData.napovedEvropa || types[i] == TypeOfData.napovedJadran)
+      if (types[i] == TypeOfData.napovedEvropa ||
+          types[i] == TypeOfData.napovedJadran)
         detailURL =
             "https://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_";
       else
@@ -69,6 +70,61 @@ class RestToDatabase {
         d = DataModel(
             id: id,
             typeOfData: types[i],
+            title: e.findElements("domain_longTitle").first.text,
+            geoLat: e.findElements("domain_lat").first.text,
+            geoLon: e.findElements("domain_lon").first.text,
+            favorite: false,
+            url: "$detailURL${id}latest.xml");
+        if (!exists.contains(d.id)) {
+          exists.add(d.id);
+          await DBProvider.db.insert(d);
+        }
+      }
+    }
+  }
+
+  Future<void> savingNapovedGoreToDatabase() async {
+    print("getting napoved gore");
+
+    Response resp = null;
+
+    List<String> urls = [
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_JULIAN-ALPS_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_JULIAN-ALPS_SOUTH-WEST_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_KAMNIK-SAVINJA-ALPS_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_KARAVANKE-ALPS_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_POHORJE_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_SNEZNIK_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_SKOFJELOSKO-HRIBOVJE_latest.xml",
+      "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_EAST-MOUNTAINS_latest.xml"
+    ];
+
+    for (int i = 0; i < urls.length; i++) {
+      //get responde for url
+      Response resp;
+      try {
+        resp = await get(urls[i]);
+      } on Exception catch (_) {
+        continue;
+      }
+
+      //set detail url
+      String detailURL =
+          "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_";
+
+      dynamic rawData = utf8.decode(resp.bodyBytes);
+      rawData = xml.parse(rawData);
+      rawData = rawData.findAllElements("metData");
+
+      var elements = rawData.toList();
+
+      List<String> exists = [];
+
+      for (var e in elements) {
+        var id = e.findElements("domain_meteosiId").first.text;
+        DataModel d = DataModel(
+            id: id,
+            typeOfData: TypeOfData.napovedGore,
             title: e.findElements("domain_longTitle").first.text,
             geoLat: e.findElements("domain_lat").first.text,
             geoLon: e.findElements("domain_lon").first.text,

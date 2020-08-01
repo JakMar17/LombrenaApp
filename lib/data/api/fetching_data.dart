@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 
 import 'package:http/http.dart';
 import 'package:vreme/data/api/fetching_data.dart';
+import 'package:vreme/data/models/napoved_gore.dart';
 import 'package:vreme/data/models/opozorila.dart';
 import 'package:vreme/data/models/napoved.dart';
 import 'package:vreme/data/models/napoved_text.dart';
@@ -401,5 +402,199 @@ class FetchingData {
         categoryName: l[0].longTitle,
         napovedi: l,
         typeOfData: typeOfData);
+  }
+
+  Future<NapovedGore> fetchNapovedGore(String url) async {
+    String typeOfData = TypeOfData.napovedGore;
+
+    Response resp = null;
+    try {
+      resp = await get(url);
+    } on Exception catch (_) {
+      return null;
+    }
+
+    dynamic rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("metData");
+
+    var elements = rawData.toList();
+
+    NapovedGore napovedGore = NapovedGore(
+      domainID: elements[0].findElements("domain_meteosiId").isEmpty
+          ? null
+          : elements[0].findElements("domain_meteosiId").first.text,
+      url: url,
+      geoLat: elements[0].findElements("domain_lat").isEmpty
+          ? null
+          : parseDouble(elements[0].findElements("domain_lat").first.text),
+      geoLon: elements[0].findElements("domain_lon").isEmpty
+          ? null
+          : parseDouble(elements[0].findElements("domain_lon").first.text),
+      altitude: elements[0].findElements("domain_altitude").isEmpty
+          ? null
+          : parseDouble(elements[0].findElements("domain_altitude").first.text),
+      altitudeMax: elements[0].findElements("domain_top").isEmpty
+          ? null
+          : parseDouble(elements[0].findElements("domain_top").first.text),
+      altitudeMin: elements[0].findElements("domain_bottom").isEmpty
+          ? null
+          : parseDouble(elements[0].findElements("domain_bottom").first.text),
+      title: elements[0].findElements("domain_longTitle").isEmpty
+          ? null
+          : elements[0].findElements("domain_longTitle").first.text,
+    );
+
+    List<NapovedGoreDan> l = [];
+
+    for (int i = 0; i < elements.length; i++) {
+      var element = elements[i];
+      NapovedGoreDan n = NapovedGoreDan(
+          humidity1000: element.findElements("rh_level_1000_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_1000_m").first.text),
+          humidity1500: element.findElements("rh_level_1500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_1500_m").first.text),
+          humidity2000: element.findElements("rh_level_2000_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_2000_m").first.text),
+          humidity2500: element.findElements("rh_level_2500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_2500_m").first.text),
+          humidity3000: element.findElements("rh_level_3000_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_3000_m").first.text),
+          humidity500: element.findElements("rh_level_500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_500_m").first.text),
+          humidity5500: element.findElements("rh_level_5500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("rh_level_5500_m").first.text),
+          temp1000: element.findElements("t_level_1000_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_1000_m").first.text),
+          temp1500: element.findElements("t_level_1500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_1500_m").first.text),
+          temp2000: element.findElements("t_level_2000_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_2000_m").first.text),
+          temp2500: element.findElements("t_level_2500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_2500_m").first.text),
+          temp3000: element.findElements("t_level_5500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_3000_m").first.text),
+          temp500: element.findElements("t_level_500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_500_m").first.text),
+          temp5500: element.findElements("t_level_5500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("t_level_5500_m").first.text),
+          validDate: element.findElements("valid_UTC").isEmpty
+              ? null
+              : element.findElements("valid_UTC").first.text,
+          validDay: element.findElements("valid_day").isEmpty
+              ? null
+              : element.findElements("valid_day").first.text,
+          cloudiness1500:
+              element.findElements("nn_icon_domain_bottom-wwsyn_icon").isEmpty
+                  ? null
+                  : element
+                      .findElements("nn_icon_domain_bottom-wwsyn_icon")
+                      .first
+                      .text,
+          cloudiness2500: element.findElements("nn_icon_domain_top-wwsyn_icon").isEmpty
+              ? null
+              : element
+                  .findElements("nn_icon_domain_top-wwsyn_icon")
+                  .first
+                  .text,
+          weatherID1500:
+              element.findElements("wwsyn_icon_domain_bottom").isEmpty
+                  ? null
+                  : element
+                      .findElements("wwsyn_icon_domain_bottom")
+                      .first
+                      .text,
+          weatherID2500: element.findElements("wwsyn_icon_domain_top").isEmpty
+              ? null
+              : element
+                  .findElements("wwsyn_icon_domain_top")
+                  .first
+                  .text,
+          windAngle1000: element.findElements("ddVal_level_1000_m").isEmpty
+              ? null
+              : parseDouble(
+                  element.findElements("ddVal_level_1000_m").first.text),
+          windAngle1500: element.findElements("ddVal_level_1500_m").isEmpty
+              ? null
+              : parseDouble(element.findElements("ddVal_level_1500_m").first.text),
+          windAngle2000: element.findElements("ddVal_level_2000_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ddVal_level_2000_m").first.text),
+          windAngle2500: element.findElements("ddVal_level_2500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ddVal_level_2500_m").first.text),
+          windAngle3000: element.findElements("ddVal_level_3000_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ddVal_level_3000_m").first.text),
+          windAngle500: element.findElements("ddVal_level_500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ddVal_level_500_m").first.text),
+          windAngle5500: element.findElements("ddVal_level_5500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ddVal_level_5500_m").first.text),
+          windSpeed1000: element.findElements("ffVal_level_1000_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_1000_m").first.text),
+          windSpeed1500: element.findElements("ffVal_level_1500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_1500_m").first.text),
+          windSpeed2000: element.findElements("ffVal_level_2000_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_2000_m").first.text),
+          windSpeed2500: element.findElements("ffVal_level_2500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_2500_m").first.text),
+          windSpeed3000: element.findElements("ffVal_level_3000_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_3000_m").first.text),
+          windSpeed500: element.findElements("ffVal_level_500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_500_m").first.text),
+          windSpeed5500: element.findElements("ffVal_level_5500_m").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("ffVal_level_5500_m").first.text),
+          windDir1000: element.findElements("ddIcon_level_1000_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_1000_m").first.text,
+          windDir1500: element.findElements("ddIcon_level_1500_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_1500_m").first.text,
+          windDir2000: element.findElements("ddIcon_level_2000_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_2000_m").first.text,
+          windDir2500: element.findElements("ddIcon_level_2500_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_2500_m").first.text,
+          windDir3000: element.findElements("ddIcon_level_3000_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_3000_m").first.text,
+          windDir500: element.findElements("ddIcon_level_500_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_500_m").first.text,
+          windDir5500: element.findElements("ddIcon_level_5500_m").isEmpty 
+            ? null 
+            : element.findElements("ddIcon_level_5500_m").first.text,
+          snowingPoint: element.findElements("sl_alt").isEmpty 
+            ? null 
+            : parseDouble(element.findElements("sl_alt").first.text));
+      l.add(n);
+    }
+
+    napovedGore.napovedi = l;
+    return napovedGore;
   }
 }

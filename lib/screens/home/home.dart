@@ -644,6 +644,12 @@ class _HomeState extends State<Home> {
                       setState(() {});
                     });
                   }),
+                  drawerRow(Icons.insert_photo, "Gore", () {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/napovedi/gore").then((value) {
+                      setState(() {});
+                    });
+                  }),
                   drawerRow(WeatherIcons.water, "Vodotoki", () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, "/vodotoki").then((value) {

@@ -6,4 +6,5 @@ class TypeOfData {
   static String pokrajinskaNapoved = "pokrajinska napoved";
   static String napovedJadran = "napoved Jadran";
   static String napovedEvropa = "napoved Evropa";
+  static String napovedGore = "napovedGore";
 }

@@ -11,6 +11,9 @@ class TextNapoved{
   String opozorilo;
   String povzetek;
 
+  String gore1;
+  String gore2;
+
   TextNapoved({
     this.napovedSlo1,
     this.napovedSlo2,
@@ -22,6 +25,8 @@ class TextNapoved{
     this.slikaEu1,
     this.slikaEu2,
     this.slikaSlo1,
-    this.slikaSlo2
+    this.slikaSlo2,
+    this.gore1,
+    this.gore2
   });
 }

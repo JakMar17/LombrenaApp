@@ -667,6 +667,47 @@ class RestApi extends FetchingData {
       }
     }
 
+    // text za gorski svet
+    try {
+      resp = await get(
+          "http://www.meteo.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_MOUNTAINS_d1_text.xml");
+    } on Exception catch (_) {
+      return false;
+    }
+
+    rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("article");
+
+    elements = rawData.toList();
+
+    textNapoved.gore1 = elements[0]
+        .findElements("section")
+        .first
+        .findElements("para")
+        .first
+        .text;
+      
+    try {
+      resp = await get(
+          "http://www.meteo.si/uploads/probase/www/fproduct/text/sl/fcast_SLOVENIA_MOUNTAINS_d2_text.xml");
+    } on Exception catch (_) {
+      return false;
+    }
+
+    rawData = utf8.decode(resp.bodyBytes);
+    rawData = xml.parse(rawData);
+    rawData = rawData.findAllElements("article");
+
+    elements = rawData.toList();
+
+    textNapoved.gore2 = elements[0]
+        .findElements("section")
+        .first
+        .findElements("para")
+        .first
+        .text;
+
     return true;
   }
 

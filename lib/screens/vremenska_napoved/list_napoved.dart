@@ -28,6 +28,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
   List<DataModel> napovedSlo3Dnevna;
   List<DataModel> napovedSloPokrajine;
   List<DataModel> napovedEvropa;
+  List<DataModel> napovedGore;
 
   List<_Toggle> toggles = [
     _Toggle(
@@ -35,6 +36,7 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
     _Toggle(title: "3 dnevna", id: "napoved_detail_toggle_3dnevna"),
     _Toggle(title: "5 dnevna", id: "napoved_detail_toggle_5dnevna"),
     _Toggle(title: "Evropa & Sredozemlje", id: "napoved_detail_toggle_evropa"),
+    _Toggle(title: "Napoved gore", id: "napoved_detail_toggle_gore")
   ];
 
   RefreshController _refreshController =
@@ -55,6 +57,8 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
         await DBProvider.db.getAllDataOfType(TypeOfData.pokrajinskaNapoved);
     napovedEvropa =
         await DBProvider.db.getAllDataOfType(TypeOfData.napovedJadran);
+    napovedGore = 
+        await DBProvider.db.getAllDataOfType(TypeOfData.napovedGore);
     var t = await DBProvider.db.getAllDataOfType(TypeOfData.napovedEvropa);
     napovedEvropa.addAll(t);
 
@@ -136,6 +140,12 @@ class _ListOfNapovediState extends State<ListOfNapovedi> {
             ? SliverList(
                 delegate: SliverChildListDelegate(
                     _buildList("5 dnevna napoved", napovedSlo5Dnevna)),
+              )
+            : SliverToBoxAdapter(),
+        toggles[4].checked 
+          ? SliverList(
+                delegate: SliverChildListDelegate(
+                    _buildList("Napoved gore", napovedGore)),
               )
             : SliverToBoxAdapter(),
         toggles[3].checked
