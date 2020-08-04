@@ -3,6 +3,7 @@ import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/database/database.dart';
 import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/models/napoved.dart';
+import 'package:vreme/data/models/napoved_gore.dart';
 import 'package:vreme/data/models/postaja.dart';
 import 'package:vreme/data/models/vodotok_postaja.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
@@ -22,6 +23,10 @@ class FavoritesDatabase {
         Postaja p = await r.fetchPostaja(x.url);
         p.isFavourite = true;
         temp.add(p);
+      } else if (x.typeOfData == TypeOfData.napovedGore) {
+        NapovedGore g = await r.fetchNapovedGore(x.url);
+        g.isFavourite = true;
+        temp.add(g);
       } else if (x.typeOfData.toLowerCase().contains("napoved")) {
         var t = await r.fetchNapoved(x.url, x.typeOfData);
         if (t != null) {
@@ -49,7 +54,7 @@ class FavoritesDatabase {
         }
         m.isFavourite = true;
         temp.add(m);
-      }
+      } 
     }
 
     if (temp.length != 0)
@@ -64,6 +69,7 @@ class FavoritesDatabase {
     if (favorites == null) await getFavoritesFromDB();
     return favorites;
   }
+
 
   addToFavorite(var x) async {
     DataModel d;
@@ -85,6 +91,15 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.vodotok,
           favorite: true);
+    } else if (x.typeOfData == TypeOfData.napovedGore) {
+      d = DataModel(
+          id: x.domainID,
+          title: x.title,
+          url: x.url,
+          geoLat: x.geoLat.toString(),
+          geoLon: x.geoLon.toString(),
+          typeOfData: TypeOfData.napovedGore,
+          favorite: true);
     } else if (x.typeOfData.toLowerCase().contains("napoved")) {
       d = DataModel(
           id: x.id,
@@ -94,7 +109,7 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: x.typeOfData,
           favorite: true);
-    }
+    } 
 
     if (d != null) {
       await DBProvider.db.insert(d);
@@ -128,6 +143,15 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: TypeOfData.vodotok,
           favorite: false);
+    } else if (x.typeOfData == TypeOfData.napovedGore) {
+      d = DataModel(
+          id: x.domainID,
+          title: x.title,
+          url: x.url,
+          geoLat: x.geoLat.toString(),
+          geoLon: x.geoLon.toString(),
+          typeOfData: TypeOfData.napovedGore,
+          favorite: false);
     } else if (x.typeOfData.toLowerCase().contains("napoved")) {
       d = DataModel(
           id: x.id,
@@ -137,9 +161,9 @@ class FavoritesDatabase {
           geoLon: x.geoLon.toString(),
           typeOfData: x.typeOfData,
           favorite: false);
-    }
+    } 
 
-    if(d != null) {
+    if (d != null) {
       await DBProvider.db.insert(d);
       favorites.remove(x);
       SettingsPreferences sp = SettingsPreferences();

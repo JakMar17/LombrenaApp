@@ -4,16 +4,20 @@ import 'package:vreme/style/weather_icons2.dart';
 
 class NapovedGore {
   String domainID;
+  String id;
   String title;
+  String longTitle;
   String url;
   double geoLat;
   double geoLon;
+  bool isFavourite = false;
 
   double altitude;
   double altitudeMin;
   double altitudeMax;
 
   List<NapovedGoreDan> napovedi;
+  String typeOfData = TypeOfData.napovedGore;
 
   NapovedGore(
       {this.altitude,
@@ -24,7 +28,10 @@ class NapovedGore {
       this.geoLon,
       this.napovedi,
       this.url,
-      this.title});
+      this.title}) {
+    id = domainID;
+    longTitle = title;
+  }
 }
 
 class NapovedGoreDan {
@@ -42,48 +49,7 @@ class NapovedGoreDan {
 
   double snowingPoint;
 
-  /* temperature na različnih nadmorskih višinah */
-  double temp500;
-  double temp1000;
-  double temp1500;
-  double temp2000;
-  double temp2500;
-  double temp3000;
-  double temp5500;
-
-  /* hitrost (m/s) in smer vetra na različnih nadmorskih višinah */
-  double windSpeed500;
-  double windSpeed1000;
-  double windSpeed1500;
-  double windSpeed2000;
-  double windSpeed2500;
-  double windSpeed3000;
-  double windSpeed5500;
-
-  double windAngle500;
-  double windAngle1000;
-  double windAngle1500;
-  double windAngle2000;
-  double windAngle2500;
-  double windAngle3000;
-  double windAngle5500;
-
-  String windDir500;
-  String windDir1000;
-  String windDir1500;
-  String windDir2000;
-  String windDir2500;
-  String windDir3000;
-  String windDir5500;
-
-  /* vlažnost zraka na različnih nadmorskih višinah */
-  double humidity500;
-  double humidity1000;
-  double humidity1500;
-  double humidity2000;
-  double humidity2500;
-  double humidity3000;
-  double humidity5500;
+  List<NapovedGoreDanVisina> napovediPoVisinah = [];
 
   NapovedGoreDan(
       {this.validDate,
@@ -91,51 +57,23 @@ class NapovedGoreDan {
       this.weatherID2500,
       this.weather1500,
       this.weatherID1500,
-      this.temp500,
-      this.temp1000,
-      this.temp1500,
-      this.temp2000,
-      this.temp2500,
-      this.temp3000,
-      this.temp5500,
-      this.windSpeed500,
-      this.windSpeed1000,
-      this.windSpeed1500,
-      this.windSpeed2000,
-      this.windSpeed2500,
-      this.windSpeed3000,
-      this.windSpeed5500,
-      this.windAngle500,
-      this.windAngle1000,
-      this.windAngle1500,
-      this.windAngle2000,
-      this.windAngle2500,
-      this.windAngle3000,
-      this.windAngle5500,
-      this.windDir500,
-      this.windDir1000,
-      this.windDir1500,
-      this.windDir2000,
-      this.windDir2500,
-      this.windDir3000,
-      this.windDir5500,
-      this.humidity500,
-      this.humidity1000,
-      this.humidity1500,
-      this.humidity2000,
-      this.humidity2500,
-      this.humidity3000,
-      this.humidity5500,
       this.validDay,
       this.snowingPoint,
       this.cloudiness1500,
       this.cloudiness2500}) {
-        weather1500 = _setWeather(cloudiness1500, weatherID1500);
-        weather2500 = _setWeather(cloudiness2500, weatherID2500);
-      }
+    weather1500 = _setWeather(cloudiness1500, weatherID1500);
+    weather2500 = _setWeather(cloudiness2500, weatherID2500);
+  }
+
+  NapovedGoreDanVisina getNapovedNaVisini(int visina) {
+    for(NapovedGoreDanVisina n in napovediPoVisinah)
+      if(n.visina == visina)
+        return n;
+    return napovediPoVisinah[1];
+  }
 
   IconData _setWeather(String cloudiness, String weather) {
-    if (weather == null)
+    if (weather == null || weather.length == 0)
       switch (cloudiness) {
         case "clear":
           return WeatherIcons2.daySunny;
@@ -228,4 +166,21 @@ class NapovedGoreDan {
           return WeatherIcons2.thunderstormSnow;
       }
   }
+}
+
+class NapovedGoreDanVisina {
+  double visina;
+  double temp;
+  double windSpeed;
+  double windAngle;
+  String windDir;
+  double humidity;
+
+  NapovedGoreDanVisina(
+      {this.humidity,
+      this.temp,
+      this.visina,
+      this.windAngle,
+      this.windDir,
+      this.windSpeed});
 }

@@ -8,6 +8,7 @@ import 'package:vreme/screens/home/home.dart';
 import 'package:vreme/screens/home/loading.dart';
 import 'package:vreme/screens/home/reordering_favorites.dart';
 import 'package:vreme/screens/maps/map.dart';
+import 'package:vreme/screens/napoved_gore/gore_detail.dart';
 import 'package:vreme/screens/napoved_gore/list_gore.dart';
 import 'package:vreme/screens/opozorila/list_opozorila.dart';
 import 'package:vreme/screens/opozorila/opozorilo_detail.dart';
@@ -49,7 +50,8 @@ void main() async {
         '/warnings': (context) => ListOfWarnings(),
         '/warning': (context) => WarningDetail(),
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
-        '/napovedi/gore': (context) => NapovedGoreList()
+        '/napovedi/gore': (context) => NapovedGoreList(),
+        '/napoved/gore': (context) => GoreDetail()
       },
       debugShowCheckedModeBanner: false,
       builder: (context, child) {

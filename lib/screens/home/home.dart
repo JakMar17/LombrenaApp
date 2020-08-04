@@ -393,7 +393,21 @@ class _HomeState extends State<Home> {
           thirdData: temp.tempVode != null ? "${temp.tempVode} °C" : "",
           secondDataIcon: WeatherIcons.water,
           thirdDataIcon: WeatherIcons.temperatire));
-    } else if (temp.typeOfData == TypeOfData.napoved5Dnevna ||
+    } else if (temp.typeOfData == TypeOfData.napovedGore) {
+      return 
+      _card(new Card(
+        url: '/napoved/gore',
+        urlArgumentName: 'napoved',
+        object: temp,
+        title: temp.longTitle,
+        unit: "°C",
+        icon: temp.napovedi[0].weather1500,
+        mainData: temp.napovedi[0].napovediPoVisinah[1].temp.toString(),
+        secondData: "${temp.napovedi[0].napovediPoVisinah[3].temp} °C",
+        secondDataIcon: WeatherIcons.temperature,
+      ));
+    }
+    else if (temp.typeOfData == TypeOfData.napoved5Dnevna ||
         temp.typeOfData == TypeOfData.napoved3Dnevna ||
         temp.typeOfData == TypeOfData.pokrajinskaNapoved || temp.typeOfData.toLowerCase().contains("napoved")) {
       return _card(new Card(
