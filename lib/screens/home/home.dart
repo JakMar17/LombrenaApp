@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vreme/data/api/rest_api.dart';
-import 'package:vreme/data/database/models/data_model.dart';
 import 'package:vreme/data/favorites/favorites_database.dart';
 import 'package:vreme/data/menu_data.dart';
 import 'package:vreme/data/models/postaja.dart';
@@ -10,7 +9,6 @@ import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:vreme/style/weather_icons.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:vreme/style/weather_icons2.dart';
 import 'package:vreme/data/location_services/location_services.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 
@@ -27,11 +25,12 @@ class _HomeState extends State<Home> {
   SettingsPreferences _settings = SettingsPreferences();
 
   List<MenuItem> categoryMenu = [
-    MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
-    MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
+    MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
+    MenuItem(menuName: "Izdana opozorila", url: "/warnings"),
+    MenuItem(menuName: "Razmere v gorah", url: "/napovedi/gore"),
     MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
-    MenuItem(menuName: "Izdana opozorila", url: "/warnings")
+    MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
     /* MenuItem(menuName: "Sistem Burja"),
   MenuItem(menuName: "Kakovost zraka"),*/
   ];

@@ -35,6 +35,7 @@ class _CustomSearchState extends State<CustomSearch> {
   List<DataModel> postaje;
   List<DataModel> vodotoki;
   List<DataModel> napovedi;
+  List<DataModel> napovedGore;
 
   List<ResultElement> show;
 
@@ -43,6 +44,7 @@ class _CustomSearchState extends State<CustomSearch> {
   void loadData() async {
     postaje = await DBProvider.db.getAllDataOfType(TypeOfData.postaja);
     vodotoki = await DBProvider.db.getAllDataOfType(TypeOfData.vodotok);
+    napovedGore = await DBProvider.db.getAllDataOfType(TypeOfData.napovedGore);
     var nSlo5 = await DBProvider.db.getAllDataOfType(TypeOfData.napoved5Dnevna);
     var nSlo3 = await DBProvider.db.getAllDataOfType(TypeOfData.napoved3Dnevna);
     var nSloP =
@@ -265,6 +267,24 @@ class _CustomSearchState extends State<CustomSearch> {
                     arguments: {"data_model": c});
               },
               id: c.title));
+        }
+      }
+
+      for (DataModel d in napovedGore) {
+        if (d.title.toUpperCase().contains(searchString)) {
+          if (first) {
+            show.add(ResultElement(
+                categoryTitle: true, title: "Vremenske napovedi"));
+          }
+          ;
+          first = false;
+          show.add(ResultElement(
+              title: d.title,
+              url: () {
+                Navigator.pushNamed(context, "/napoved/gore",
+                    arguments: {"data_model": d});
+              },
+              id: d.title));
         }
       }
 

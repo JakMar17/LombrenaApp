@@ -66,10 +66,15 @@ class NapovedGoreDan {
   }
 
   NapovedGoreDanVisina getNapovedNaVisini(int visina) {
-    for(NapovedGoreDanVisina n in napovediPoVisinah)
-      if(n.visina == visina)
-        return n;
+    for (NapovedGoreDanVisina n in napovediPoVisinah)
+      if (n.visina == visina) return n;
     return napovediPoVisinah[1];
+  }
+
+  String getDay() {
+    String day = validDay.split(" ")[0];
+    String hour = validDate.split(" ")[1];
+    return day + " " + hour;
   }
 
   IconData _setWeather(String cloudiness, String weather) {
@@ -182,5 +187,16 @@ class NapovedGoreDanVisina {
       this.visina,
       this.windAngle,
       this.windDir,
-      this.windSpeed});
+      this.windSpeed}) {
+    if (windDir != null) setWindDir();
+  }
+
+  void setWindDir() {
+    String old = windDir;
+    windDir = "";
+    if (old.contains("N")) windDir += "S";
+    if (old.contains("S")) windDir += "J";
+    if (old.contains("W")) windDir += "Z";
+    if (old.contains("E")) windDir += "V";
+  }
 }

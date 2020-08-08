@@ -99,6 +99,8 @@ class RestToDatabase {
       "http://meteo.arso.gov.si/uploads/probase/www/fproduct/text/sl/forecast_SI_EAST-MOUNTAINS_latest.xml"
     ];
 
+    List<String> exists = [];
+    
     for (int i = 0; i < urls.length; i++) {
       //get responde for url
       Response resp;
@@ -118,7 +120,6 @@ class RestToDatabase {
 
       var elements = rawData.toList();
 
-      List<String> exists = [];
 
       for (var e in elements) {
         var id = e.findElements("domain_meteosiId").first.text;
