@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "217012363697",
+    "firebase_url": "https://marelaapp.firebaseio.com",
+    "project_id": "marelaapp",
+    "storage_bucket": "marelaapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:217012363697:android:5c2c479b54aa10af7c9d90",
+        "android_client_info": {
+          "package_name": "si.aptsystems.jakmar17.vreme.vreme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "217012363697-fvpiipssu9sdgsmooi1te7or2ges9974.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAjIMRcwZIlmc7yzjvICPrQFE2bDmF4OY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "217012363697-fvpiipssu9sdgsmooi1te7or2ges9974.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

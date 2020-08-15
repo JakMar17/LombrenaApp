@@ -300,13 +300,14 @@ class _GoreDetailState extends State<GoreDetail> {
   DropdownButton _nadmorskaVisinaDropdown() {
     return DropdownButton<String>(
       value: selectedNadmorskaVisina,
-      iconSize: 0,
+      icon: Icon(Icons.arrow_drop_down, color: Colors.white,),
+      //iconSize: 20,
       dropdownColor: CustomColors.lightGrey,
       elevation: 0,
       style: TextStyle(color: Colors.white, fontFamily: "Montserrat"),
       underline: Container(
-        height: 2,
-        color: Colors.transparent,
+        height: 0.5,
+        color: Colors.white,
       ),
       onChanged: (String newValue) {
         setState(() {

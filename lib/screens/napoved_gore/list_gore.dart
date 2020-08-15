@@ -64,6 +64,8 @@ class _NapovedGoreListState extends State<NapovedGoreList> {
   }
 
   CustomScrollView _buildWithData() {
+    final textDevider =
+        Theme.of(context).copyWith(dividerColor: Colors.transparent);
     return CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -80,6 +82,7 @@ class _NapovedGoreListState extends State<NapovedGoreList> {
             ),
           ),
         ),
+        _textNapoved(textDevider),
         SliverPadding(
           padding: EdgeInsets.only(top: 10),
         ),
@@ -90,12 +93,61 @@ class _NapovedGoreListState extends State<NapovedGoreList> {
         SliverPadding(
           padding: EdgeInsets.only(top: 10),
         ),
-        _buildTitle("Napoved za gorski svet"),
-        _buildParagraph(textNapoved.gore1),
-        _buildParagraph(textNapoved.gore2),
-        SliverToBoxAdapter(child: SizedBox(height: 100,),)
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 100,
+          ),
+        )
       ],
     );
+  }
+
+  SliverToBoxAdapter _textNapoved(ThemeData textDevider) {
+    return SliverToBoxAdapter(
+        child: Theme(
+          data: textDevider,
+          child: ExpansionTile(
+            trailing: Icon(
+              Icons.arrow_drop_down,
+              color: Colors.white,
+            ),
+            backgroundColor: Colors.transparent,
+            title: Text(
+              "Napoved za gorski svet",
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontFamily: "Montserrat"),
+            ),
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(left: 20, top: 10, right: 10),
+                child: Text(
+                  textNapoved.gore1,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 20, top: 10, right: 10),
+                child: Text(
+                  textNapoved.gore2,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      letterSpacing: 0.6,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
   }
 
   Widget _buildTitle(String title) {

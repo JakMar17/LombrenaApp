@@ -37,13 +37,13 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
 
   void getData() async {
     napoved = restApi.getTekstovnaNapoved();
-    if(napoved == null) {
+    if (napoved == null) {
       await restApi.fetchTextNapoved();
       napoved = restApi.getTekstovnaNapoved();
     }
-      setState(() {
-        loadedData = true;
-      });
+    setState(() {
+      loadedData = true;
+    });
   }
 
   @override
@@ -106,64 +106,76 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
                 end: Alignment.topLeft)),
         child: Scaffold(
           backgroundColor: Colors.transparent,
-          body: loadedData ?  _buildWithData(): LoadingData(),
+          body: loadedData ? _buildWithData() : LoadingData(),
         ));
   }
 
   SmartRefresher _buildWithData() {
     return SmartRefresher(
-          enablePullDown: true,
-          controller: _refreshController,
-          onRefresh: onRefresh,
-          child: Builder(
-            builder: (context) => SliverFab(
-              floatingWidget: FloatingActionButton(
-                onPressed: playTrack,
-                child: playButton,
-                backgroundColor: CustomColors.darkGrey,
-              ),
-              floatingPosition: FloatingPosition(right: 10),
-              expandedHeight: 300,
-              slivers: <Widget>[
-                SliverAppBar(
-                  backgroundColor: CustomColors.blue,
-                  pinned: true,
-                  expandedHeight: 300,
-                  flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    title: Text(
-                      "Tekstovna napoved",
-                      style: TextStyle(fontFamily: "Montserrat"),
-                    ),
-                  ),
-                ),
-                _buildTitle("Napoved za Slovenijo"),
-                _buildParagraph(napoved.napovedSlo1),
-                _buildParagraph(napoved.napovedSlo2),
-                _emptySpace(20, 0),
-                _buildTitle("Napoved za sosednje pokrajine"),
-                _buildParagraph(napoved.napovedSos1),
-                napoved.napovedSos2.length == 0 ? SliverToBoxAdapter() : _buildParagraph(napoved.napovedSos2),
-                //napoved.napovedSos2.length != 0 ? _buildParagraph(napoved.napovedSos2) : Container(),
-                _emptySpace(20, 0),
-                _buildTitle("Vremenska slika"),
-                _buildParagraph(napoved.slikaEu1),
-                _buildParagraph(napoved.slikaEu2),
-                _emptySpace(20, 0),
-                _buildTitle("Obeti"),
-                _buildParagraph(napoved.obeti),
-                _emptySpace(20, 0),
-                _buildTitle("Opozorilo"),
-                _buildParagraph(napoved.opozorilo),
-                _emptySpace(20, 0),
-                _buildTitle("Gorski svet"),
-                _buildParagraph(napoved.gore1),
-                _buildParagraph(napoved.gore2),
-                _emptySpace(100, 0),
-              ],
-            ),
+      enablePullDown: true,
+      controller: _refreshController,
+      onRefresh: onRefresh,
+      child: Builder(
+        builder: (context) => SliverFab(
+          floatingWidget: FloatingActionButton(
+            onPressed: playTrack,
+            child: playButton,
+            backgroundColor: CustomColors.darkGrey,
           ),
-        );
+          floatingPosition: FloatingPosition(right: 10),
+          expandedHeight: 300,
+          slivers: <Widget>[
+            SliverAppBar(
+              backgroundColor: CustomColors.blue,
+              pinned: true,
+              expandedHeight: 300,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(
+                  "Tekstovna napoved",
+                  style: TextStyle(fontFamily: "Montserrat"),
+                ),
+              ),
+            ),
+            _textWrapper("Napoved za Slovenijo",
+                [napoved.napovedSlo1, napoved.napovedSlo2], {"expanded": true}),
+            _textWrapper("Napoved za sosednje pokrajine",
+                [napoved.napovedSos1, napoved.napovedSos2], null),
+            _textWrapper(
+                "Vremenska slika", [napoved.slikaEu1, napoved.slikaEu2], null),
+            _textWrapper("Obeti", [napoved.obeti], null),
+            _textWrapper("Vremenska opozorila", [napoved.opozorilo], null),
+            _textWrapper("Gorski svet", [napoved.gore1, napoved.gore2], null),
+
+/*             _buildTitle("Napoved za Slovenijo"),
+            _buildParagraph(napoved.napovedSlo1),
+            _buildParagraph(napoved.napovedSlo2),
+            _emptySpace(20, 0),
+            _buildTitle("Napoved za sosednje pokrajine"),
+            _buildParagraph(napoved.napovedSos1),
+            napoved.napovedSos2.length == 0
+                ? SliverToBoxAdapter()
+                : _buildParagraph(napoved.napovedSos2),
+            //napoved.napovedSos2.length != 0 ? _buildParagraph(napoved.napovedSos2) : Container(),
+            _emptySpace(20, 0),
+            _buildTitle("Vremenska slika"),
+            _buildParagraph(napoved.slikaEu1),
+            _buildParagraph(napoved.slikaEu2),
+            _emptySpace(20, 0),
+            _buildTitle("Obeti"),
+            _buildParagraph(napoved.obeti),
+            _emptySpace(20, 0),
+            _buildTitle("Opozorilo"),
+            _buildParagraph(napoved.opozorilo),
+            _emptySpace(20, 0),
+            _buildTitle("Gorski svet"),
+            _buildParagraph(napoved.gore1),
+            _buildParagraph(napoved.gore2), */
+            _emptySpace(100, 0),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildTitle(String title) {
@@ -206,6 +218,50 @@ class _TekstovnaNapovedState extends State<TekstovnaNapoved> {
         height: height,
         width: width,
       ),
+    );
+  }
+
+  Widget _textWrapper(String title, List<String> paragraphs, var options) {
+    final theme = Theme.of(context).copyWith(dividerColor: Colors.transparent);
+
+    bool expanded = false;
+    if (options != null)
+      expanded = options["expanded"] == null ? false : options["expanded"];
+
+    return SliverToBoxAdapter(
+      child: Theme(
+          data: theme,
+          child: ExpansionTile(
+            initiallyExpanded: expanded,
+            trailing: Icon(
+              Icons.arrow_drop_down,
+              color: Colors.white,
+            ),
+            title: Text(
+              title,
+              style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: "Montserrat",
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 0.8),
+            ),
+            children: <Widget>[
+              for (String p in paragraphs)
+                Padding(
+                  padding: EdgeInsets.only(left: 20, top: 10, right: 10),
+                  child: Text(
+                    p,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        letterSpacing: 0.6,
+                        fontWeight: FontWeight.w300),
+                  ),
+                ),
+            ],
+          )),
     );
   }
 }
