@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vreme/data/shared_preferences/shared_preferences.dart';
+import 'package:vreme/firebase_cloud_messaging/push_notifications_manager.dart';
 import 'package:vreme/screens/custom_search.dart';
 import 'package:vreme/screens/drawer/about_app.dart';
 import 'package:vreme/screens/home/home.dart';
@@ -26,6 +27,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Preferences p = Preferences();
   await p.setInstance();
+
+  PushNotificationManager pnm = PushNotificationManager();
+  pnm.init();
 
 
   SystemChrome.setPreferredOrientations(
