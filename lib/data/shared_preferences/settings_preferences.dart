@@ -14,6 +14,7 @@ class SettingsPreferences {
   final String favoriteOrder = "favorites_order";
 
   final String loadingVersion = "loading_data_version";
+  final String fcmToken = "fcm_token";
 
   SettingsPreferences() {
     Preferences p = Preferences();

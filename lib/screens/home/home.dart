@@ -593,7 +593,7 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: 40, left: 20),
+                    padding: EdgeInsets.only(top: 15, left: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -677,7 +677,7 @@ class _HomeState extends State<Home> {
                   })
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.22),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               Column(
                 children: <Widget>[
                   drawerRow(Icons.settings, "Nastavitve", () {
