@@ -13,6 +13,7 @@ import 'package:vreme/screens/napoved_gore/gore_detail.dart';
 import 'package:vreme/screens/napoved_gore/list_gore.dart';
 import 'package:vreme/screens/opozorila/list_opozorila.dart';
 import 'package:vreme/screens/opozorila/opozorilo_detail.dart';
+import 'package:vreme/screens/settings/marelaWarnings_settings.dart';
 import 'package:vreme/screens/settings/settings.dart';
 import 'package:vreme/screens/settings/warning_region_selector.dart';
 import 'package:vreme/screens/text_napoved/text_napoved.dart';
@@ -54,6 +55,7 @@ void main() async {
         '/warnings': (context) => ListOfWarnings(),
         '/warning': (context) => WarningDetail(),
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
+        '/settings/marelaWarnings': (context) => MarelaWarningsSettings(),
         '/napovedi/gore': (context) => NapovedGoreList(),
         '/napoved/gore': (context) => GoreDetail()
       },

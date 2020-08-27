@@ -27,13 +27,14 @@ class PushNotificationManager {
       SettingsPreferences _sp = SettingsPreferences();
       String tokenOld = _sp.getStringSetting(_sp.fcmToken);
       if (tokenOld == null || tokenOld.length == 0) 
-        tokenOld = token;
+        tokenOld = null;
 
       WarningsNaprava naprava =
           WarningsNaprava(fcmId: token, fcmIdOld: tokenOld);
       
       _marelaWarningQueries.prijavaUporabe(naprava).then((WarningsNaprava naprava) {
         _sp.setStringSetting(_sp.fcmToken, naprava.fcmId);
+        _marelaWarningQueries.getMarelaWarningsNaroceno();
       });
 
       _initialized = true;

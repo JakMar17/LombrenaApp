@@ -23,17 +23,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     pokaziBliznje = Toggle(
         title: "Bližnje lokacije",
         description: "Prikaži bližnje postaje in napovedi",
-        isSwitched: _settings.getSetting("settings_bliznje_lokacije") == null ? true:  _settings.getSetting("settings_bliznje_lokacije"),
+        isSwitched: _settings.getSetting("settings_bliznje_lokacije") == null
+            ? true
+            : _settings.getSetting("settings_bliznje_lokacije"),
         id: "settings_bliznje_lokacije");
     pokaziKategorije = Toggle(
         title: "Kategorije",
         description: "Vidnost menuja s kategorijami",
-        isSwitched: _settings.getSetting("settings_visible_categories") == null ? true :  _settings.getSetting("settings_visible_categories"),
+        isSwitched: _settings.getSetting("settings_visible_categories") == null
+            ? true
+            : _settings.getSetting("settings_visible_categories"),
         id: "settings_visible_categories");
     pokaziOpozorila = Toggle(
         title: "Prikaži vremenska opozorila",
         description: "Obvestilo, ko ARSO izda vremensko opozorilo",
-        isSwitched: _settings.getSetting("settings_warnings_notify") == null ? false : _settings.getSetting("settings_warnings_notify"),
+        isSwitched: _settings.getSetting("settings_warnings_notify") == null
+            ? false
+            : _settings.getSetting("settings_warnings_notify"),
         id: "settings_warnings_notify");
     warningRegions = [
       Toggle(title: "osrednja Slovenija"),
@@ -112,10 +118,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 buttonRow("Postavitev", "Prilagodi postavitev domačega zaslona",
                     () {}), */
                 /*  */
-                /* SizedBox(
+                SizedBox(
                   height: 25,
                 ),
-                Text("Vremenska opozorila",
+                Text(
+                  "Vremenska opozorila",
+                  style: TextStyle(
+                      fontFamily: "Montserrat",
+                      fontSize: 28,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white),
+                ),
+                SizedBox(height: 15,),
+                buttonRow("Vremenska opozorila (BETA)", "Bodite obveščeni o vremenskih opozorilih", () {
+                  Navigator.pushNamed(context, '/settings/marelaWarnings');
+                })
+
+                /*Text("Vremenska opozorila",
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: "Montserrat",

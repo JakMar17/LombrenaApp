@@ -14,7 +14,12 @@ class SettingsPreferences {
   final String favoriteOrder = "favorites_order";
 
   final String loadingVersion = "loading_data_version";
+  
   final String fcmToken = "fcm_token";
+  final String marelaWarningsEnabled = "marela_warnings_enabled";
+/*   final String marelaWarningsTypes = "marela_warnings_types";
+  final String marelaWarningsRegions = "marela_warnings_regions";
+  final String marelaWarningsMinLevel = "marela_warnings_min_level"; */
 
   SettingsPreferences() {
     Preferences p = Preferences();
