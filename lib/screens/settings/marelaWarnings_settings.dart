@@ -185,13 +185,39 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
             Builder(
               builder: (context) => IconButton(
                 onPressed: () {
-
                   setState(() {
                     dataLoaded = false;
                   });
 
                   sendDataToServer().then((value) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    print("tukaj");
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              "MarelaWarnings",
+                              style: TextStyle(fontFamily: "Montserrat"),
+                            ),
+                            content: Text(
+                              value
+                                  ? "Podatki so uspešno shranjeni na strežnik"
+                                  : "Prišlo je do napake, poskusite ponovno",
+                              style: TextStyle(fontFamily: "Montserrat"),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text(
+                                  "V redu",
+                                  style: TextStyle(fontFamily: "Montserrat"),
+                                ),
+                                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/settings', ModalRoute.withName('/')),
+                              )
+                            ],
+                          );
+                        });
+
+                    /* Scaffold.of(context).showSnackBar(SnackBar(
                       content: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -200,7 +226,7 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
                       ),
                     ));
 
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(); */
                   });
                 },
                 icon: Icon(
