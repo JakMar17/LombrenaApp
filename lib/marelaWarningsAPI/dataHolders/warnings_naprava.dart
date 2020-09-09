@@ -1,32 +1,56 @@
 import 'dart:convert';
 
-WarningsNaprava warningsNapravaFromJson(String str) => WarningsNaprava.fromJson(json.decode(str));
+WarningsNaprava warningsNapravaFromJson(String str) =>
+    WarningsNaprava.fromJson(json.decode(str));
 
-String warningsNapravaToJson(WarningsNaprava data) => json.encode(data.toJson());
+String warningsNapravaToJson(WarningsNaprava data) =>
+    json.encode(data.toJson());
 
 class WarningsNaprava {
-    WarningsNaprava({
-        this.fcmId,
-        this.fcmIdOld,
-        this.napravaId,
-    });
+  String fcmId;
+  String id;
+  String fcmIdOld;
+  String osIme;
+  String osVerzija;
+  String osSdk;
+  String appVerzija;
+  String napravaProizvajalec;
+  String napravaModel;
 
-    String fcmId;
-    String fcmIdOld;
-    String napravaId;
+  WarningsNaprava(
+      {this.fcmId,
+      this.id,
+      this.fcmIdOld,
+      this.osIme,
+      this.osVerzija,
+      this.osSdk,
+      this.appVerzija,
+      this.napravaProizvajalec,
+      this.napravaModel});
 
-    factory WarningsNaprava.fromJson(Map<String, dynamic> json) => WarningsNaprava(
-        fcmId: json["fcmId"],
-        fcmIdOld: json["fcmIdOld"],
-        napravaId: json["napravaId"],
-    );
+  WarningsNaprava.fromJson(Map<String, dynamic> json) {
+    fcmId = json['fcmId'];
+    id = json['id'];
+    fcmIdOld = json['fcmIdOld'];
+    osIme = json['osIme'];
+    osVerzija = json['osVerzija'];
+    osSdk = json['osSdk'];
+    appVerzija = json['appVerzija'];
+    napravaProizvajalec = json['napravaProizvajalec'];
+    napravaModel = json['napravaModel'];
+  }
 
-    String toJson() {
-      String json = '{"fcmId": "$fcmId"';
-
-      if(fcmIdOld != null)
-        json += ', "fcmIdOld": "$fcmIdOld"';
-
-      return json + '}';
-    }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['fcmId'] = this.fcmId;
+    data['id'] = this.id;
+    data['fcmIdOld'] = this.fcmIdOld;
+    data['osIme'] = this.osIme;
+    data['osVerzija'] = this.osVerzija;
+    data['osSdk'] = this.osSdk;
+    data['appVerzija'] = this.appVerzija;
+    data['napravaProizvajalec'] = this.napravaProizvajalec;
+    data['napravaModel'] = this.napravaModel;
+    return data;
+  }
 }

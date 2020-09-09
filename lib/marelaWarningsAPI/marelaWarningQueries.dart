@@ -10,10 +10,13 @@ class MarelaWarningQueries {
   static WarningsNaprava naprava;
 
   Future<WarningsNaprava> prijavaUporabe(WarningsNaprava naprava) async {
+
+    Map<String, String> headers = {'Content-Type':'application/json; charset=utf-8'};
+
     var response = await http.post(
       BASE_URL + "naprave/prijava",
-      headers: {'Content-type': 'application/json; charset=utf-8'},
-      body: naprava.toJson(),
+      headers: headers,
+      body: json.encode(naprava.toJson()),
     );
 
     MarelaWarningQueries.naprava = naprava;

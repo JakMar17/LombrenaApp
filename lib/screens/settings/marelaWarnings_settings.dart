@@ -211,22 +211,13 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
                                   "V redu",
                                   style: TextStyle(fontFamily: "Montserrat"),
                                 ),
-                                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/settings', ModalRoute.withName('/')),
+                                onPressed: () => Navigator.of(context)
+                                    .pushNamedAndRemoveUntil(
+                                        '/settings', ModalRoute.withName('/')),
                               )
                             ],
                           );
                         });
-
-                    /* Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(value ? "Podatki so uspešno shranjeni na strežnik" : "Prišlo je do napake, poskusite ponovno", style: TextStyle(fontFamily: "Montserrat"),)
-                        ],
-                      ),
-                    ));
-
-                    Navigator.of(context).pop(); */
                   });
                 },
                 icon: Icon(
