@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:package_info/package_info.dart';
+import 'package:vreme/data/notification_services/local_notifications.dart';
 import 'package:vreme/data/shared_preferences/settings_preferences.dart';
 import 'package:vreme/marelaWarningsAPI/dataHolders/warnings_naprava.dart';
 import 'package:vreme/marelaWarningsAPI/marelaWarningQueries.dart';
@@ -76,7 +77,12 @@ class PushNotificationManager {
       WarningsNaprava naprava = WarningsNaprava(
           fcmId: token,
           fcmIdOld: tokenOld,
-          osIme: osIme, osVerzija: osVerzija, appVerzija: appVerzija, napravaModel: napravaModel, napravaProizvajalec: napravaProizvajalec, osSdk: osSdk);
+          osIme: osIme,
+          osVerzija: osVerzija,
+          appVerzija: appVerzija,
+          napravaModel: napravaModel,
+          napravaProizvajalec: napravaProizvajalec,
+          osSdk: osSdk);
 
       _marelaWarningQueries
           .prijavaUporabe(naprava)
@@ -86,6 +92,18 @@ class PushNotificationManager {
       });
 
       _initialized = true;
+
+      /**
+       * ? v kolikor je aplikacija v ospredju (foreground) metoda ulovi vse fcm obvestila in jih prikaže kot local notification
+       */
+      _firebaseMessaging.configure(
+          onMessage: (Map<String, dynamic> message) async {
+        String title = message['notification']['title'];
+        String body = message['notification']['body'];
+        LocalNotifications ln = LocalNotifications();
+        ln.showNotification(title: title, body: body);
+        return;
+      });
     }
   }
 }
