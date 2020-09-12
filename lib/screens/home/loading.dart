@@ -142,7 +142,8 @@ class _LoadingState extends State<Loading> {
     }
     FavoritesDatabase f = FavoritesDatabase();
     await f.getFavorites();
-    Navigator.pushReplacementNamed(context, "/");
+    //Navigator.pushReplacementNamed(context, "/");
+    Navigator.pushReplacementNamed(context, "/intro/marela-warnings");
   }
 
   void checkConnection() async {

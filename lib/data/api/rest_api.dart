@@ -712,7 +712,7 @@ class RestApi extends FetchingData {
   }
 
   List<WarningRegion> getWarnings() {
-    if (opozorilaPoRegijah == null) fecthWarnings();
+    //if (opozorilaPoRegijah == null) fecthWarnings();
     return opozorilaPoRegijah;
   }
 

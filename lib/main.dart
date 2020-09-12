@@ -23,6 +23,7 @@ import 'package:vreme/screens/vremenska_napoved/list_napoved.dart';
 import 'package:vreme/screens/vremenska_napoved/napoved_detail.dart';
 import 'package:vreme/screens/vremenske_razmere/list_postaje.dart';
 import 'package:vreme/screens/vremenske_razmere/postaja.dart';
+import 'package:vreme/helpers/marelaWarnings_intro.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +58,8 @@ void main() async {
         '/settings/warnings/regions': (context) => WarningRegionSelector(),
         '/settings/marelaWarnings': (context) => MarelaWarningsSettings(),
         '/napovedi/gore': (context) => NapovedGoreList(),
-        '/napoved/gore': (context) => GoreDetail()
+        '/napoved/gore': (context) => GoreDetail(),
+        '/intro/marela-warnings': (context) => MarelaWarningIntro()
       },
       debugShowCheckedModeBanner: false,
       builder: (context, child) {

@@ -3,6 +3,7 @@ import 'package:vreme/data/api/rest_api.dart';
 import 'package:vreme/data/models/opozorila.dart';
 import 'package:vreme/screens/loading_data.dart';
 import 'package:vreme/style/custom_icons.dart';
+import 'dart:math' as math;
 
 class ListOfWarnings extends StatefulWidget {
   ListOfWarnings({Key key}) : super(key: key);
@@ -15,13 +16,18 @@ class _ListOfWarningsState extends State<ListOfWarnings> {
   RestApi _restApi = RestApi();
   List<WarningRegion> regions;
   bool loadedData = false;
+  bool niIzdanihOpozoril = true;
 
   void loadData() async {
     regions = _restApi.getWarnings();
-    if(regions == null || regions.length == 0) {
+    if (regions == null || regions.length == 0) {
       await _restApi.fecthWarnings();
       regions = _restApi.getWarnings();
     }
+
+    for (WarningRegion r in regions)
+      for (Warning w in r.warnings) if (w.level != 1) niIzdanihOpozoril = false;
+
     setState(() {
       loadedData = true;
     });
@@ -50,32 +56,67 @@ class _ListOfWarningsState extends State<ListOfWarnings> {
 
   CustomScrollView _buildWithData() {
     return CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 300,
-            backgroundColor: CustomColors.blue,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                "Izdana vremenska opozorila",
-                style: TextStyle(
-                    fontFamily: "Montserrat",
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500),
-              ),
+      slivers: <Widget>[
+        SliverAppBar(
+          pinned: true,
+          expandedHeight: 300,
+          backgroundColor: CustomColors.blue,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(
+              "Izdana vremenska opozorila",
+              style: TextStyle(
+                  fontFamily: "Montserrat",
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500),
             ),
           ),
-          SliverPadding(
-            padding: EdgeInsets.only(top: 30),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(_buildList()),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.only(bottom: 30),
-          )
-        ],
-      );
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(top: 20),
+        ),
+        SliverToBoxAdapter(
+          child: niIzdanihOpozoril
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: CustomColors.lightGrey,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+                            child: Text(
+                              "Trenutno ni aktivnih izdanih opozoril",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w300),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Transform.rotate(angle: -30 * math.pi / 180,child: Icon(Icons.notifications, color: Colors.white60, size: 40,)),
+                      )
+                    ],
+                  ),
+                )
+              : Container(),
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(_buildList()),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(bottom: 30),
+        )
+      ],
+    );
   }
 
   List _buildList() {
@@ -87,7 +128,8 @@ class _ListOfWarningsState extends State<ListOfWarnings> {
           padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
           child: RaisedButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/warning", arguments: {"region": regions[i]});
+              Navigator.pushNamed(context, "/warning",
+                  arguments: {"region": regions[i]});
             },
             color: Colors.transparent,
             child: Container(
