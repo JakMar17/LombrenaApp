@@ -16,6 +16,8 @@ import 'package:vreme/data/static_data.dart';
 import 'package:vreme/data/type_of_data.dart';
 import 'package:vreme/style/custom_icons.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:in_app_update/in_app_update.dart';
+
 
 class Loading extends StatefulWidget {
   @override
@@ -24,6 +26,7 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   RestApi restApi = new RestApi();
+  AppUpdateInfo _updateInfo;
 
   Future<bool> loadDataFirstTime() async {
     var postaje = await restApi.fetchPostajeData();
@@ -44,8 +47,8 @@ class _LoadingState extends State<Loading> {
       return false;
   }
 
+  SettingsPreferences sp = SettingsPreferences();
   void doingSomething() async {
-    SettingsPreferences sp = SettingsPreferences();
     bool data = sp.getSetting(sp.loadedData) == null
         ? false
         : sp.getSetting(sp.loadedData);
@@ -142,8 +145,20 @@ class _LoadingState extends State<Loading> {
     }
     FavoritesDatabase f = FavoritesDatabase();
     await f.getFavorites();
-    //Navigator.pushReplacementNamed(context, "/");
-    Navigator.pushReplacementNamed(context, "/intro/marela-warnings");
+
+    /* sp.setSetting(sp.marelaWarningsIntroScreen, true); */
+
+    checkForUpdates().then((value) {
+      if(_updateInfo.updateAvailable)
+        showUpdateDialog();
+      else
+        if (sp.getSetting(sp.marelaWarningsIntroScreen) == null || sp.getSetting(sp.marelaWarningsIntroScreen)) {
+          sp.setSetting(sp.marelaWarningsIntroScreen, false);
+          Navigator.pushReplacementNamed(context, "/intro/marela-warnings");
+        }
+        else
+          Navigator.pushReplacementNamed(context, "/");
+    });
   }
 
   void checkConnection() async {
@@ -158,6 +173,10 @@ class _LoadingState extends State<Loading> {
       errorMessage = "Preverite povezavo z internetom in poskusite znova";
     }
     showErrorDialog(errorMessage);
+  }
+
+  Future<void> checkForUpdates() async {
+    _updateInfo =  await InAppUpdate.checkForUpdate().catchError((e) => print(e));
   }
 
   @override
@@ -190,6 +209,39 @@ class _LoadingState extends State<Loading> {
               child: Text("Zapri aplikacijo"),
               onPressed: () {
                 SystemNavigator.pop();
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showUpdateDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Na voljo je nova posodobitev', style: TextStyle(fontFamily: "Montserrat"),),
+          content: SingleChildScrollView(child: Text("Posodobitev prinaša nove funkcionalnosti in izboljšano delovanje, zato je priporočljivo, da namestitev namestite z izborom 'Namesti aplikacijo'. Posodobitev se bo izvedla v ozadju in ne bo vplivala na delovanje aplikacije.")),
+          actionsPadding: EdgeInsets.all(5),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Namesti posodobitev', style: TextStyle(fontFamily: "Montserrat"),),
+              onPressed: () {
+                setState(() {
+                  InAppUpdate.startFlexibleUpdate().then((value) => InAppUpdate.completeFlexibleUpdate());
+                  Navigator.pop(context);
+                  Navigator.pushReplacementNamed(context, "/");
+                });
+              },
+            ),
+            FlatButton(
+              child: Text("Posodobi kasneje", style: TextStyle(fontFamily: "Montserrat"),),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pushReplacementNamed(context, "/");
               },
             )
           ],
