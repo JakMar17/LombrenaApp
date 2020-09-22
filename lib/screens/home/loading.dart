@@ -149,6 +149,9 @@ class _LoadingState extends State<Loading> {
     /* sp.setSetting(sp.marelaWarningsIntroScreen, true); */
 
     checkForUpdates().then((value) {
+      if(_updateInfo == null)
+        Navigator.pushReplacementNamed(context, "/");
+
       if(_updateInfo.updateAvailable)
         showUpdateDialog();
       else

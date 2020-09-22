@@ -78,4 +78,12 @@ class MarelaWarningQueries {
 
     return response.statusCode == 200 ? true : false;
   }
+
+  Future<bool> odjaviMarelaWarnings() async {
+    var response = await http.put(BASE_URL + 'odjavi-opozorila',
+        headers: {'Content-type': 'text/plain; charset=utf-8'},
+        body: naprava.fcmId
+    );
+    return response.statusCode == 204;
+  }
 }

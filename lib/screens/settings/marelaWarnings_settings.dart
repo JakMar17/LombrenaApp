@@ -22,6 +22,7 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
 
   Future<bool> sendDataToServer() async {
     WarningPrijava p = null;
+    MarelaWarningQueries q = MarelaWarningQueries();
     if (enableWarnings.isSwitched) {
       p = WarningPrijava();
       List<Pokrajine> pokrajine = [];
@@ -42,8 +43,15 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
       p.tipi = tipi;
       p.stopnja = Stopnja(tipStopnje: stopnja);
 
-      MarelaWarningQueries q = MarelaWarningQueries();
-      return await q.setMarelaWarningsNaroceno(p);
+      bool result = await q.setMarelaWarningsNaroceno(p);
+      if(result)
+        _settings.setSetting(_settings.marelaWarningsEnabled, true);
+      return result;
+    } else {
+      bool result = await q.odjaviMarelaWarnings();
+      if(result)
+        _settings.setSetting(_settings.marelaWarningsEnabled, false);
+      return result;
     }
   }
 
@@ -135,7 +143,7 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
           isChecked: regionsREST.contains("jugovzhod")),
     ];
 
-    String minLevel = _prijava != null ? _prijava.stopnja.tipStopnje : "";
+    String minLevel = _prijava != null ? _prijava.stopnja.tipStopnje : "rdeča";
     minLevelWarning.elements = [
       _ListElement(
           title: "Rumena opozorila (1. stopnja)",
@@ -190,7 +198,6 @@ class _MarelaWarningsSettingsState extends State<MarelaWarningsSettings> {
                   });
 
                   sendDataToServer().then((value) {
-                    print("tukaj");
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {

@@ -43,36 +43,39 @@ class PushNotificationManager {
       /*
       ! tukaj nadaljuj
       */
+      try {
+        if (Platform.isAndroid) {
+          var androidInfo = await DeviceInfoPlugin().androidInfo;
+          var release = androidInfo.version.release;
+          osIme = "Android";
+          osVerzija = release;
+          var sdkInt = androidInfo.version.sdkInt;
+          osSdk = sdkInt.toString();
+          var manufacturer = androidInfo.manufacturer;
+          napravaProizvajalec = manufacturer;
+          var model = androidInfo.model;
+          napravaModel = model;
+          print('Android $release (SDK $sdkInt), $manufacturer $model');
+        }
 
-      if (Platform.isAndroid) {
-        var androidInfo = await DeviceInfoPlugin().androidInfo;
-        var release = androidInfo.version.release;
-        osIme = "Android";
-        osVerzija = release;
-        var sdkInt = androidInfo.version.sdkInt;
-        osSdk = sdkInt.toString();
-        var manufacturer = androidInfo.manufacturer;
-        napravaProizvajalec = manufacturer;
-        var model = androidInfo.model;
-        napravaModel = model;
-        print('Android $release (SDK $sdkInt), $manufacturer $model');
-      }
+        if (Platform.isIOS) {
+          var iosInfo = await DeviceInfoPlugin().iosInfo;
+          var systemName = iosInfo.systemName;
+          osIme = systemName;
+          var version = iosInfo.systemVersion;
+          osVerzija = version;
+          var name = iosInfo.name;
+          napravaProizvajalec = name;
+          var model = iosInfo.model;
+          napravaModel = model;
+          print('$systemName $version, $name $model');
+        }
+      } catch (e) {}
 
-      if (Platform.isIOS) {
-        var iosInfo = await DeviceInfoPlugin().iosInfo;
-        var systemName = iosInfo.systemName;
-        osIme = systemName;
-        var version = iosInfo.systemVersion;
-        osVerzija = version;
-        var name = iosInfo.name;
-        napravaProizvajalec = name;
-        var model = iosInfo.model;
-        napravaModel = model;
-        print('$systemName $version, $name $model');
-      }
-
-      PackageInfo pi = await PackageInfo.fromPlatform();
-      appVerzija = pi.version;
+      try {
+        PackageInfo pi = await PackageInfo.fromPlatform();
+        appVerzija = pi.version;
+      } catch (e) {}
 
       WarningsNaprava naprava = WarningsNaprava(
           fcmId: token,
