@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
   List<MenuItem> categoryMenu = [
     MenuItem(menuName: "Vremenska napoved", url: "/napovedi"),
     MenuItem(menuName: "Vremenske razmere", url: "/postaje"),
-    MenuItem(menuName: "Izdana opozorila", url: "/warnings"),
+    MenuItem(menuName: "Izdana opozorila", url: "/v2/opozorila/master"),
     MenuItem(menuName: "Razmere v gorah", url: "/napovedi/gore"),
     MenuItem(menuName: "Tekstovna napoved", url: "/napoved/tekst"),
     MenuItem(menuName: "Vodotoki", url: '/vodotoki'),
@@ -671,7 +671,7 @@ class _HomeState extends State<Home> {
                   }),
                   drawerRow(Icons.warning, "Opozorila", () {
                     Navigator.pop(context);
-                    Navigator.pushNamed(context, "/warnings").then((value) {
+                    Navigator.pushNamed(context, "/v2/opozorila/master").then((value) {
                       setState(() {});
                     });
                   })

@@ -100,7 +100,7 @@ class MarelaWarningIntro extends StatelessWidget {
                             fontFamily: "Montserrat",
                             fontWeight: FontWeight.w300),
                       ),
-                      onPressed: () => Navigator.pushReplacementNamed(context, "/settings/marelaWarnings"),
+                      onPressed: () => Navigator.pushReplacementNamed(context, "/v2/settings/marela-warnings/setup"),
                     )
                   ],
                 )

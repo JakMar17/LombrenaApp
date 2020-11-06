@@ -48,13 +48,15 @@ android {
 
     buildTypes {
         debug {
-            resValue  'string', "map_key", marelaapp_android_mapskey
+            /* resValue  'string', "map_key", marelaapp_android_mapskey */
+            resValue  'string', "map_key", "AIzaSyCsIZuPzwPBN0GiGWVBggxqrdlfttRadw0"
         }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
-            resValue  'string', "map_key", marelaapp_android_mapskey
+            /* resValue  'string', "map_key", marelaapp_android_mapskey */
+            resValue  'string', "map_key", "AIzaSyCsIZuPzwPBN0GiGWVBggxqrdlfttRadw0"
         }
     }
 }

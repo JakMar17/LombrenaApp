@@ -18,6 +18,7 @@ class SettingsPreferences {
   final String fcmToken = "fcm_token";
   final String marelaWarningsEnabled = "marela_warnings_enabled";
   final String marelaWarningsIntroScreen = "marela_warnings_intro_screen";
+  final String marelaWarningsIntroScreenV2 = "marela_warnings_intro_screen_v2";
 /*   final String marelaWarningsTypes = "marela_warnings_types";
   final String marelaWarningsRegions = "marela_warnings_regions";
   final String marelaWarningsMinLevel = "marela_warnings_min_level"; */

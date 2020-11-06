@@ -15,6 +15,11 @@ class CustomColors {
   static const Color lightBlue = Color.fromRGBO(49, 214, 200, 1);
   static const Color green = Color.fromRGBO(166, 230, 90, 1);
   static const Color purple = Color.fromRGBO(122, 79, 148, 1);
+
+  /* */
+  static const Color yellow = Color.fromRGBO(252, 191, 73, 1);
+  static const Color orange = Color.fromRGBO(247, 127, 0, 1);
+  static const Color red = Color.fromRGBO(214, 40, 40, 1);
 }
 
 class CustomTextStyle {

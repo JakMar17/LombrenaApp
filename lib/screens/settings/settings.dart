@@ -131,7 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 SizedBox(height: 15,),
                 buttonRow("Vremenska opozorila (BETA)", "Bodite obveščeni o vremenskih opozorilih", () {
-                  Navigator.pushNamed(context, '/settings/marelaWarnings');
+                  Navigator.pushNamed(context, '/v2/settings/marela-warnings/setup');
                 })
 
                 /*Text("Vremenska opozorila",
