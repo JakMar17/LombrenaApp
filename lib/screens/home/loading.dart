@@ -155,13 +155,17 @@ class _LoadingState extends State<Loading> {
       if(_updateInfo.updateAvailable)
         showUpdateDialog();
       else
-        if (sp.getSetting(sp.marelaWarningsIntroScreen) == null || sp.getSetting(sp.marelaWarningsIntroScreen)) {
+        if (
+          sp.getSetting(sp.marelaWarningsIntroScreen) == null || sp.getSetting(sp.marelaWarningsIntroScreen) ||
+          sp.getSetting(sp.marelaWarningsIntroScreenV2) == null || sp.getSetting(sp.marelaWarningsIntroScreenV2)
+        ) {
           sp.setSetting(sp.marelaWarningsIntroScreen, false);
+          sp.setSetting(sp.marelaWarningsIntroScreenV2, false);
           Navigator.pushReplacementNamed(context, "/intro/marela-warnings");
         }
         else
           Navigator.pushReplacementNamed(context, "/");
-    });
+    }).catchError(() => Navigator.pushReplacementNamed(context, "/"));
   }
 
   void checkConnection() async {

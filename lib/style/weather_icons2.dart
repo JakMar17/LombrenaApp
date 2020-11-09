@@ -46,4 +46,5 @@ class WeatherIcons2 {
   static const IconData warning_fire = IconData(0xf0c7, fontFamily: _fontFamily);
   static const IconData warning_coast = IconData(0xf07c, fontFamily: _fontFamily);
   static const IconData warning_avalanche = IconData(0xf0c5, fontFamily: _fontFamily);
+  static const IconData warning_hail = IconData(0xf077, fontFamily: _fontFamily);
 }

@@ -4,8 +4,10 @@ import 'package:vreme/marelaWarningsAPI/dataHolders/warnings_naprava.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:vreme/v2/application_properties/constants.dart';
+
 class MarelaWarningQueries {
-  final String BASE_URL = "http://83.212.82.175:8080/api/v1/";
+  final String BASE_URL = Constants.API_BASE_URL;
 
   static WarningsNaprava naprava;
 
